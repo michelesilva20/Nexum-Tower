@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-nexum-bg: var(--nexum-bg);
+  --color-nexum-bg-soft: var(--nexum-bg-soft);
+  --color-nexum-surface: var(--nexum-surface);
+  --color-nexum-surface-hover: var(--nexum-surface-hover);
+  --color-nexum-border: var(--nexum-border);
+  --color-nexum-primary: var(--nexum-primary);
+  --color-nexum-primary-foreground: var(--nexum-primary-foreground);
+  --color-nexum-secondary: var(--nexum-secondary);
+  --color-nexum-accent: var(--nexum-accent);
+  --color-nexum-text: var(--nexum-text);
+  --color-nexum-text-muted: var(--nexum-text-muted);
+  --color-nexum-text-soft: var(--nexum-text-soft);
+  --color-nexum-success: var(--nexum-success);
+  --color-nexum-warning: var(--nexum-warning);
+  --color-nexum-risk: var(--nexum-risk);
+  --color-nexum-danger: var(--nexum-danger);
+  --color-nexum-neutral: var(--nexum-neutral);
+
+  --font-sans: var(--font-outfit);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+/* Light mode (padrão) */
+:root {
+  --nexum-bg: #f4f7fa;
+  --nexum-bg-soft: #eff4f8;
+  --nexum-surface: #ffffff;
+  --nexum-surface-hover: #f1f5f9;
+  --nexum-border: #e2e8f0;
+  --nexum-primary: #0891b2;
+  --nexum-primary-foreground: #ffffff;
+  --nexum-secondary: #059669;
+  --nexum-accent: #2563eb;
+  --nexum-text: #07111f;
+  --nexum-text-muted: #64748b;
+  --nexum-text-soft: #94a3b8;
+  --nexum-success: #16a34a;
+  --nexum-warning: #ca8a04;
+  --nexum-risk: #ea580c;
+  --nexum-danger: #dc2626;
+  --nexum-neutral: #64748b;
+  --nexum-grid-line: rgba(148, 163, 184, 0.35);
+  --nexum-glow-primary: rgba(8, 145, 178, 0.1);
+  --nexum-glow-secondary: rgba(5, 150, 105, 0.08);
+  --nexum-hero-glow-primary: rgba(8, 145, 178, 0.08);
+  --nexum-hero-glow-secondary: rgba(5, 150, 105, 0.06);
+}
+
+/* Dark mode */
+.dark {
+  --nexum-bg: #07111f;
+  --nexum-bg-soft: #0b1b2b;
+  --nexum-surface: #10263a;
+  --nexum-surface-hover: #15324a;
+  --nexum-border: #1d3a52;
+  --nexum-primary: #22d3ee;
+  --nexum-primary-foreground: #07111f;
+  --nexum-secondary: #34d399;
+  --nexum-accent: #3b82f6;
+  --nexum-text: #f4f7fa;
+  --nexum-text-muted: #9fb3c8;
+  --nexum-text-soft: #6f8398;
+  --nexum-success: #22c55e;
+  --nexum-warning: #facc15;
+  --nexum-risk: #fb923c;
+  --nexum-danger: #ef4444;
+  --nexum-neutral: #64748b;
+  --nexum-grid-line: rgba(29, 58, 82, 0.35);
+  --nexum-glow-primary: rgba(34, 211, 238, 0.12);
+  --nexum-glow-secondary: rgba(52, 211, 153, 0.1);
+  --nexum-hero-glow-primary: rgba(34, 211, 238, 0.05);
+  --nexum-hero-glow-secondary: rgba(52, 211, 153, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--nexum-bg);
+  color: var(--nexum-text);
+  font-family: inherit;
+  letter-spacing: -0.01em;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.grid-pattern {
+  background-image:
+    linear-gradient(var(--nexum-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--nexum-grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.glow-primary {
+  box-shadow: 0 0 80px var(--nexum-glow-primary);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 60px var(--nexum-glow-secondary);
+}
+
+.hero-glow-primary {
+  background-color: var(--nexum-hero-glow-primary);
+}
+
+.hero-glow-secondary {
+  background-color: var(--nexum-hero-glow-secondary);
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.glass {
+  background: color-mix(in srgb, var(--nexum-surface) 72%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in srgb, var(--nexum-border) 80%, transparent);
+}
+
+.glass-strong {
+  background: color-mix(in srgb, var(--nexum-surface) 88%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--nexum-border);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--nexum-primary) 0%, var(--nexum-secondary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--nexum-primary), var(--nexum-secondary));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+@keyframes route-flow {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.route-flow {
+  stroke-dasharray: 8 4;
+  animation: route-flow 2s linear infinite;
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.float-soft {
+  animation: float-soft 5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.btn-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--nexum-primary) 0%,
+    color-mix(in srgb, var(--nexum-primary) 60%, var(--nexum-secondary)) 50%,
+    var(--nexum-secondary) 100%
+  );
+  background-size: 200% auto;
+}
+
+.btn-gradient:hover {
+  animation: shimmer 3s linear infinite;
+}
+
+.section-journey-line {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--nexum-border) 15%,
+    var(--nexum-primary) 50%,
+    var(--nexum-secondary) 85%,
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot,
+  .route-flow,
+  .float-soft,
+  .btn-gradient:hover {
+    animation: none;
+  }
+}

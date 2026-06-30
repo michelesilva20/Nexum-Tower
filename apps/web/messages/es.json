@@ -1,0 +1,288 @@
+{
+  "metadata": {
+    "title": "Nexum Tower | Torre de Control Logístico con IA",
+    "description": "Controle viajes, incidencias, costos, riesgos y SLA en una plataforma SaaS para operaciones logísticas inteligentes.",
+    "keywords": "torre de control logística, software de logística, SaaS logístico, gestión de viajes, monitoreo de entregas, IA para logística"
+  },
+  "common": {
+    "brand": "Nexum Tower",
+    "demoLabel": "Indicadores demostrativos",
+    "theme": {
+      "toggle": "Cambiar tema",
+      "light": "Activar modo claro",
+      "dark": "Activar modo oscuro",
+      "lightShort": "Modo claro",
+      "darkShort": "Modo oscuro"
+    },
+    "locale": {
+      "label": "Idioma",
+      "switch": "Cambiar idioma"
+    }
+  },
+  "landing": {
+    "header": {
+      "product": "Producto",
+      "solutions": "Soluciones",
+      "resources": "Recursos",
+      "howItWorks": "Cómo funciona",
+      "faq": "FAQ",
+      "login": "Entrar",
+      "demo": "Solicitar demostración",
+      "menuOpen": "Abrir menú",
+      "menuClose": "Cerrar menú"
+    },
+    "hero": {
+      "badge": "Torre de control logístico",
+      "title": "Torre de control logística para operaciones más inteligentes, visibles y rentables.",
+      "subtitle": "Nexum Tower centraliza viajes, incidencias, costos, riesgos, SLA e indicadores operacionales en una única plataforma para transportistas, operadores logísticos y embarcadores.",
+      "demo": "Solicitar demostración",
+      "resources": "Ver recursos de la plataforma",
+      "tags": {
+        "risk": "Riesgo recalculado",
+        "sla": "SLA actualizado",
+        "issue": "Incidencia detectada",
+        "trip": "Viaje en ruta"
+      },
+      "metrics": {
+        "trips": "Viajes en curso",
+        "onTime": "Entregas a tiempo",
+        "critical": "Incidencias críticas",
+        "margin": "Margen operacional",
+        "riskScore": "Risk Score"
+      },
+      "values": {
+        "trips": "128",
+        "onTime": "94,2%",
+        "critical": "7",
+        "margin": "18,4%",
+        "riskScore": "82"
+      }
+    },
+    "pain": {
+      "eyebrow": "Operación fragmentada",
+      "title": "Cuando la operación crece, las hojas de cálculo y los mensajes sueltos dejan de acompañar el ritmo.",
+      "subtitle": "Retrasos, costos extra e incidencias críticas aparecen tarde porque los datos están dispersos entre equipos, sistemas y canales de comunicación.",
+      "items": {
+        "visibility": "Viajes sin visibilidad en tiempo real",
+        "history": "Incidencias sin historial centralizado",
+        "costs": "Costos reales difíciles de seguir",
+        "status": "Clientes pidiendo estado manualmente",
+        "delays": "Retrasos identificados demasiado tarde",
+      "decisions": "Decisiones basadas en datos incompletos"
+    },
+    "connecting": "conectando fragmentos operacionales"
+    },
+    "solution": {
+      "eyebrow": "Conexión operacional",
+      "title": "Nexum Tower conecta operación, gestión e inteligencia en una única central.",
+      "subtitle": "Transforme datos operacionales en una visión clara. Cada carga, viaje, incidencia, costo y comprobante forma parte de un flujo único de control.",
+      "flow": {
+        "cargo": "Carga",
+        "trip": "Viaje",
+        "monitoring": "Monitoreo",
+        "issue": "Incidencia",
+        "proof": "Comprobante",
+        "closing": "Cierre",
+        "intelligence": "Inteligencia"
+      }
+    },
+    "modules": {
+      "eyebrow": "Módulos conectados",
+      "title": "Recursos para controlar la operación logística de punta a punta.",
+      "subtitle": "Desde la creación de la carga hasta el cierre financiero, Nexum Tower organiza los puntos clave en módulos conectados.",
+      "items": {
+        "tower": { "title": "Torre de Control", "description": "Supervise viajes, alertas, estados y riesgos en una vista operacional centralizada." },
+        "trips": { "title": "Gestión de Viajes", "description": "Planifique, ejecute y cierre viajes con historial completo de eventos." },
+        "issues": { "title": "Incidencias Operacionales", "description": "Registre problemas, responsables, impactos y acciones en tiempo real." },
+        "costs": { "title": "Costos y Margen", "description": "Compare costo previsto, realizado y rentabilidad por viaje, cliente o ruta." },
+        "proofs": { "title": "Comprobantes Digitales", "description": "Centralice remitos, fotos, adjuntos y documentos de entrega." },
+        "ai": { "title": "Nexum AI", "description": "Use IA para resumir viajes, analizar retrasos y generar insights operacionales." },
+        "portal": { "title": "Portal del Cliente", "description": "Ofrezca visibilidad de entrega sin consultas manuales." },
+        "reports": { "title": "Informes Ejecutivos", "description": "Transforme datos operacionales en indicadores de rendimiento." }
+      }
+    },
+    "dashboard": {
+      "eyebrow": "Command center",
+      "title": "Indicadores que muestran lo que está ocurriendo ahora.",
+      "subtitle": "Supervise la operación con métricas claras sobre viajes, SLA, incidencias, costos y margen.",
+      "metrics": {
+        "trips": { "label": "Viajes en curso", "value": "128" },
+        "onTime": { "label": "Entregas a tiempo", "value": "94,2%" },
+        "issues": { "label": "Incidencias abiertas", "value": "17" },
+        "risk": { "label": "Riesgo operacional", "value": "Medio" },
+        "margin": { "label": "Margen del mes", "value": "18,4%" },
+        "idle": { "label": "Tiempo parado promedio", "value": "2h15" }
+      },
+      "chartTitle": "Rendimiento semanal",
+      "recentIssues": "Incidencias recientes",
+      "criticalTrips": "Viajes críticos",
+      "issuesTable": {
+        "i1": { "id": "NX-2048", "type": "Retraso", "status": "Abierta" },
+        "i2": { "id": "NX-1987", "type": "Avería", "status": "En tratamiento" },
+        "i3": { "id": "NX-1922", "type": "Desvío ruta", "status": "Monitoreando" }
+      },
+      "criticalList": {
+        "t1": { "id": "NX-2048", "route": "SP → RJ", "risk": "Alto" },
+        "t2": { "id": "NX-2011", "route": "BH → GO", "risk": "Medio" }
+      }
+    },
+    "map": {
+      "eyebrow": "Mapa operacional",
+      "title": "Visualice rutas, entregas y puntos críticos en una capa operacional inteligente.",
+      "subtitle": "El mapa de Nexum Tower ayuda a equipos a seguir viajes, identificar desvíos, visualizar regiones críticas y priorizar acciones.",
+      "labels": {
+        "origin": "Origen confirmado",
+        "stop": "Parada detectada",
+        "risk": "Riesgo de retraso",
+        "dest": "Destino previsto"
+      }
+    },
+    "risk": {
+      "eyebrow": "Risk Score",
+      "title": "Priorice viajes antes de que pequeños desvíos se conviertan en grandes problemas.",
+      "subtitle": "El Risk Score clasifica viajes según retraso, incidencia abierta, cliente crítico, tiempo parado, ruta y costo sobre lo previsto.",
+      "trip": "Viaje NX-2048",
+      "score": "Risk Score",
+      "scoreValue": "82/100",
+      "level": "Nivel: Alto",
+      "reasonsTitle": "Motivos",
+      "reasons": {
+        "r1": "retraso actual de 1h40",
+        "r2": "incidencia abierta",
+        "r3": "cliente con SLA crítico",
+        "r4": "costo 12% sobre lo previsto"
+      },
+      "recommendation": "Se recomienda contactar al conductor, actualizar la ETA de entrega y notificar al cliente.",
+      "action": "Ver plan de acción"
+    },
+    "ai": {
+      "eyebrow": "Nexum AI",
+      "title": "IA operacional para transformar datos logísticos en decisiones.",
+      "subtitle": "Haga preguntas sobre viajes, rutas, costos e incidencias. Nexum AI ayuda a interpretar la operación y sugerir acciones según el contexto.",
+      "placeholder": "Pregunte sobre viajes, costos o incidencias...",
+      "chips": { "sla": "SLA", "costs": "Costos", "issues": "Incidencias", "trips": "Viajes", "clients": "Clientes" },
+      "questions": {
+        "q1": "¿Qué viajes tienen mayor riesgo hoy?",
+        "q2": "¿Qué cliente generó más incidencias este mes?",
+        "q3": "¿Qué rutas están reduciendo el margen?",
+        "q4": "Resuma las incidencias críticas de la semana.",
+        "q5": "¿Por qué la operación se retrasó ayer?"
+      },
+      "response": "El viaje NX-2048 requiere atención inmediata. Tiene retraso de 1h40, incidencia abierta y costo 12% sobre lo previsto. Se recomienda contactar al conductor, actualizar la ETA y notificar al cliente."
+    },
+    "audience": {
+      "eyebrow": "Para quién es",
+      "title": "Creado para operaciones logísticas que necesitan control, velocidad y previsibilidad.",
+      "items": {
+        "carriers": { "title": "Transportistas", "description": "Controle viajes, costos, incidencias y comprobantes en una operación centralizada." },
+        "operators": { "title": "Operadores logísticos", "description": "Orqueste múltiples operaciones con visibilidad unificada de SLA y riesgos." },
+        "shippers": { "title": "Embarcadores", "description": "Supervise entregas, SLA y riesgos con mayor transparencia operacional." },
+        "cd": { "title": "Centros de distribución", "description": "Monitoree salidas, entregas y cuellos de botella con indicadores en tiempo real." },
+        "fleet": { "title": "Gestores de flota", "description": "Priorice viajes críticos y reduzca tiempo parado con alertas operacionales." },
+        "cs": { "title": "Atención al cliente logístico", "description": "Responda clientes con datos actualizados, sin depender de hojas de cálculo." }
+      }
+    },
+    "benefits": {
+      "eyebrow": "Impacto operacional",
+      "title": "Menos retrabajo. Más visibilidad. Mejor margen.",
+      "items": {
+        "b1": "Reduzca retrasos operacionales",
+        "b2": "Anticipe riesgos antes de que se conviertan en crisis",
+        "b3": "Mejore la comunicación con clientes",
+        "b4": "Controle costos por viaje",
+        "b5": "Centralice documentos y comprobantes",
+        "b6": "Supervise SLA con mayor precisión",
+        "b7": "Identifique cuellos de botella por ruta, cliente o conductor"
+      },
+      "metrics": {
+        "m1": { "value": "+94%", "label": "entregas a tiempo" },
+        "m2": { "value": "-32%", "label": "retrabajo operacional" },
+        "m3": { "value": "+18%", "label": "margen monitoreado" },
+        "m4": { "value": "7", "label": "puntos críticos centralizados" }
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "Flujo operacional",
+      "title": "Del planificacion al cierre del viaje en un flujo único.",
+      "steps": {
+        "s1": "Registre la carga",
+        "s2": "Planifique el viaje",
+        "s3": "Monitoree la ejecución",
+        "s4": "Registre incidencias",
+        "s5": "Valide comprobantes",
+        "s6": "Cierre costos y margen",
+        "s7": "Analice indicadores con IA"
+      }
+    },
+    "security": {
+      "eyebrow": "Confianza B2B",
+      "title": "Control de acceso preparado para operaciones B2B.",
+      "items": {
+        "multi": "Multiempresa",
+        "profiles": "Perfiles de usuario",
+        "permissions": "Permisos por función",
+        "portal": "Portal del cliente",
+        "audit": "Auditoría de eventos",
+        "integrations": "Entorno preparado para integraciones"
+      }
+    },
+    "integrations": {
+      "eyebrow": "Ecosistema",
+      "title": "Preparado para conectar su operación con el ecosistema logístico.",
+      "hub": "Nexum Tower",
+      "items": {
+        "trackers": "Rastreadores",
+        "erp": "ERP",
+        "tms": "TMS",
+        "wms": "WMS",
+        "bi": "Power BI",
+        "whatsapp": "WhatsApp",
+        "email": "Correo",
+        "api": "APIs externas",
+        "fiscal": "Documentos fiscales"
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Preguntas frecuentes sobre torre de control logística",
+      "items": {
+        "q1": { "q": "¿Qué es una torre de control logística?", "a": "Es una plataforma que centraliza viajes, incidencias, costos, riesgos y SLA en tiempo real, permitiendo monitorear y decidir sobre la operación logística de forma integrada." },
+        "q2": { "q": "¿Para qué empresas está indicado Nexum Tower?", "a": "Transportistas, operadores logísticos, embarcadores, centros de distribución y equipos que necesitan visibilidad operacional y control de rendimiento." },
+        "q3": { "q": "¿Nexum Tower reemplaza un TMS?", "a": "No necesariamente. Complementa o se integra con TMS, ERP y rastreadores, funcionando como capa de control, monitoreo e inteligencia operacional." },
+        "q4": { "q": "¿La plataforma permite seguir viajes en tiempo real?", "a": "Sí. La torre consolida estado de viajes, alertas e indicadores para monitoreo continuo de la operación." },
+        "q5": { "q": "¿Es posible controlar costos y margen por viaje?", "a": "Sí. El módulo de costos compara previsto versus realizado y apoya la gestión de margen por viaje, cliente o ruta." },
+        "q6": { "q": "¿El sistema tiene IA para análisis operacional?", "a": "Sí. Nexum AI interpreta datos operacionales y ayuda a responder preguntas sobre viajes, retrasos, costos e incidencias." },
+        "q7": { "q": "¿Nexum Tower tiene portal para clientes?", "a": "Sí. El portal del cliente ofrece visibilidad de entregas y SLA sin depender de consultas manuales." }
+      }
+    },
+    "cta": {
+      "title": "Transforme su operación logística en una central de decisión.",
+      "subtitle": "Controle viajes, riesgos, costos, SLA e incidencias en una plataforma creada para operaciones logísticas modernas.",
+      "demo": "Solicitar demostración",
+      "resources": "Conocer recursos"
+    },
+    "footer": {
+      "tagline": "Torre de control logística para operaciones inteligentes.",
+      "product": "Producto",
+      "company": "Empresa",
+      "resources": "Recursos",
+      "legal": "Legal",
+      "links": {
+        "tower": "Torre de Control",
+        "trips": "Viajes",
+        "issues": "Incidencias",
+        "costs": "Costos",
+        "ai": "Nexum AI",
+        "about": "Sobre",
+        "security": "Seguridad",
+        "contact": "Contacto",
+        "blog": "Blog",
+        "docs": "Documentación",
+        "status": "Estado",
+        "privacy": "Privacidad",
+        "terms": "Términos"
+      },
+      "copyright": "© {year} Nexum Tower. Todos los derechos reservados."
+    }
+  }
+}

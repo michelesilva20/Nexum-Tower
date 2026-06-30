@@ -1,0 +1,288 @@
+{
+  "metadata": {
+    "title": "Nexum Tower | Logistics Control Tower with AI",
+    "description": "Control trips, incidents, costs, risks and SLA in a SaaS platform for intelligent logistics operations.",
+    "keywords": "logistics control tower, logistics software, logistics SaaS, trip management, delivery monitoring, AI for logistics"
+  },
+  "common": {
+    "brand": "Nexum Tower",
+    "demoLabel": "Demonstrative indicators",
+    "theme": {
+      "toggle": "Toggle theme",
+      "light": "Enable light mode",
+      "dark": "Enable dark mode",
+      "lightShort": "Light mode",
+      "darkShort": "Dark mode"
+    },
+    "locale": {
+      "label": "Language",
+      "switch": "Change language"
+    }
+  },
+  "landing": {
+    "header": {
+      "product": "Product",
+      "solutions": "Solutions",
+      "resources": "Resources",
+      "howItWorks": "How it works",
+      "faq": "FAQ",
+      "login": "Sign in",
+      "demo": "Request demo",
+      "menuOpen": "Open menu",
+      "menuClose": "Close menu"
+    },
+    "hero": {
+      "badge": "Logistics control tower",
+      "title": "Logistics control tower for smarter, more visible and profitable operations.",
+      "subtitle": "Nexum Tower centralizes trips, incidents, costs, risks, SLA and operational indicators in a single platform for carriers, logistics operators and shippers.",
+      "demo": "Request demo",
+      "resources": "View platform resources",
+      "tags": {
+        "risk": "Risk recalculated",
+        "sla": "SLA updated",
+        "issue": "Incident detected",
+        "trip": "Trip en route"
+      },
+      "metrics": {
+        "trips": "Trips in progress",
+        "onTime": "On-time deliveries",
+        "critical": "Critical incidents",
+        "margin": "Operating margin",
+        "riskScore": "Risk Score"
+      },
+      "values": {
+        "trips": "128",
+        "onTime": "94.2%",
+        "critical": "7",
+        "margin": "18.4%",
+        "riskScore": "82"
+      }
+    },
+    "pain": {
+      "eyebrow": "Fragmented operations",
+      "title": "As operations scale, spreadsheets and scattered messages fail to keep up.",
+      "subtitle": "Delays, extra costs and critical incidents often surface too late because data is spread across teams, systems and communication channels.",
+      "items": {
+        "visibility": "Trips without real-time visibility",
+        "history": "Incidents without centralized history",
+        "costs": "Real costs hard to track",
+        "status": "Clients requesting status manually",
+        "delays": "Delays identified too late",
+      "decisions": "Decisions based on incomplete data"
+    },
+    "connecting": "connecting operational fragments"
+    },
+    "solution": {
+      "eyebrow": "Operational connection",
+      "title": "Nexum Tower connects operations, management and intelligence in one hub.",
+      "subtitle": "Turn operational data into a clear view of your operation. Every shipment, trip, incident, cost and proof becomes part of a single control flow.",
+      "flow": {
+        "cargo": "Shipment",
+        "trip": "Trip",
+        "monitoring": "Monitoring",
+        "issue": "Incident",
+        "proof": "Proof",
+        "closing": "Closing",
+        "intelligence": "Intelligence"
+      }
+    },
+    "modules": {
+      "eyebrow": "Connected modules",
+      "title": "Resources to control logistics operations end to end.",
+      "subtitle": "From shipment creation to financial closing, Nexum Tower organizes key operational points into connected modules.",
+      "items": {
+        "tower": { "title": "Control Tower", "description": "Track trips, alerts, status and risks in a centralized operational view." },
+        "trips": { "title": "Trip Management", "description": "Plan, execute and close trips with full event history." },
+        "issues": { "title": "Operational Incidents", "description": "Record problems, owners, impacts and actions in real time." },
+        "costs": { "title": "Costs & Margin", "description": "Compare planned vs actual cost and profitability by trip, client or route." },
+        "proofs": { "title": "Digital Proofs", "description": "Centralize delivery receipts, photos, attachments and documents." },
+        "ai": { "title": "Nexum AI", "description": "Use AI to summarize trips, analyze delays and generate operational insights." },
+        "portal": { "title": "Client Portal", "description": "Offer delivery visibility without manual status requests." },
+        "reports": { "title": "Executive Reports", "description": "Turn operational data into performance indicators." }
+      }
+    },
+    "dashboard": {
+      "eyebrow": "Command center",
+      "title": "Indicators that show what is happening now.",
+      "subtitle": "Monitor operations with clear metrics on trips, SLA, incidents, costs and margin.",
+      "metrics": {
+        "trips": { "label": "Trips in progress", "value": "128" },
+        "onTime": { "label": "On-time deliveries", "value": "94.2%" },
+        "issues": { "label": "Open incidents", "value": "17" },
+        "risk": { "label": "Operational risk", "value": "Medium" },
+        "margin": { "label": "Monthly margin", "value": "18.4%" },
+        "idle": { "label": "Avg idle time", "value": "2h15" }
+      },
+      "chartTitle": "Weekly performance",
+      "recentIssues": "Recent incidents",
+      "criticalTrips": "Critical trips",
+      "issuesTable": {
+        "i1": { "id": "NX-2048", "type": "Delay", "status": "Open" },
+        "i2": { "id": "NX-1987", "type": "Damage", "status": "In progress" },
+        "i3": { "id": "NX-1922", "type": "Route deviation", "status": "Monitoring" }
+      },
+      "criticalList": {
+        "t1": { "id": "NX-2048", "route": "SP → RJ", "risk": "High" },
+        "t2": { "id": "NX-2011", "route": "BH → GO", "risk": "Medium" }
+      }
+    },
+    "map": {
+      "eyebrow": "Operational map",
+      "title": "Visualize routes, deliveries and critical points on an intelligent operational layer.",
+      "subtitle": "The Nexum Tower map helps teams track trips, identify deviations, visualize critical regions and prioritize what needs action.",
+      "labels": {
+        "origin": "Origin confirmed",
+        "stop": "Stop detected",
+        "risk": "Delay risk",
+        "dest": "Expected destination"
+      }
+    },
+    "risk": {
+      "eyebrow": "Risk Score",
+      "title": "Prioritize trips before small deviations become major problems.",
+      "subtitle": "Risk Score ranks trips based on delay, open incidents, critical client, idle time, route and cost above plan.",
+      "trip": "Trip NX-2048",
+      "score": "Risk Score",
+      "scoreValue": "82/100",
+      "level": "Level: High",
+      "reasonsTitle": "Reasons",
+      "reasons": {
+        "r1": "current delay of 1h40",
+        "r2": "open incident",
+        "r3": "client with critical SLA",
+        "r4": "cost 12% above plan"
+      },
+      "recommendation": "Recommend contacting the driver, updating delivery ETA and notifying the client.",
+      "action": "View action plan"
+    },
+    "ai": {
+      "eyebrow": "Nexum AI",
+      "title": "Operational AI to turn logistics data into decisions.",
+      "subtitle": "Ask questions about trips, routes, costs and incidents. Nexum AI helps interpret operations and suggest actions based on context.",
+      "placeholder": "Ask about trips, costs or incidents...",
+      "chips": { "sla": "SLA", "costs": "Costs", "issues": "Incidents", "trips": "Trips", "clients": "Clients" },
+      "questions": {
+        "q1": "Which trips have the highest risk today?",
+        "q2": "Which client generated the most incidents this month?",
+        "q3": "Which routes are reducing margin?",
+        "q4": "Summarize critical incidents this week.",
+        "q5": "Why did operations delay yesterday?"
+      },
+      "response": "Trip NX-2048 requires immediate attention. It has a 1h40 delay, an open incident and cost 12% above plan. Recommend contacting the driver, updating delivery ETA and notifying the client."
+    },
+    "audience": {
+      "eyebrow": "Who it's for",
+      "title": "Built for logistics operations that need control, speed and predictability.",
+      "items": {
+        "carriers": { "title": "Carriers", "description": "Control trips, costs, incidents and proofs in a centralized operation." },
+        "operators": { "title": "Logistics operators", "description": "Orchestrate multiple operations with unified SLA and risk visibility." },
+        "shippers": { "title": "Shippers", "description": "Track deliveries, SLA and risks with greater operational transparency." },
+        "cd": { "title": "Distribution centers", "description": "Monitor departures, deliveries and bottlenecks with real-time indicators." },
+        "fleet": { "title": "Fleet managers", "description": "Prioritize critical trips and reduce idle time with operational alerts." },
+        "cs": { "title": "Logistics customer service", "description": "Answer clients with updated data, without relying on spreadsheets." }
+      }
+    },
+    "benefits": {
+      "eyebrow": "Business impact",
+      "title": "Less rework. More visibility. Better margin.",
+      "items": {
+        "b1": "Reduce operational delays",
+        "b2": "Anticipate risks before they become crises",
+        "b3": "Improve client communication",
+        "b4": "Control costs per trip",
+        "b5": "Centralize documents and proofs",
+        "b6": "Track SLA with greater accuracy",
+        "b7": "Identify bottlenecks by route, client or driver"
+      },
+      "metrics": {
+        "m1": { "value": "+94%", "label": "on-time deliveries" },
+        "m2": { "value": "-32%", "label": "operational rework" },
+        "m3": { "value": "+18%", "label": "monitored margin" },
+        "m4": { "value": "7", "label": "centralized critical points" }
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "Operational flow",
+      "title": "From planning to trip closing in a single flow.",
+      "steps": {
+        "s1": "Register shipment",
+        "s2": "Plan the trip",
+        "s3": "Monitor execution",
+        "s4": "Record incidents",
+        "s5": "Validate proofs",
+        "s6": "Close costs and margin",
+        "s7": "Analyze indicators with AI"
+      }
+    },
+    "security": {
+      "eyebrow": "B2B trust",
+      "title": "Access control built for B2B operations.",
+      "items": {
+        "multi": "Multi-company",
+        "profiles": "User profiles",
+        "permissions": "Role-based permissions",
+        "portal": "Client portal",
+        "audit": "Event audit",
+        "integrations": "Integration-ready environment"
+      }
+    },
+    "integrations": {
+      "eyebrow": "Ecosystem",
+      "title": "Ready to connect your operation with the logistics ecosystem.",
+      "hub": "Nexum Tower",
+      "items": {
+        "trackers": "Trackers",
+        "erp": "ERP",
+        "tms": "TMS",
+        "wms": "WMS",
+        "bi": "Power BI",
+        "whatsapp": "WhatsApp",
+        "email": "Email",
+        "api": "External APIs",
+        "fiscal": "Tax documents"
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Frequently asked questions about logistics control towers",
+      "items": {
+        "q1": { "q": "What is a logistics control tower?", "a": "A platform that centralizes trips, incidents, costs, risks and SLA in real time, enabling integrated monitoring and decision-making for logistics operations." },
+        "q2": { "q": "Which companies is Nexum Tower for?", "a": "Carriers, logistics operators, shippers, distribution centers and teams that need operational visibility and performance control." },
+        "q3": { "q": "Does Nexum Tower replace a TMS?", "a": "Not necessarily. It complements or integrates with TMS, ERP and trackers as a control, monitoring and operational intelligence layer." },
+        "q4": { "q": "Can the platform track trips in real time?", "a": "Yes. The tower consolidates trip status, alerts and indicators for continuous operation monitoring." },
+        "q5": { "q": "Can you control costs and margin per trip?", "a": "Yes. The costs module compares planned vs actual and supports margin management by trip, client or route." },
+        "q6": { "q": "Does the system have AI for operational analysis?", "a": "Yes. Nexum AI interprets operational data and helps answer questions about trips, delays, costs and incidents." },
+        "q7": { "q": "Does Nexum Tower have a client portal?", "a": "Yes. The client portal offers delivery and SLA visibility without manual status requests." }
+      }
+    },
+    "cta": {
+      "title": "Turn your logistics operation into a decision center.",
+      "subtitle": "Control trips, risks, costs, SLA and incidents on a platform built for modern logistics operations.",
+      "demo": "Request demo",
+      "resources": "Explore resources"
+    },
+    "footer": {
+      "tagline": "Logistics control tower for intelligent operations.",
+      "product": "Product",
+      "company": "Company",
+      "resources": "Resources",
+      "legal": "Legal",
+      "links": {
+        "tower": "Control Tower",
+        "trips": "Trips",
+        "issues": "Incidents",
+        "costs": "Costs",
+        "ai": "Nexum AI",
+        "about": "About",
+        "security": "Security",
+        "contact": "Contact",
+        "blog": "Blog",
+        "docs": "Documentation",
+        "status": "Status",
+        "privacy": "Privacy",
+        "terms": "Terms"
+      },
+      "copyright": "© {year} Nexum Tower. All rights reserved."
+    }
+  }
+}

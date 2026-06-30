@@ -1,0 +1,25 @@
+{
+  "name": "nexum-tower",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev --filter=web --filter=api",
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api start:dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "prettier --write .",
+    "db:generate": "pnpm --filter database prisma generate",
+    "db:migrate": "pnpm --filter database prisma migrate dev",
+    "db:studio": "pnpm --filter database prisma studio",
+    "db:seed": "pnpm --filter database prisma db seed"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  }
+}
