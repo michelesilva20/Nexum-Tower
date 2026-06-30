@@ -284,5 +284,42 @@
       },
       "copyright": "© {year} Nexum Tower. Todos os direitos reservados."
     }
+  },
+  "login": {
+    "metadata": {
+      "title": "Entrar | Nexum Tower",
+      "description": "Acesso seguro à plataforma Nexum Tower para equipes logísticas."
+    },
+    "visual": {
+      "badge": "Torre de controle logística",
+      "title": "Sua operação conectada antes da primeira decisão.",
+      "titleMobile": "Acesse o Command Center",
+      "subtitle": "O mesmo ecossistema da landing — viagens, riscos, SLA e indicadores em uma visão operacional unificada.",
+      "previewLabel": "control-center.live"
+    },
+    "form": {
+      "title": "Entrar",
+      "subtitle": "Use suas credenciais corporativas para acessar a plataforma.",
+      "email": "E-mail corporativo",
+      "emailPlaceholder": "nome@empresa.com.br",
+      "password": "Senha",
+      "passwordPlaceholder": "Digite sua senha",
+      "remember": "Lembrar acesso",
+      "forgot": "Esqueci minha senha",
+      "submit": "Entrar na plataforma",
+      "submitting": "Autorizando acesso...",
+      "sso": "Entrar com SSO",
+      "noAccess": "Ainda não tem acesso?",
+      "demo": "Solicitar demonstração",
+      "backHome": "Voltar ao site",
+      "securityLine": "Ambiente corporativo seguro e monitorado",
+      "showPassword": "Mostrar senha",
+      "hidePassword": "Ocultar senha"
+    },
+    "errors": {
+      "email": "Informe seu e-mail corporativo.",
+      "password": "Informe sua senha.",
+      "emailInvalid": "Informe um e-mail válido."
+    }
   }
 }

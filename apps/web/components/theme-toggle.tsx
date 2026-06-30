@@ -1,11 +1,12 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import { cn } from "@nexum-tower/ui";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-export function ThemeToggle() {
+export function ThemeToggle({ compact = false }: { compact?: boolean }) {
   const t = useTranslations("common.theme");
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -19,7 +20,10 @@ export function ThemeToggle() {
       <button
         type="button"
         aria-label={t("toggle")}
-        className="flex h-9 w-9 items-center justify-center rounded-lg border border-nexum-border bg-nexum-surface"
+        className={cn(
+          "flex h-8 w-8 items-center justify-center rounded-lg text-nexum-text-muted",
+          !compact && "border border-nexum-border bg-nexum-surface",
+        )}
       />
     );
   }
@@ -32,7 +36,10 @@ export function ThemeToggle() {
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? t("light") : t("dark")}
       title={isDark ? t("lightShort") : t("darkShort")}
-      className="flex h-9 w-9 items-center justify-center rounded-lg border border-nexum-border bg-nexum-surface text-nexum-text-muted transition-colors hover:border-nexum-primary/40 hover:bg-nexum-surface-hover hover:text-nexum-text"
+      className={cn(
+        "flex h-8 w-8 items-center justify-center rounded-lg text-nexum-text-muted transition-colors hover:bg-nexum-surface/60 hover:text-nexum-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-nexum-primary/40",
+        !compact && "border border-nexum-border bg-nexum-surface hover:border-nexum-primary/40 hover:bg-nexum-surface-hover",
+      )}
     >
       {isDark ? (
         <Sun className="h-4 w-4" strokeWidth={1.75} />

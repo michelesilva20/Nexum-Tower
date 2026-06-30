@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000",
+    "dev:clean": "pnpm clean && next dev --port 3000",
     "dev:turbo": "next dev --turbopack --port 3000",
+    "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -14,6 +16,7 @@
     "@nexum-tower/ui": "workspace:*",
     "clsx": "^2.1.1",
     "framer-motion": "^12.42.0",
+    "motion-dom": "^12.42.0",
     "lucide-react": "^0.513.0",
     "next": "^15.3.3",
     "next-intl": "^4.13.0",

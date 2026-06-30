@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "turbo dev --filter=web --filter=api",
     "dev:web": "pnpm --filter web dev",
+    "dev:web:clean": "pnpm --filter web dev:clean",
     "dev:api": "pnpm --filter api start:dev",
     "build": "turbo build",
     "lint": "turbo lint",

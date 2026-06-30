@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { routing } from "@/i18n/routing";
-import { localeHtmlLang, type Locale } from "@nexum-tower/shared";
+import { localeHtmlLang, type Locale } from "@nexum-tower/shared/i18n";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
@@ -62,7 +62,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={`${outfit.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body className={`${outfit.className} antialiased`}>
+      <body className={`${outfit.className} antialiased`} suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>{children}</ThemeProvider>
         </NextIntlClientProvider>

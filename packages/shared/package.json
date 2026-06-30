@@ -21,6 +21,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./i18n": {
+      "types": "./dist/i18n/locales.d.ts",
+      "default": "./dist/i18n/locales.js"
     }
   }
 }

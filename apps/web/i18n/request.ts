@@ -1,4 +1,4 @@
-import { isLocale } from "@nexum-tower/shared";
+import { isLocale } from "@nexum-tower/shared/i18n";
 import { getRequestConfig } from "next-intl/server";
 import { routing } from "./routing";
 
