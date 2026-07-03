@@ -319,7 +319,272 @@
     "errors": {
       "email": "Ingrese su correo corporativo.",
       "password": "Ingrese su contraseña.",
-      "emailInvalid": "Ingrese un correo válido."
+      "emailInvalid": "Ingrese un correo válido.",
+      "invalidCredentials": "Credenciales inválidas.",
+      "generic": "No fue posible ingresar. Intente nuevamente."
+    }
+  },
+  "app": {
+    "metadata": {
+      "title": "Command Center | Nexum Tower",
+      "description": "Área autenticada de Nexum Tower."
+    },
+    "eyebrow": "Command Center",
+    "title": "Nexum Tower Command Center",
+    "welcome": "Bienvenido, {name}",
+    "tenant": "Empresa: {name}",
+    "permissionsCount": "Permisos cargados: {count}",
+    "logout": "Salir",
+    "backLanding": "Volver a la landing"
+  },
+  "accessDenied": {
+    "metadata": {
+      "title": "Acceso denegado | Nexum Tower",
+      "description": "No tiene permiso para acceder a esta área."
+    },
+    "title": "Acceso denegado",
+    "description": "No tiene permiso para acceder a esta área de la plataforma.",
+    "backToApp": "Volver al Command Center",
+    "logout": "Salir"
+  },
+  "admin": {
+    "sidebar": {
+      "comingSoon": "Pronto",
+      "groups": {
+        "operational": "Operacional",
+        "management": "Gestión",
+        "intelligence": "Inteligencia",
+        "administration": "Administración",
+        "configuration": "Configuración"
+      },
+      "items": {
+        "commandCenter": "Command Center",
+        "controlTower": "Torre de Control",
+        "trips": "Viajes",
+        "loads": "Cargas",
+        "incidents": "Incidencias",
+        "operationalMap": "Mapa Operacional",
+        "clients": "Clientes",
+        "fleet": "Flota",
+        "drivers": "Conductores",
+        "vehicles": "Vehículos",
+        "routes": "Rutas y Puntos",
+        "proofs": "Comprobantes",
+        "costs": "Costos y Margen",
+        "reports": "Informes",
+        "nexumAi": "Nexum AI",
+        "indicators": "Indicadores",
+        "users": "Usuarios",
+        "groups": "Grupos",
+        "roles": "Roles",
+        "permissions": "Permisos",
+        "settings": "Configuración",
+        "features": "Feature Flags",
+        "parameters": "Parámetros",
+        "sessions": "Sesiones",
+        "securityConsole": "Consola de Seguridad",
+        "audit": "Auditoría"
+      }
+    },
+    "table": {
+      "showing": "Mostrando {start}–{end} de {total} resultados",
+      "rowsPerPage": "Filas por página",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "first": "Primera página",
+      "last": "Última página",
+      "pagination": "Paginación"
+    },
+    "topbar": {
+      "openMenu": "Abrir menú",
+      "searchPlaceholder": "Buscar viajes, clientes, incidencias o documentos...",
+      "searchPlaceholderShort": "Buscar en la plataforma...",
+      "operationOnline": "Operación en línea",
+      "operationDetail": "{count} viajes monitoreados",
+      "nexumAi": "Nexum AI",
+      "notifications": "Notificaciones"
+    },
+    "commandCenter": {
+      "breadcrumbRoot": "Operacional",
+      "breadcrumbCurrent": "Command Center",
+      "title": "Command Center",
+      "description": "Vista consolidada de la operación logística en tiempo real.",
+      "liveBadge": "En vivo",
+      "actions": { "filters": "Filtros", "export": "Exportar", "newTrip": "Nuevo viaje" },
+      "kpis": {
+        "tripsInProgress": { "label": "Viajes en curso", "change": "+12,5% hoy" },
+        "onTime": { "label": "Entregas a tiempo", "change": "+2,1% vs ayer" },
+        "incidents": { "label": "Incidencias abiertas", "change": "3 críticas" },
+        "margin": { "label": "Margen operativo", "change": "+0,8% en el mes" }
+      },
+      "recentTrips": {
+        "title": "Viajes recientes",
+        "description": "Monitoreo operativo demostrativo",
+        "viewAll": "Ver todos",
+        "columns": {
+          "trip": "Viaje",
+          "client": "Cliente",
+          "route": "Ruta",
+          "status": "Estado",
+          "risk": "Riesgo",
+          "eta": "Previsión"
+        }
+      },
+      "riskCard": {
+        "title": "Risk Score promedio",
+        "badge": "Atención",
+        "description": "Desvíos moderados en las últimas 4h"
+      },
+      "criticalCard": {
+        "title": "Incidencias críticas",
+        "description": "Requieren acción inmediata",
+        "item1": "Retraso crítico en descarga",
+        "item2": "Desvío de ruta no autorizado"
+      },
+      "activityCard": {
+        "title": "Actividad operacional",
+        "item1": "Comprobante validado — NX-2047",
+        "item2": "Viaje NX-2048 salió del patio",
+        "item3": "Incidencia abierta — NX-2050"
+      }
+    },
+    "designSystem": {
+      "breadcrumbRoot": "Plataforma",
+      "breadcrumbCurrent": "Design System",
+      "title": "Design System Nexum",
+      "description": "Referencia visual de componentes internos.",
+      "tabs": { "overview": "Resumen", "forms": "Formularios", "feedback": "Feedback" },
+      "sections": { "buttons": "Botones", "badges": "Badges y estado", "skeleton": "Skeleton" },
+      "samples": {
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "outline": "Outline",
+        "ghost": "Ghost",
+        "danger": "Danger",
+        "loading": "Loading",
+        "interactiveCard": "Card interactivo",
+        "email": "Correo",
+        "status": "Estado",
+        "errorField": "Campo con error",
+        "errorMessage": "Este campo es obligatorio.",
+        "toastSuccess": "Viaje creado con éxito.",
+        "emptyTitle": "Ningún viaje encontrado",
+        "emptyDescription": "Cree el primer viaje para comenzar.",
+        "emptyAction": "Nuevo viaje",
+        "openModal": "Abrir modal",
+        "openConfirm": "Confirmación",
+        "openDrawer": "Abrir drawer",
+        "showToast": "Mostrar toast",
+        "modalTitle": "Modal de ejemplo",
+        "modalDescription": "Patrón visual para diálogos.",
+        "confirmTitle": "¿Cancelar viaje?",
+        "confirmDescription": "Esta acción registrará un evento de auditoría.",
+        "confirmAction": "Cancelar viaje",
+        "drawerTitle": "Detalle rápido",
+        "drawerDescription": "Panel lateral operacional.",
+        "drawerBody": "Contenido del drawer con timeline o filtros.",
+        "close": "Cerrar"
+      }
+    },
+    "nav": {
+      "overview": "Resumen",
+      "users": "Usuarios",
+      "roles": "Roles",
+      "groups": "Grupos",
+      "permissions": "Permisos",
+      "audit": "Auditoría"
+    },
+    "overview": {
+      "eyebrow": "Command Center",
+      "title": "Panel administrativo",
+      "welcome": "Bienvenido, {name}. Gestione usuarios, roles y permisos del tenant.",
+      "stats": {
+        "permissions": "Permisos",
+        "roles": "Roles",
+        "tenant": "Tenant"
+      },
+      "quickLinks": "Acceso rápido",
+      "links": {
+        "users": "Usuarios",
+        "roles": "Roles",
+        "groups": "Grupos",
+        "permissions": "Permisos",
+        "audit": "Auditoría"
+      }
+    },
+    "users": {
+      "title": "Usuarios",
+      "subtitle": "Equipo con acceso a la plataforma en este tenant.",
+      "breadcrumbRoot": "Administración",
+      "breadcrumbSection": "Usuarios",
+      "empty": "No se encontraron usuarios.",
+      "emptyDescription": "Invite miembros del equipo a la plataforma.",
+      "searchPlaceholder": "Buscar por nombre o correo...",
+      "error": "No se pudieron cargar usuarios.",
+      "comingSoon": "Creación, invitación y edición de usuarios próximamente.",
+      "actions": { "export": "Exportar", "invite": "Invitar usuario" },
+      "columns": {
+        "name": "Nombre",
+        "email": "Correo",
+        "status": "Estado",
+        "lastLogin": "Último acceso"
+      }
+    },
+    "roles": {
+      "title": "Roles",
+      "subtitle": "Conjuntos de permisos asignables a usuarios y grupos.",
+      "breadcrumbRoot": "Administración",
+      "empty": "No se encontraron roles.",
+      "emptyDescription": "Cree roles para organizar permisos del equipo.",
+      "error": "No se pudieron cargar roles.",
+      "yes": "Sí",
+      "no": "No",
+      "columns": {
+        "name": "Nombre",
+        "slug": "Slug",
+        "permissions": "Permisos",
+        "system": "Sistema"
+      }
+    },
+    "groups": {
+      "title": "Grupos",
+      "subtitle": "Agrupe usuarios y vincule roles por área.",
+      "breadcrumbRoot": "Administración",
+      "empty": "No se encontraron grupos.",
+      "emptyDescription": "Organice usuarios en grupos por área o función.",
+      "error": "No se pudieron cargar grupos.",
+      "columns": {
+        "name": "Nombre",
+        "slug": "Slug",
+        "roles": "Roles"
+      }
+    },
+    "permissions": {
+      "title": "Permisos",
+      "subtitle": "Catálogo global de permisos `resource.action`.",
+      "breadcrumbRoot": "Administración",
+      "empty": "No se encontraron permisos.",
+      "emptyDescription": "El catálogo de permisos aparecerá aquí.",
+      "error": "No se pudieron cargar permisos.",
+      "columns": {
+        "key": "Clave",
+        "module": "Módulo",
+        "description": "Descripción"
+      }
+    },
+    "audit": {
+      "title": "Auditoría",
+      "subtitle": "Eventos recientes de seguridad y acceso.",
+      "breadcrumbRoot": "Administración",
+      "empty": "No se encontraron registros.",
+      "emptyDescription": "Los eventos de auditoría se listarán aquí.",
+      "error": "No se pudieron cargar registros de auditoría.",
+      "columns": {
+        "when": "Cuándo",
+        "action": "Acción",
+        "user": "Usuario",
+        "ip": "IP"
+      }
     }
   }
 }

@@ -319,7 +319,272 @@
     "errors": {
       "email": "Enter your work email.",
       "password": "Enter your password.",
-      "emailInvalid": "Enter a valid email."
+      "emailInvalid": "Enter a valid email.",
+      "invalidCredentials": "Invalid credentials.",
+      "generic": "Could not sign in. Please try again."
+    }
+  },
+  "app": {
+    "metadata": {
+      "title": "Command Center | Nexum Tower",
+      "description": "Authenticated Nexum Tower area."
+    },
+    "eyebrow": "Command Center",
+    "title": "Nexum Tower Command Center",
+    "welcome": "Welcome, {name}",
+    "tenant": "Company: {name}",
+    "permissionsCount": "Loaded permissions: {count}",
+    "logout": "Sign out",
+    "backLanding": "Back to landing"
+  },
+  "accessDenied": {
+    "metadata": {
+      "title": "Access denied | Nexum Tower",
+      "description": "You do not have permission to access this area."
+    },
+    "title": "Access denied",
+    "description": "You do not have permission to access this area of the platform.",
+    "backToApp": "Back to Command Center",
+    "logout": "Sign out"
+  },
+  "admin": {
+    "sidebar": {
+      "comingSoon": "Soon",
+      "groups": {
+        "operational": "Operational",
+        "management": "Management",
+        "intelligence": "Intelligence",
+        "administration": "Administration",
+        "configuration": "Settings"
+      },
+      "items": {
+        "commandCenter": "Command Center",
+        "controlTower": "Control Tower",
+        "trips": "Trips",
+        "loads": "Loads",
+        "incidents": "Incidents",
+        "operationalMap": "Operational Map",
+        "clients": "Clients",
+        "fleet": "Fleet",
+        "drivers": "Drivers",
+        "vehicles": "Vehicles",
+        "routes": "Routes & Points",
+        "proofs": "Proofs",
+        "costs": "Costs & Margin",
+        "reports": "Reports",
+        "nexumAi": "Nexum AI",
+        "indicators": "Indicators",
+        "users": "Users",
+        "groups": "Groups",
+        "roles": "Roles",
+        "permissions": "Permissions",
+        "settings": "Settings",
+        "features": "Feature Flags",
+        "parameters": "Parameters",
+        "sessions": "Sessions",
+        "securityConsole": "Security Console",
+        "audit": "Audit"
+      }
+    },
+    "table": {
+      "showing": "Showing {start}–{end} of {total} results",
+      "rowsPerPage": "Rows per page",
+      "previous": "Previous",
+      "next": "Next",
+      "first": "First page",
+      "last": "Last page",
+      "pagination": "Pagination"
+    },
+    "topbar": {
+      "openMenu": "Open menu",
+      "searchPlaceholder": "Search trips, clients, incidents or documents...",
+      "searchPlaceholderShort": "Search platform...",
+      "operationOnline": "Operation online",
+      "operationDetail": "{count} trips monitored",
+      "nexumAi": "Nexum AI",
+      "notifications": "Notifications"
+    },
+    "commandCenter": {
+      "breadcrumbRoot": "Operational",
+      "breadcrumbCurrent": "Command Center",
+      "title": "Command Center",
+      "description": "Consolidated real-time view of logistics operations — trips, risks, incidents and KPIs.",
+      "liveBadge": "Live",
+      "actions": { "filters": "Filters", "export": "Export", "newTrip": "New trip" },
+      "kpis": {
+        "tripsInProgress": { "label": "Trips in progress", "change": "+12.5% today" },
+        "onTime": { "label": "On-time deliveries", "change": "+2.1% vs yesterday" },
+        "incidents": { "label": "Open incidents", "change": "3 critical" },
+        "margin": { "label": "Operating margin", "change": "+0.8% this month" }
+      },
+      "recentTrips": {
+        "title": "Recent trips",
+        "description": "Demonstrative operational monitoring",
+        "viewAll": "View all",
+        "columns": {
+          "trip": "Trip",
+          "client": "Client",
+          "route": "Route",
+          "status": "Status",
+          "risk": "Risk",
+          "eta": "ETA"
+        }
+      },
+      "riskCard": {
+        "title": "Average Risk Score",
+        "badge": "Attention",
+        "description": "Moderate deviations in the last 4h"
+      },
+      "criticalCard": {
+        "title": "Critical incidents",
+        "description": "Require immediate tower action",
+        "item1": "Critical unloading delay",
+        "item2": "Unauthorized route deviation"
+      },
+      "activityCard": {
+        "title": "Operational activity",
+        "item1": "Proof validated — NX-2047",
+        "item2": "Trip NX-2048 left the yard",
+        "item3": "Incident opened — NX-2050"
+      }
+    },
+    "designSystem": {
+      "breadcrumbRoot": "Platform",
+      "breadcrumbCurrent": "Design System",
+      "title": "Nexum Design System",
+      "description": "Visual reference for internal platform components.",
+      "tabs": { "overview": "Overview", "forms": "Forms", "feedback": "Feedback" },
+      "sections": { "buttons": "Buttons", "badges": "Badges & status", "skeleton": "Skeleton" },
+      "samples": {
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "outline": "Outline",
+        "ghost": "Ghost",
+        "danger": "Danger",
+        "loading": "Loading",
+        "interactiveCard": "Interactive card",
+        "email": "Email",
+        "status": "Status",
+        "errorField": "Field with error",
+        "errorMessage": "This field is required.",
+        "toastSuccess": "Trip created successfully.",
+        "emptyTitle": "No trips found",
+        "emptyDescription": "Create the first trip to get started.",
+        "emptyAction": "New trip",
+        "openModal": "Open modal",
+        "openConfirm": "Confirmation",
+        "openDrawer": "Open drawer",
+        "showToast": "Show toast",
+        "modalTitle": "Sample modal",
+        "modalDescription": "Visual pattern for platform dialogs.",
+        "confirmTitle": "Cancel trip?",
+        "confirmDescription": "This action will log an operational audit event.",
+        "confirmAction": "Cancel trip",
+        "drawerTitle": "Quick detail",
+        "drawerDescription": "Side panel for operational flows.",
+        "drawerBody": "Scrollable drawer content with timeline, filters or quick actions.",
+        "close": "Close"
+      }
+    },
+    "nav": {
+      "overview": "Overview",
+      "users": "Users",
+      "roles": "Roles",
+      "groups": "Groups",
+      "permissions": "Permissions",
+      "audit": "Audit"
+    },
+    "overview": {
+      "eyebrow": "Command Center",
+      "title": "Admin dashboard",
+      "welcome": "Welcome, {name}. Manage users, roles and tenant permissions.",
+      "stats": {
+        "permissions": "Permissions",
+        "roles": "Roles",
+        "tenant": "Tenant"
+      },
+      "quickLinks": "Quick access",
+      "links": {
+        "users": "Users",
+        "roles": "Roles",
+        "groups": "Groups",
+        "permissions": "Permissions",
+        "audit": "Audit"
+      }
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Team members with access to this tenant.",
+      "breadcrumbRoot": "Administration",
+      "breadcrumbSection": "Users",
+      "empty": "No users found.",
+      "emptyDescription": "Invite team members to access the platform.",
+      "searchPlaceholder": "Search by name or email...",
+      "error": "Could not load users.",
+      "comingSoon": "Create, invite and edit users coming soon.",
+      "actions": { "export": "Export", "invite": "Invite user" },
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "status": "Status",
+        "lastLogin": "Last login"
+      }
+    },
+    "roles": {
+      "title": "Roles",
+      "subtitle": "Permission sets assignable to users and groups.",
+      "breadcrumbRoot": "Administration",
+      "empty": "No roles found.",
+      "emptyDescription": "Create roles to organize team permissions.",
+      "error": "Could not load roles.",
+      "yes": "Yes",
+      "no": "No",
+      "columns": {
+        "name": "Name",
+        "slug": "Slug",
+        "permissions": "Permissions",
+        "system": "System"
+      }
+    },
+    "groups": {
+      "title": "Groups",
+      "subtitle": "Group users and link roles by area.",
+      "breadcrumbRoot": "Administration",
+      "empty": "No groups found.",
+      "emptyDescription": "Organize users into groups by area or function.",
+      "error": "Could not load groups.",
+      "columns": {
+        "name": "Name",
+        "slug": "Slug",
+        "roles": "Roles"
+      }
+    },
+    "permissions": {
+      "title": "Permissions",
+      "subtitle": "Global catalog of `resource.action` permissions.",
+      "breadcrumbRoot": "Administration",
+      "empty": "No permissions found.",
+      "emptyDescription": "The permissions catalog will appear here.",
+      "error": "Could not load permissions.",
+      "columns": {
+        "key": "Key",
+        "module": "Module",
+        "description": "Description"
+      }
+    },
+    "audit": {
+      "title": "Audit",
+      "subtitle": "Recent security and access events.",
+      "breadcrumbRoot": "Administration",
+      "empty": "No records found.",
+      "emptyDescription": "Audit events will be listed here.",
+      "error": "Could not load audit logs.",
+      "columns": {
+        "when": "When",
+        "action": "Action",
+        "user": "User",
+        "ip": "IP"
+      }
     }
   }
 }

@@ -113,11 +113,64 @@ pnpm format     # Formatar com Prettier
 pnpm db:studio  # Abrir Prisma Studio
 ```
 
+## Autenticação (dev)
+
+Após migrations e seed:
+
+```txt
+Admin:  admin@nexumtower.local / admin123
+Demais perfis de teste: *@nexumtower.local / test123
+```
+
+Ver tabela completa em [Autenticação](./docs/AUTHENTICATION.md).
+
+Configure JWT no `.env` (ver `.env.example`).
+
+```bash
+pnpm db:migrate
+pnpm db:seed
+pnpm dev
+```
+
+Login: http://localhost:3000/pt/login → redireciona para `/app`
+
+O frontend chama a API via proxy same-origin (`/api/*` → `localhost:3333`) para cookies httpOnly funcionarem no navegador.
+
+## Problemas comuns (dev)
+
+**401 no login ou sessão não persiste**
+- Reinicie o dev server após mudar `.env` ou `next.config.ts`
+- Limpe cookies antigos de `localhost:3333` no navegador (DevTools → Application → Cookies)
+
+**Erro React “development server / production client”**
+- Cache `.next` misturado após `pnpm build`. Rode:
+
+```bash
+pnpm dev:web:clean
+```
+
+- Faça hard refresh no navegador (Ctrl+Shift+R)
+
+Documentação:
+
+- **[Security Guardrails](./docs/SECURITY-GUARDRAILS.md) — leitura obrigatória antes de mexer na API/dados**
+- [Security Checklist](./docs/SECURITY-CHECKLIST.md)
+- [Autenticação](./docs/AUTHENTICATION.md)
+- [Design System (plataforma interna)](./docs/DESIGN-SYSTEM.md)
+- [RBAC](./docs/RBAC.md)
+- [Notas de segurança](./docs/SECURITY-NOTES.md)
+
 ## Documentação adicional
 
+- [Padrões de API](./docs/API-STANDARDS.md)
+- [Auditoria](./docs/AUDIT.md)
+- [Parâmetros por tenant (Settings)](./docs/SETTINGS.md)
+- [Feature Flags](./docs/FEATURE-FLAGS.md)
+- [Row Level Security (RLS)](./docs/RLS.md)
 - [Arquitetura](./docs/ARCHITECTURE.md)
 - [Setup Windows](./docs/SETUP-WINDOWS.md)
 - [Internacionalização (i18n)](./docs/I18N.md)
+- [Status atual](./docs/STATUS-ATUAL.md)
 - [Roadmap](./docs/ROADMAP.md)
 
 ## Licença

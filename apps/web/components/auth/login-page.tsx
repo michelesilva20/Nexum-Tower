@@ -2,13 +2,18 @@
 
 import { LoginBackground } from "@/components/auth/login-background";
 import { LoginForm } from "@/components/auth/login-form";
-import { LoginVisualPanel } from "@/components/auth/login-visual-panel";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { SectionBadge } from "@/components/landing/ui/section-badge";
 import { NexumLogo } from "@/components/landing/ui/nexum-logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link } from "@/i18n/navigation";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
+
+const LoginVisualPanel = dynamic(
+  () => import("@/components/auth/login-visual-panel").then((m) => ({ default: m.LoginVisualPanel })),
+  { ssr: false },
+);
 
 export function LoginPage() {
   const t = useTranslations("login.visual");
@@ -23,6 +28,7 @@ export function LoginPage() {
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/"
+            prefetch
             className="hidden text-sm text-nexum-text-muted transition-colors hover:text-nexum-text sm:inline"
           >
             ← {tForm("backHome")}

@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
-    "dev:clean": "pnpm clean && next dev --port 3000",
+    "dev": "next dev --turbopack --port 3000",
+    "dev:clean": "pnpm clean && next dev --turbopack --port 3000",
     "dev:turbo": "next dev --turbopack --port 3000",
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@nexum-tower/shared": "workspace:*",

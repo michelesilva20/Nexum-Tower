@@ -1,21 +1,57 @@
-import { AiSection } from "@/components/landing/ai-section";
-import { AudienceSection } from "@/components/landing/audience-section";
-import { BenefitsSection } from "@/components/landing/benefits-section";
-import { DashboardPreviewSection } from "@/components/landing/dashboard-preview-section";
-import { FaqSection } from "@/components/landing/faq-section";
-import { FinalCtaSection } from "@/components/landing/final-cta-section";
 import { HeroSection } from "@/components/landing/hero-section";
-import { HowItWorksSection } from "@/components/landing/how-it-works-section";
-import { IntegrationsSection } from "@/components/landing/integrations-section";
 import { LandingFooter } from "@/components/landing/landing-footer";
 import { LandingHeader } from "@/components/landing/landing-header";
-import { ModulesSection } from "@/components/landing/modules-section";
-import { OperationalMapSection } from "@/components/landing/operational-map-section";
-import { PainPointsSection } from "@/components/landing/pain-points-section";
-import { RiskScoreSection } from "@/components/landing/risk-score-section";
-import { SecuritySection } from "@/components/landing/security-section";
-import { SolutionSection } from "@/components/landing/solution-section";
-import { RouteLines } from "@/components/landing/ui/route-lines";
+import dynamic from "next/dynamic";
+
+const PainPointsSection = dynamic(() =>
+  import("@/components/landing/pain-points-section").then((m) => ({ default: m.PainPointsSection })),
+);
+const RouteLines = dynamic(() =>
+  import("@/components/landing/ui/route-lines").then((m) => ({ default: m.RouteLines })),
+);
+const SolutionSection = dynamic(() =>
+  import("@/components/landing/solution-section").then((m) => ({ default: m.SolutionSection })),
+);
+const ModulesSection = dynamic(() =>
+  import("@/components/landing/modules-section").then((m) => ({ default: m.ModulesSection })),
+);
+const DashboardPreviewSection = dynamic(() =>
+  import("@/components/landing/dashboard-preview-section").then((m) => ({
+    default: m.DashboardPreviewSection,
+  })),
+);
+const OperationalMapSection = dynamic(() =>
+  import("@/components/landing/operational-map-section").then((m) => ({
+    default: m.OperationalMapSection,
+  })),
+);
+const RiskScoreSection = dynamic(() =>
+  import("@/components/landing/risk-score-section").then((m) => ({ default: m.RiskScoreSection })),
+);
+const AiSection = dynamic(() =>
+  import("@/components/landing/ai-section").then((m) => ({ default: m.AiSection })),
+);
+const AudienceSection = dynamic(() =>
+  import("@/components/landing/audience-section").then((m) => ({ default: m.AudienceSection })),
+);
+const BenefitsSection = dynamic(() =>
+  import("@/components/landing/benefits-section").then((m) => ({ default: m.BenefitsSection })),
+);
+const HowItWorksSection = dynamic(() =>
+  import("@/components/landing/how-it-works-section").then((m) => ({ default: m.HowItWorksSection })),
+);
+const SecuritySection = dynamic(() =>
+  import("@/components/landing/security-section").then((m) => ({ default: m.SecuritySection })),
+);
+const IntegrationsSection = dynamic(() =>
+  import("@/components/landing/integrations-section").then((m) => ({ default: m.IntegrationsSection })),
+);
+const FaqSection = dynamic(() =>
+  import("@/components/landing/faq-section").then((m) => ({ default: m.FaqSection })),
+);
+const FinalCtaSection = dynamic(() =>
+  import("@/components/landing/final-cta-section").then((m) => ({ default: m.FinalCtaSection })),
+);
 
 export function LandingPage() {
   return (

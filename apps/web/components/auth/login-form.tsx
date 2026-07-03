@@ -3,6 +3,8 @@
 import { PasswordInput } from "@/components/auth/password-input";
 import { GlassCard } from "@/components/landing/ui/glass-card";
 import { NexumLogo } from "@/components/landing/ui/nexum-logo";
+import { ApiError } from "@/lib/api";
+import { useAuth } from "@/providers/auth-provider";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@nexum-tower/ui";
 import { ArrowRight, Loader2, Shield } from "lucide-react";
@@ -12,11 +14,13 @@ import { FormEvent, useState } from "react";
 type FormErrors = {
   email?: string;
   password?: string;
+  form?: string;
 };
 
 export function LoginForm() {
   const t = useTranslations("login.form");
   const tErrors = useTranslations("login.errors");
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,14 +36,26 @@ export function LoginForm() {
     return next;
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const next = validate();
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
     setLoading(true);
-    setTimeout(() => setLoading(false), 1800);
+    setErrors({});
+
+    try {
+      await login(email.trim(), password);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        setErrors({ form: tErrors("invalidCredentials") });
+      } else {
+        setErrors({ form: tErrors("generic") });
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -57,6 +73,11 @@ export function LoginForm() {
         <p className="mt-1.5 text-sm leading-relaxed text-nexum-text-muted">{t("subtitle")}</p>
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-4" noValidate>
+          {errors.form && (
+            <p className="rounded-xl border border-nexum-danger/30 bg-nexum-danger/5 px-3 py-2 text-sm text-nexum-danger" role="alert">
+              {errors.form}
+            </p>
+          )}
           <div>
             <label htmlFor="email" className="mb-1 block text-sm font-medium text-nexum-text">
               {t("email")}

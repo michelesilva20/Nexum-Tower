@@ -4,7 +4,7 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GradientButton } from "@/components/landing/ui/gradient-button";
 import { NexumLogo } from "@/components/landing/ui/nexum-logo";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { cn } from "@nexum-tower/ui";
 import { Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -20,8 +20,13 @@ const navItems = [
 
 export function LandingHeader() {
   const t = useTranslations("landing.header");
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    router.prefetch("/login");
+  }, [router]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -69,6 +74,7 @@ export function LandingHeader() {
 
           <Link
             href="/login"
+            prefetch
             className="mr-4 whitespace-nowrap text-sm font-medium text-nexum-text-muted transition-colors hover:text-nexum-text"
           >
             {t("login")}
@@ -118,6 +124,7 @@ export function LandingHeader() {
           <div className="mt-4 space-y-3 border-t border-nexum-border/40 pt-4">
             <Link
               href="/login"
+              prefetch
               onClick={() => setMobileOpen(false)}
               className="block px-3 text-sm font-medium text-nexum-text-muted"
             >

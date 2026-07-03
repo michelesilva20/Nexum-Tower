@@ -1,0 +1,62 @@
+---
+description: Regras obrigatórias para evoluir o Nexum Tower mantendo camadas de segurança, multi-tenancy, RBAC, RLS e governança.
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Nexum Tower Core Platform Rules
+
+Antes de criar ou alterar qualquer feature, consulte:
+
+- docs/CURSOR-CORE-PLATFORM-RULES.md
+- docs/SECURITY-GUARDRAILS.md
+- docs/SECURITY-CHECKLIST.md
+
+Regras obrigatórias:
+
+1. Nunca aceitar tenantId do frontend para operações sensíveis.
+2. Toda query multi-tenant deve filtrar por currentUser.tenantId.
+3. Todo endpoint protegido deve usar autenticação e permissões.
+4. Toda permissão deve seguir resource.action.
+5. Toda ação sensível deve gerar AuditLog.
+6. Toda tabela multi-tenant deve avaliar RLS.
+7. Todo objeto acessado por ID deve validar ownership.
+8. Todo DTO deve bloquear campos sensíveis.
+9. Toda lista deve ter paginação/filtros quando aplicável.
+10. Todo menu/botão sensível no frontend deve usar PermissionGate.
+11. Toda feature opcional deve avaliar FeatureFlag.
+12. Toda regra configurável por tenant deve avaliar TenantSetting.
+13. Toda implementação relevante deve atualizar documentação.
+14. Não iniciar módulo operacional sem passar pelo SECURITY-CHECKLIST.
+15. Não deixar segurança para depois.
+
+Anti-patterns proibidos:
+
+- endpoint sem guard
+- query sem tenantId
+- aceitar tenantId do body
+- retornar passwordHash
+- salvar token puro
+- alterar permissão sem auditoria
+- criar tabela multi-tenant sem avaliar RLS
+- criar tela sem loading/empty/error state
+- criar módulo sem testes mínimos
+
+## Async / DLQ
+
+Toda feature assíncrona crítica deve avaliar:
+
+- queue
+- retry
+- backoff
+- DLQ
+- outbox
+- idempotency
+- audit
+- tenantId
+- safe payload
+- observability
+- reprocessing
+
+Não criar job crítico sem documentação e checklist (docs/ASYNC-JOBS.md, docs/DLQ.md).

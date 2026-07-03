@@ -15,3 +15,4 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export * from "@prisma/client";
+export { runWithTenant, TENANT_CONTEXT_KEY } from "./tenant-context";

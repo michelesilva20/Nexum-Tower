@@ -15,7 +15,9 @@
   },
   "devDependencies": {
     "@nexum-tower/config": "workspace:*",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.15.29",
+    "bcrypt": "^5.1.1",
     "eslint": "^9.28.0",
     "prisma": "^6.9.0",
     "tsx": "^4.19.4",

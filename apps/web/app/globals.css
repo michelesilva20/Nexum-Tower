@@ -20,6 +20,11 @@
   --color-nexum-risk: var(--nexum-risk);
   --color-nexum-danger: var(--nexum-danger);
   --color-nexum-neutral: var(--nexum-neutral);
+  --color-nexum-success-bg: var(--nexum-success-bg);
+  --color-nexum-warning-bg: var(--nexum-warning-bg);
+  --color-nexum-risk-bg: var(--nexum-risk-bg);
+  --color-nexum-danger-bg: var(--nexum-danger-bg);
+  --color-nexum-info-bg: var(--nexum-info-bg);
 
   --font-sans: var(--font-outfit);
   --font-mono: var(--font-jetbrains-mono);
@@ -44,6 +49,15 @@
   --nexum-risk: #ea580c;
   --nexum-danger: #dc2626;
   --nexum-neutral: #64748b;
+  --nexum-success-bg: rgba(22, 163, 74, 0.12);
+  --nexum-warning-bg: rgba(202, 138, 4, 0.12);
+  --nexum-risk-bg: rgba(234, 88, 12, 0.12);
+  --nexum-danger-bg: rgba(220, 38, 38, 0.12);
+  --nexum-info-bg: rgba(37, 99, 235, 0.12);
+  --nexum-glass: color-mix(in srgb, var(--nexum-surface) 72%, transparent);
+  --nexum-glass-border: color-mix(in srgb, var(--nexum-border) 80%, transparent);
+  --nexum-card-shadow: 0 8px 32px rgba(7, 17, 31, 0.08);
+  --nexum-focus-ring: 0 0 0 3px color-mix(in srgb, var(--nexum-primary) 35%, transparent);
   --nexum-grid-line: rgba(148, 163, 184, 0.35);
   --nexum-glow-primary: rgba(8, 145, 178, 0.1);
   --nexum-glow-secondary: rgba(5, 150, 105, 0.08);
@@ -70,6 +84,15 @@
   --nexum-risk: #fb923c;
   --nexum-danger: #ef4444;
   --nexum-neutral: #64748b;
+  --nexum-success-bg: rgba(34, 197, 94, 0.12);
+  --nexum-warning-bg: rgba(250, 204, 21, 0.12);
+  --nexum-risk-bg: rgba(251, 146, 60, 0.12);
+  --nexum-danger-bg: rgba(239, 68, 68, 0.12);
+  --nexum-info-bg: rgba(59, 130, 246, 0.12);
+  --nexum-glass: color-mix(in srgb, var(--nexum-surface) 72%, transparent);
+  --nexum-glass-border: color-mix(in srgb, var(--nexum-border) 80%, transparent);
+  --nexum-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+  --nexum-focus-ring: 0 0 0 3px rgba(34, 211, 238, 0.25);
   --nexum-grid-line: rgba(29, 58, 82, 0.35);
   --nexum-glow-primary: rgba(34, 211, 238, 0.12);
   --nexum-glow-secondary: rgba(52, 211, 153, 0.1);
@@ -134,10 +157,10 @@ body {
 }
 
 .glass {
-  background: color-mix(in srgb, var(--nexum-surface) 72%, transparent);
+  background: var(--nexum-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid color-mix(in srgb, var(--nexum-border) 80%, transparent);
+  border: 1px solid var(--nexum-glass-border);
 }
 
 .glass-strong {
@@ -293,4 +316,86 @@ body {
   .btn-gradient:hover {
     animation: none;
   }
+}
+
+/* App shell — control tower backdrop */
+.app-shell-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, var(--nexum-glow-primary), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, var(--nexum-glow-secondary), transparent 45%),
+    linear-gradient(180deg, var(--nexum-bg) 0%, var(--nexum-bg-soft) 100%);
+}
+
+.nexum-card {
+  background: color-mix(in srgb, var(--nexum-surface) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--nexum-border) 90%, transparent);
+  border-radius: 20px;
+  box-shadow: var(--nexum-card-shadow);
+}
+
+.nexum-sidebar-active {
+  background: linear-gradient(
+    90deg,
+    rgba(34, 211, 238, 0.12) 0%,
+    rgba(52, 211, 153, 0.08) 100%
+  );
+  border-left: 2px solid var(--nexum-primary);
+}
+
+.nexum-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--nexum-bg-soft) 0%,
+    var(--nexum-surface-hover) 50%,
+    var(--nexum-bg-soft) 100%
+  );
+  background-size: 200% 100%;
+  animation: nexum-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes nexum-shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nexum-skeleton {
+    animation: none;
+  }
+}
+
+/* Sidebar scroll — discreto */
+.app-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--nexum-border) 80%, transparent) transparent;
+}
+
+.app-sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--nexum-border) 80%, transparent);
+  border-radius: 999px;
+}
+
+.app-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--nexum-border);
+}
+
+/* Data table */
+.nexum-table {
+  backdrop-filter: blur(8px);
+}
+
+.nexum-table-grid tbody tr:hover td:first-child {
+  box-shadow: inset 3px 0 0 0 color-mix(in srgb, var(--nexum-primary) 55%, transparent);
 }
