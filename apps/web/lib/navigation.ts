@@ -1,3 +1,4 @@
+import { permissionMatches } from "@nexum-tower/shared";
 import type { LucideIcon } from "lucide-react";
 import {
   Activity,
@@ -167,10 +168,12 @@ export function getVisibleNavigation(userPermissions?: string[]): AppNavGroup[] 
         if (!item.requiredPermission && !item.requiredAnyPermission) return true;
         if (!userPermissions) return false;
         if (item.requiredPermission) {
-          return userPermissions.includes(item.requiredPermission);
+          return permissionMatches(userPermissions, item.requiredPermission);
         }
         if (item.requiredAnyPermission) {
-          return item.requiredAnyPermission.some((p) => userPermissions.includes(p));
+          return item.requiredAnyPermission.some((p) =>
+            permissionMatches(userPermissions, p),
+          );
         }
         return true;
       }),

@@ -27,7 +27,7 @@ export function AppTopbar({ onMenuClick }: AppTopbarProps) {
       </button>
 
       <div className="lg:hidden">
-        <NexumLogo showText={false} />
+        <NexumLogo showText={false} size="md" />
       </div>
 
       <div className="relative hidden min-w-0 flex-1 lg:block lg:max-w-md xl:max-w-lg">

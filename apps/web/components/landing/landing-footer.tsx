@@ -21,7 +21,7 @@ export async function LandingFooter() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="lg:col-span-1">
-            <NexumLogo />
+            <NexumLogo size="lg" />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-nexum-text-soft">
               {t("tagline")}
             </p>

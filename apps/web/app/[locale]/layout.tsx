@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { routing } from "@/i18n/routing";
+import { BRAND_LOGO_PATH, BRAND_NAME } from "@/lib/brand";
 import { localeHtmlLang, type Locale } from "@nexum-tower/shared/i18n";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
@@ -38,10 +39,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t("title"),
     description: t("description"),
     keywords: t("keywords"),
+    icons: {
+      icon: [{ url: BRAND_LOGO_PATH, type: "image/png" }],
+      apple: [{ url: BRAND_LOGO_PATH, type: "image/png" }],
+    },
     openGraph: {
       title: t("title"),
       description: t("description"),
       type: "website",
+      images: [{ url: BRAND_LOGO_PATH, alt: BRAND_NAME }],
     },
   };
 }

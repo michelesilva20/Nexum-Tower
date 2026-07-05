@@ -22,12 +22,12 @@ export function AppSidebar({ mobileOpen, onMobileClose }: AppSidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
-  const visibleNavigation = getVisibleNavigation();
+  const visibleNavigation = getVisibleNavigation(user?.permissions);
 
   const content = (
     <>
       <div className="shrink-0 border-b border-nexum-border/50 px-4 py-3.5">
-        <NexumLogo />
+        <NexumLogo size="lg" />
       </div>
 
       <nav

@@ -24,7 +24,7 @@ export function LoginPage() {
       <LoginBackground />
 
       <header className="relative z-20 flex shrink-0 items-center justify-between border-b border-nexum-border/50 bg-nexum-bg/80 px-5 py-3.5 backdrop-blur-xl sm:px-8">
-        <NexumLogo />
+        <NexumLogo size="lg" />
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/"

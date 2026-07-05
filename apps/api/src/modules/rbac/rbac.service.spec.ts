@@ -2,8 +2,10 @@ import { RbacService } from "./rbac.service";
 import type { PrismaService } from "../../prisma/prisma.service";
 
 type UserShape = {
-  userRoles: { role: { permissions: { permission: { key: string } }[] } }[];
-  memberships: { group: { roles: { role: { permissions: { permission: { key: string } }[] } }[] } }[];
+  userRoles: { role: { slug?: string; permissions: { permission: { key: string } }[] } }[];
+  memberships: {
+    group: { roles: { role: { slug?: string; permissions: { permission: { key: string } }[] } }[] };
+  }[];
   overrides: { effect: "ALLOW" | "DENY"; permission: { key: string } }[];
 };
 
@@ -69,6 +71,15 @@ describe("RbacService.getUserPermissions", () => {
   it("retorna vazio quando usuário não existe", async () => {
     const service = makeService(null);
     await expect(service.getUserPermissions("u1", "t1")).resolves.toEqual([]);
+  });
+
+  it("owner recebe wildcard total independente das permissões persistidas", async () => {
+    const service = makeService(
+      buildUser({
+        userRoles: [{ role: { slug: "owner", permissions: [permission("users.read")] } }],
+      }),
+    );
+    await expect(service.getUserPermissions("u1", "t1")).resolves.toEqual(["*"]);
   });
 });
 

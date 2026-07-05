@@ -64,7 +64,7 @@ export function LoginForm() {
 
       <div className="p-6 sm:p-7">
         <div className="hidden lg:block">
-          <NexumLogo showText={false} />
+          <NexumLogo showText={false} size="lg" />
         </div>
 
         <h1 className="mt-0 text-xl font-bold tracking-tight text-nexum-text lg:mt-4 lg:text-2xl">

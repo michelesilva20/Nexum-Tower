@@ -42,6 +42,16 @@ export class RbacService {
 
     if (!user) return [];
 
+    const hasOwnerRole =
+      user.userRoles.some((ur) => ur.role.slug === "owner") ||
+      user.memberships.some((m) =>
+        m.group.roles.some((gr) => gr.role.slug === "owner"),
+      );
+
+    if (hasOwnerRole) {
+      return ["*"];
+    }
+
     const permissionSet = new Set<string>();
 
     for (const userRole of user.userRoles) {
