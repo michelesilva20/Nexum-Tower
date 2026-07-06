@@ -4,6 +4,7 @@ import {
   Activity,
   BarChart3,
   Brain,
+  Building2,
   ClipboardList,
   FileCheck,
   Flag,
@@ -62,6 +63,17 @@ export const appNavigation: AppNavGroup[] = [
     ],
   },
   {
+    key: "logistics",
+    items: [
+      {
+        key: "customers",
+        href: "/app/logistics/customers",
+        icon: Users,
+        requiredAnyPermission: ["customers.read", "logistics.read"],
+      },
+    ],
+  },
+  {
     key: "management",
     items: [
       { key: "clients", icon: Users, comingSoon: true },
@@ -89,6 +101,12 @@ export const appNavigation: AppNavGroup[] = [
         href: "/app/admin/users",
         icon: Users,
         requiredPermission: "users.read",
+      },
+      {
+        key: "branches",
+        href: "/app/admin/branches",
+        icon: Building2,
+        requiredPermission: "branches.read",
       },
       {
         key: "groups",

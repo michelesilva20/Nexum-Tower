@@ -14,6 +14,8 @@ import { PermissionsModule } from "./modules/permissions/permissions.module";
 import { AuthorizationModule } from "./modules/authorization/authorization.module";
 import { SettingsModule } from "./modules/settings/settings.module";
 import { FeaturesModule } from "./modules/features/features.module";
+import { BranchesModule } from "./modules/branches/branches.module";
+import { CustomersModule } from "./modules/customers/customers.module";
 import { JwtAuthGuard } from "./modules/auth/guards/jwt-auth.guard";
 import { PermissionsGuard } from "./modules/auth/guards/permissions.guard";
 import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
@@ -37,6 +39,8 @@ import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
     PermissionsModule,
     SettingsModule,
     FeaturesModule,
+    BranchesModule,
+    CustomersModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

@@ -1,0 +1,200 @@
+import { apiRequest, ApiError } from "./api";
+
+export type CustomerStatus = "ACTIVE" | "INACTIVE" | "DISABLED";
+export type CustomerType =
+  | "CONTRACTING_CUSTOMER"
+  | "SHIPPER"
+  | "CONSIGNEE"
+  | "SHIPPER_AND_CONSIGNEE"
+  | "BROKER"
+  | "PARTNER"
+  | "OTHER";
+export type CustomerDocumentType = "CNPJ" | "CPF" | "NIF" | "EIN" | "VAT" | "OTHER";
+
+export type CustomerBranchLink = {
+  id: string;
+  branchId: string;
+  isPrimary: boolean;
+  status: CustomerStatus;
+  updatedAt: string;
+  branch: { id: string; code: string; name: string; status: string };
+};
+
+export type CustomerRow = {
+  id: string;
+  tenantId: string;
+  code: string;
+  legalName: string;
+  tradeName: string | null;
+  customerType: CustomerType;
+  documentType: CustomerDocumentType | null;
+  documentNumber: string | null;
+  stateRegistration: string | null;
+  municipalRegistration: string | null;
+  mainContactName: string | null;
+  mainContactRole: string | null;
+  email: string | null;
+  billingEmail: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  website: string | null;
+  billingAddressLine1: string | null;
+  billingAddressLine2: string | null;
+  billingDistrict: string | null;
+  billingCity: string | null;
+  billingState: string | null;
+  billingCountry: string | null;
+  billingZipCode: string | null;
+  status: CustomerStatus;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  disabledAt: string | null;
+  deletedAt: string | null;
+  branches?: CustomerBranchLink[];
+};
+
+type ListPagination = {
+  page: number;
+  perPage: number;
+  total: number;
+  totalPages: number;
+};
+
+function buildQuery(params: Record<string, string | number | undefined | null>): string {
+  const qs = Object.entries(params)
+    .filter(([, v]) => v != null && v !== "")
+    .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)
+    .join("&");
+  return qs ? `?${qs}` : "";
+}
+
+async function apiRequestPaginated<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<{ items: T[]; pagination: ListPagination }> {
+  const base =
+    typeof window !== "undefined"
+      ? "/api"
+      : (process.env.INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333");
+
+  const response = await fetch(`${base}${path}`, {
+    ...options,
+    credentials: "include",
+    headers: { "Content-Type": "application/json", ...options.headers },
+  });
+
+  if (!response.ok) {
+    let message = "Erro na requisição.";
+    try {
+      const body = (await response.json()) as { error?: { message?: string } };
+      if (body.error?.message) message = body.error.message;
+    } catch {
+      // ignore
+    }
+    throw new ApiError(message, response.status);
+  }
+
+  const payload = (await response.json()) as {
+    data: T[];
+    pagination?: ListPagination;
+  };
+
+  return {
+    items: payload.data ?? [],
+    pagination: payload.pagination ?? { page: 1, perPage: 20, total: 0, totalPages: 0 },
+  };
+}
+
+export function listCustomers(params?: {
+  search?: string;
+  status?: CustomerStatus;
+  customerType?: CustomerType;
+  documentType?: CustomerDocumentType;
+  branchId?: string;
+  city?: string;
+  state?: string;
+  page?: number;
+  perPage?: number;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+}) {
+  const qs = buildQuery({
+    search: params?.search,
+    status: params?.status,
+    customerType: params?.customerType,
+    documentType: params?.documentType,
+    branchId: params?.branchId,
+    city: params?.city,
+    state: params?.state,
+    page: params?.page,
+    perPage: params?.perPage,
+    sortBy: params?.sortBy,
+    sortDirection: params?.sortDirection,
+  });
+  return apiRequestPaginated<CustomerRow>(`/logistics/customers${qs}`);
+}
+
+export function getCustomer(id: string) {
+  return apiRequest<CustomerRow>(`/logistics/customers/${id}`);
+}
+
+export function createCustomer(
+  data: Partial<CustomerRow> & {
+    code: string;
+    legalName: string;
+    customerType: CustomerType;
+    branchIds: string[];
+    primaryBranchId?: string;
+  },
+) {
+  return apiRequest<CustomerRow>("/logistics/customers", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateCustomer(id: string, data: Partial<CustomerRow>) {
+  return apiRequest<CustomerRow>(`/logistics/customers/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export function disableCustomer(id: string) {
+  return apiRequest<CustomerRow>(`/logistics/customers/${id}/disable`, { method: "PATCH" });
+}
+
+export function enableCustomer(id: string) {
+  return apiRequest<CustomerRow>(`/logistics/customers/${id}/enable`, { method: "PATCH" });
+}
+
+export function deleteCustomer(id: string) {
+  return apiRequest<{ success: boolean }>(`/logistics/customers/${id}`, { method: "DELETE" });
+}
+
+export function listCustomerBranches(id: string) {
+  return apiRequest<CustomerBranchLink[]>(`/logistics/customers/${id}/branches`);
+}
+
+export function assignCustomerBranches(
+  id: string,
+  data: { branchIds: string[]; primaryBranchId?: string },
+) {
+  return apiRequest<CustomerBranchLink[]>(`/logistics/customers/${id}/branches`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function setCustomerPrimaryBranch(id: string, branchId: string) {
+  return apiRequest<CustomerBranchLink[]>(`/logistics/customers/${id}/branches/${branchId}/primary`, {
+    method: "PATCH",
+  });
+}
+
+export function removeCustomerBranch(id: string, branchId: string) {
+  return apiRequest<CustomerBranchLink[]>(`/logistics/customers/${id}/branches/${branchId}`, {
+    method: "DELETE",
+  });
+}

@@ -1,4 +1,4 @@
-import { apiRequest } from "./api";
+import { apiRequest, ApiError } from "./api";
 
 // ─── Tipos básicos ───────────────────────────────────────────────────────────
 
@@ -376,4 +376,142 @@ export function updateFeature(
     method: "PATCH",
     body: JSON.stringify(data),
   });
+}
+
+// ─── Filiais ─────────────────────────────────────────────────────────────────
+
+export type BranchStatus = "ACTIVE" | "INACTIVE" | "DISABLED";
+
+export type BranchRow = {
+  id: string;
+  code: string;
+  name: string;
+  legalName: string | null;
+  documentType: string | null;
+  documentNumber: string | null;
+  email: string | null;
+  phone: string | null;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  zipCode: string | null;
+  status: BranchStatus;
+  isHeadquarters: boolean;
+  createdAt: string;
+  updatedAt: string;
+  disabledAt: string | null;
+  deletedAt: string | null;
+};
+
+export type BranchUserAccess = {
+  id: string;
+  scope: "MEMBER" | "MANAGER" | "ADMIN";
+  createdAt: string;
+  user: { id: string; name: string; email: string; status: string };
+};
+
+type ListPagination = {
+  page: number;
+  perPage: number;
+  total: number;
+  totalPages: number;
+};
+
+async function apiRequestPaginated<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<{ items: T[]; pagination: ListPagination }> {
+  const base =
+    typeof window !== "undefined"
+      ? "/api"
+      : (process.env.INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333");
+
+  const response = await fetch(`${base}${path}`, {
+    ...options,
+    credentials: "include",
+    headers: { "Content-Type": "application/json", ...options.headers },
+  });
+
+  if (!response.ok) {
+    let message = "Erro na requisição.";
+    try {
+      const body = (await response.json()) as { error?: { message?: string } };
+      if (body.error?.message) message = body.error.message;
+    } catch {
+      // ignore
+    }
+    throw new ApiError(message, response.status);
+  }
+
+  const payload = (await response.json()) as {
+    data: T[];
+    pagination?: ListPagination;
+  };
+
+  return {
+    items: payload.data ?? [],
+    pagination: payload.pagination ?? { page: 1, perPage: 20, total: 0, totalPages: 0 },
+  };
+}
+
+export function fetchBranches(params?: {
+  search?: string;
+  status?: BranchStatus;
+  isHeadquarters?: boolean;
+  page?: number;
+  perPage?: number;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+}) {
+  const qs = buildQuery({
+    search: params?.search,
+    status: params?.status,
+    isHeadquarters: params?.isHeadquarters === undefined ? undefined : String(params.isHeadquarters),
+    page: params?.page,
+    perPage: params?.perPage,
+    sortBy: params?.sortBy,
+    sortDirection: params?.sortDirection,
+  });
+  return apiRequestPaginated<BranchRow>(`/branches${qs}`);
+}
+
+export function fetchBranchById(id: string) {
+  return apiRequest<BranchRow>(`/branches/${id}`);
+}
+
+export function createBranch(data: Partial<BranchRow> & { code: string; name: string }) {
+  return apiRequest<BranchRow>("/branches", { method: "POST", body: JSON.stringify(data) });
+}
+
+export function updateBranch(id: string, data: Partial<BranchRow>) {
+  return apiRequest<BranchRow>(`/branches/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+}
+
+export function disableBranch(id: string) {
+  return apiRequest<BranchRow>(`/branches/${id}/disable`, { method: "PATCH" });
+}
+
+export function enableBranch(id: string) {
+  return apiRequest<BranchRow>(`/branches/${id}/enable`, { method: "PATCH" });
+}
+
+export function deleteBranch(id: string) {
+  return apiRequest<{ success: boolean }>(`/branches/${id}`, { method: "DELETE" });
+}
+
+export function fetchBranchUsers(id: string) {
+  return apiRequest<BranchUserAccess[]>(`/branches/${id}/users`);
+}
+
+export function assignBranchUser(id: string, userId: string, scope?: BranchUserAccess["scope"]) {
+  return apiRequest<BranchUserAccess>(`/branches/${id}/users`, {
+    method: "POST",
+    body: JSON.stringify({ userId, scope }),
+  });
+}
+
+export function removeBranchUser(id: string, userId: string) {
+  return apiRequest<{ success: boolean }>(`/branches/${id}/users/${userId}`, { method: "DELETE" });
 }

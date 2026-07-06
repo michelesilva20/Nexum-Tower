@@ -352,6 +352,7 @@
       "comingSoon": "Em breve",
       "groups": {
         "operational": "Operacional",
+        "logistics": "Logística",
         "management": "Gestão",
         "intelligence": "Inteligência",
         "administration": "Administração",
@@ -365,6 +366,7 @@
         "incidents": "Ocorrências",
         "operationalMap": "Mapa Operacional",
         "clients": "Clientes",
+        "customers": "Clientes",
         "fleet": "Frota",
         "drivers": "Motoristas",
         "vehicles": "Veículos",
@@ -375,6 +377,7 @@
         "nexumAi": "Nexum AI",
         "indicators": "Indicadores",
         "users": "Usuários",
+        "branches": "Filiais",
         "groups": "Grupos",
         "roles": "Papéis",
         "permissions": "Permissões",

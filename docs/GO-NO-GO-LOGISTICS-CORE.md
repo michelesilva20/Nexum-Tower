@@ -41,9 +41,24 @@ Verificar se o Nexum Core Platform está pronto para iniciar a camada operaciona
 
 ## Decisão
 
-### ✅ GO
+### ✅ GO — desenvolvimento de Locations (Fase 1.2)
 
-O Nexum Core Platform está pronto para receber o **Nexum Logistics Core**.
+O módulo **Customers + CustomerBranch** (Fases 1.1 + 1.1.1) está **10/10 para desenvolvimento** após hardening ABAC e E2E.
+
+Documentos: [FASE-1.1-O-QUE-FOI-FEITO.md](./FASE-1.1-O-QUE-FOI-FEITO.md) · [FASE-1.1.1-O-QUE-FOI-FEITO.md](./FASE-1.1.1-O-QUE-FOI-FEITO.md)
+
+### ✅ GO anterior — Filiais (Fases 1.0–1.0.2)
+
+Documento: [FASE-1.0.2-FECHAMENTO.md](./FASE-1.0.2-FECHAMENTO.md)
+
+### ⚠️ NO-GO — produção (até validação RLS runtime)
+
+Antes de deploy em produção:
+
+1. Aplicar scripts SQL de hardening (`03`–`04`)
+2. Configurar `DATABASE_URL` com `nexum_app`
+3. Ativar FORCE RLS
+4. Executar `pnpm security:rls:test`
 
 ---
 
@@ -58,22 +73,24 @@ O Nexum Core Platform está pronto para receber o **Nexum Logistics Core**.
 
 ### Antes de produção (bloqueante para deploy, não para dev de módulos)
 
-1. Aplicar scripts SQL de hardening
+1. Aplicar scripts SQL de hardening (`03-enable-rls-core.sql`, `04-force-rls-core.sql`)
 2. Configurar `DATABASE_URL` com `nexum_app`
 3. Ativar FORCE RLS
-4. Executar `pnpm security:rls:test`
+4. Executar `pnpm security:rls:test` (ou `pnpm security:rls:test:docker`)
+
+Ver [modules/organization/RLS.md](./modules/organization/RLS.md)
 
 ---
 
 ## Próximo passo
 
-Iniciar **Nexum Logistics Core** seguindo [CURSOR-CORE-PLATFORM-RULES.md](./CURSOR-CORE-PLATFORM-RULES.md):
+Iniciar **Locations** (Fase 1.2) seguindo [CURSOR-CORE-PLATFORM-RULES.md](./CURSOR-CORE-PLATFORM-RULES.md) e o molde de Customers:
 
-1. Modelar entidades operacionais no Prisma (com `tenantId`)
+1. Modelar entidade global + vínculo por filial quando aplicável
 2. Criar policies RLS para novas tabelas
-3. Implementar APIs com guards + ABAC + audit
+3. Implementar APIs com guards + ABAC (leitura por filial · mutação global separada) + audit
 4. Adicionar permissões ao seed
-5. Criar telas com PermissionGate
+5. Criar telas com PermissionGate alinhado à API
 
 ---
 

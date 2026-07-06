@@ -68,6 +68,30 @@ CREATE POLICY "TenantFeature_tenant_isolation" ON "TenantFeature"
   USING ("tenantId" = current_setting('app.current_tenant_id', true))
   WITH CHECK ("tenantId" = current_setting('app.current_tenant_id', true));
 
+ALTER TABLE "Branch" ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Branch_tenant_isolation" ON "Branch";
+CREATE POLICY "Branch_tenant_isolation" ON "Branch"
+  USING ("tenantId" = current_setting('app.current_tenant_id', true))
+  WITH CHECK ("tenantId" = current_setting('app.current_tenant_id', true));
+
+ALTER TABLE "UserBranchAccess" ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "UserBranchAccess_tenant_isolation" ON "UserBranchAccess";
+CREATE POLICY "UserBranchAccess_tenant_isolation" ON "UserBranchAccess"
+  USING ("tenantId" = current_setting('app.current_tenant_id', true))
+  WITH CHECK ("tenantId" = current_setting('app.current_tenant_id', true));
+
+ALTER TABLE "Customer" ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Customer_tenant_isolation" ON "Customer";
+CREATE POLICY "Customer_tenant_isolation" ON "Customer"
+  USING ("tenantId" = current_setting('app.current_tenant_id', true))
+  WITH CHECK ("tenantId" = current_setting('app.current_tenant_id', true));
+
+ALTER TABLE "CustomerBranch" ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "CustomerBranch_tenant_isolation" ON "CustomerBranch";
+CREATE POLICY "CustomerBranch_tenant_isolation" ON "CustomerBranch"
+  USING ("tenantId" = current_setting('app.current_tenant_id', true))
+  WITH CHECK ("tenantId" = current_setting('app.current_tenant_id', true));
+
 -- ─── Role (tenantId nullable — papéis de sistema são globais) ──────────────
 
 ALTER TABLE "Role" ENABLE ROW LEVEL SECURITY;

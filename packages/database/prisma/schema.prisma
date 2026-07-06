@@ -14,6 +14,49 @@ enum UserStatus {
   DISABLED
 }
 
+enum BranchStatus {
+  ACTIVE
+  INACTIVE
+  DISABLED
+}
+
+enum UserBranchAccessScope {
+  MEMBER
+  MANAGER
+  ADMIN
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  DISABLED
+}
+
+enum CustomerType {
+  CONTRACTING_CUSTOMER
+  SHIPPER
+  CONSIGNEE
+  SHIPPER_AND_CONSIGNEE
+  BROKER
+  PARTNER
+  OTHER
+}
+
+enum CustomerDocumentType {
+  CNPJ
+  CPF
+  NIF
+  EIN
+  VAT
+  OTHER
+}
+
+enum CustomerBranchStatus {
+  ACTIVE
+  INACTIVE
+  DISABLED
+}
+
 enum PermissionEffect {
   ALLOW
   DENY
@@ -37,6 +80,8 @@ model Tenant {
   users          User[]
   groups         Group[]
   roles          Role[]
+  branches       Branch[]
+  customers      Customer[]
   tenantSettings TenantSetting[]
   tenantFeatures TenantFeature[]
 }
@@ -58,6 +103,7 @@ model User {
   overrides   UserPermissionOverride[]
   sessions    AuthSession[]
   auditLogs   AuditLog[]
+  branchAccess UserBranchAccess[]
 
   @@unique([tenantId, email])
   @@index([tenantId])
@@ -279,4 +325,128 @@ model TenantFeature {
 
   @@unique([tenantId, featureId])
   @@index([tenantId])
+}
+
+model Branch {
+  id             String       @id @default(cuid())
+  tenantId       String
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code           String
+  name           String
+  legalName      String?
+  documentType   String?
+  documentNumber String?
+  email          String?
+  phone          String?
+  addressLine1   String?
+  addressLine2   String?
+  city           String?
+  state          String?
+  country        String?      @default("BR")
+  zipCode        String?
+  status         BranchStatus @default(ACTIVE)
+  isHeadquarters Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  disabledAt     DateTime?
+  deletedAt      DateTime?
+
+  userAccess       UserBranchAccess[]
+  customerBranches CustomerBranch[]
+
+  // code: identidade operacional permanente — único por tenant (inclui soft-deleted)
+  @@unique([tenantId, code])
+  // documentNumber: único entre filiais ativas quando informado — índice parcial SQL
+  @@index([tenantId, documentNumber])
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@index([tenantId, isHeadquarters])
+  @@index([tenantId, deletedAt])
+}
+
+model UserBranchAccess {
+  id              String                @id @default(cuid())
+  tenantId        String
+  userId          String
+  branchId        String
+  scope           UserBranchAccessScope @default(MEMBER)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  createdByUserId String?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, userId, branchId])
+  @@index([tenantId])
+  @@index([tenantId, userId])
+  @@index([tenantId, branchId])
+}
+
+model Customer {
+  id                    String               @id @default(cuid())
+  tenantId              String
+  tenant                Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code                  String
+  legalName             String
+  tradeName             String?
+  customerType          CustomerType
+  documentType          CustomerDocumentType?
+  documentNumber        String?
+  stateRegistration     String?
+  municipalRegistration String?
+  mainContactName       String?
+  mainContactRole       String?
+  email                 String?
+  billingEmail          String?
+  phone                 String?
+  whatsapp              String?
+  website               String?
+  billingAddressLine1   String?
+  billingAddressLine2   String?
+  billingDistrict       String?
+  billingCity           String?
+  billingState          String?
+  billingCountry        String?              @default("BR")
+  billingZipCode        String?
+  status                CustomerStatus       @default(ACTIVE)
+  notes                 String?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  disabledAt            DateTime?
+  deletedAt             DateTime?
+
+  branches CustomerBranch[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, documentNumber])
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@index([tenantId, customerType])
+  @@index([tenantId, deletedAt])
+  @@index([tenantId, legalName])
+  @@index([tenantId, tradeName])
+}
+
+model CustomerBranch {
+  id         String               @id @default(cuid())
+  tenantId   String
+  customerId String
+  branchId   String
+  isPrimary  Boolean              @default(false)
+  status     CustomerBranchStatus @default(ACTIVE)
+  notes      String?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  disabledAt DateTime?
+  deletedAt  DateTime?
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  branch   Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, customerId, branchId])
+  @@index([tenantId])
+  @@index([tenantId, customerId])
+  @@index([tenantId, branchId])
+  @@index([tenantId, deletedAt])
 }

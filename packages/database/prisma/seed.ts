@@ -8,6 +8,8 @@ import {
   ROLE_DEFINITIONS,
 } from "./seed-data/permissions";
 import { FEATURE_DEFINITIONS, SETTING_DEFINITIONS } from "./seed-data/settings";
+import { BRANCH_DEFINITIONS, USER_BRANCH_ACCESS } from "./seed-data/branches";
+import { CUSTOMER_DEFINITIONS } from "./seed-data/customers";
 
 const prisma = new PrismaClient();
 
@@ -178,6 +180,154 @@ async function seedFeatures(tenantId: string) {
   }
 }
 
+async function seedCustomers(tenantId: string, branchByCode: Map<string, string>) {
+  for (const def of CUSTOMER_DEFINITIONS) {
+    const branchIds = def.branchCodes
+      .map((code) => branchByCode.get(code))
+      .filter((id): id is string => !!id);
+
+    if (branchIds.length === 0) continue;
+
+    const primaryBranchId = branchByCode.get(def.primaryBranchCode) ?? branchIds[0];
+
+    const customer = await prisma.customer.upsert({
+      where: { tenantId_code: { tenantId, code: def.code } },
+      update: {
+        legalName: def.legalName,
+        tradeName: def.tradeName,
+        customerType: def.customerType,
+        documentType: def.documentType,
+        documentNumber: def.documentNumber,
+        mainContactName: def.mainContactName,
+        email: def.email,
+        phone: def.phone,
+        billingCity: def.billingCity,
+        billingState: def.billingState,
+        billingCountry: "BR",
+        status: "ACTIVE",
+      },
+      create: {
+        tenantId,
+        code: def.code,
+        legalName: def.legalName,
+        tradeName: def.tradeName,
+        customerType: def.customerType,
+        documentType: def.documentType,
+        documentNumber: def.documentNumber,
+        mainContactName: def.mainContactName,
+        email: def.email,
+        phone: def.phone,
+        billingCity: def.billingCity,
+        billingState: def.billingState,
+        billingCountry: "BR",
+        status: "ACTIVE",
+      },
+    });
+
+    for (const branchId of branchIds) {
+      await prisma.customerBranch.upsert({
+        where: {
+          tenantId_customerId_branchId: { tenantId, customerId: customer.id, branchId },
+        },
+        update: {
+          deletedAt: null,
+          disabledAt: null,
+          status: "ACTIVE",
+          isPrimary: branchId === primaryBranchId,
+        },
+        create: {
+          tenantId,
+          customerId: customer.id,
+          branchId,
+          isPrimary: branchId === primaryBranchId,
+          status: "ACTIVE",
+        },
+      });
+    }
+
+    await prisma.customerBranch.updateMany({
+      where: {
+        tenantId,
+        customerId: customer.id,
+        deletedAt: null,
+        NOT: { branchId: { in: branchIds } },
+      },
+      data: { isPrimary: false },
+    });
+  }
+}
+
+async function seedBranches(tenantId: string) {
+  const branchByCode = new Map<string, string>();
+
+  for (const def of BRANCH_DEFINITIONS) {
+    const branch = await prisma.branch.upsert({
+      where: { tenantId_code: { tenantId, code: def.code } },
+      update: {
+        name: def.name,
+        legalName: def.legalName,
+        city: def.city,
+        state: def.state,
+        isHeadquarters: def.isHeadquarters ?? false,
+        status: "ACTIVE",
+        deletedAt: null,
+        disabledAt: null,
+      },
+      create: {
+        tenantId,
+        code: def.code,
+        name: def.name,
+        legalName: def.legalName,
+        city: def.city,
+        state: def.state,
+        isHeadquarters: def.isHeadquarters ?? false,
+        country: "BR",
+      },
+    });
+    branchByCode.set(def.code, branch.id);
+  }
+
+  const matrizId = branchByCode.get("MATRIZ");
+  if (matrizId) {
+    await prisma.branch.updateMany({
+      where: { tenantId, isHeadquarters: true, NOT: { id: matrizId } },
+      data: { isHeadquarters: false },
+    });
+    await prisma.branch.update({
+      where: { id: matrizId },
+      data: { isHeadquarters: true },
+    });
+  }
+
+  for (const access of USER_BRANCH_ACCESS) {
+    const user = await prisma.user.findFirst({
+      where: { tenantId, email: access.email },
+      select: { id: true },
+    });
+    if (!user) continue;
+
+    for (const code of access.branchCodes) {
+      const branchId = branchByCode.get(code);
+      if (!branchId) continue;
+
+      await prisma.userBranchAccess.upsert({
+        where: {
+          tenantId_userId_branchId: { tenantId, userId: user.id, branchId },
+        },
+        update: { scope: access.scope ?? "MEMBER" },
+        create: {
+          tenantId,
+          userId: user.id,
+          branchId,
+          scope: access.scope ?? "MEMBER",
+        },
+      });
+    }
+  }
+
+  await seedCustomers(tenantId, branchByCode);
+}
+
 async function main() {
   console.log("Seeding Nexum Tower database...");
 
@@ -281,6 +431,7 @@ async function main() {
 
   await seedSettings(tenant.id);
   await seedFeatures(tenant.id);
+  await seedBranches(tenant.id);
 
   console.log("Seed completed.");
   console.log(`Tenant: ${tenant.name} (${tenant.slug})`);

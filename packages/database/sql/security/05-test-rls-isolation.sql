@@ -38,5 +38,30 @@ SELECT 'tenant_fake' AS cenario, count(*)::int AS usuarios_visiveis FROM "User";
 \echo '5. Limpeza'
 SELECT set_config('app.current_tenant_id', '', true);
 
+\echo '6. Branch — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'branch_tenant_demo' AS cenario, count(*)::int AS filiais_visiveis FROM "Branch";
+
+\echo '7. Branch — sem contexto'
+SELECT set_config('app.current_tenant_id', '', true);
+SELECT 'branch_sem_contexto' AS cenario, count(*)::int AS filiais_visiveis FROM "Branch";
+
+\echo '8. UserBranchAccess — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'uba_tenant_demo' AS cenario, count(*)::int AS vinculos_visiveis FROM "UserBranchAccess";
+
+\echo '9. Customer — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'customer_tenant_demo' AS cenario, count(*)::int AS clientes_visiveis FROM "Customer";
+
+\echo '10. Customer — sem contexto'
+SELECT set_config('app.current_tenant_id', '', true);
+SELECT 'customer_sem_contexto' AS cenario, count(*)::int AS clientes_visiveis FROM "Customer";
+
+\echo '11. CustomerBranch — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'customer_branch_tenant_demo' AS cenario, count(*)::int AS vinculos_visiveis FROM "CustomerBranch";
+
 \echo '=== Fim do teste ==='
 \echo 'Esperado: sem_contexto=0, tenant_demo>0, demais=0 (com FORCE RLS ou nexum_app)'
+\echo 'Branch/UBA/Customer: tenant_demo>0 após seed, sem_contexto=0'

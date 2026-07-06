@@ -16,7 +16,7 @@ Documentos anteriores (histórico):
 
 ## Em uma frase
 
-O Nexum Tower tem **fundação SaaS completa e auditável** (Auth, RBAC, ABAC, RLS, Admin UI, CI, 61 testes, E2E), **regras permanentes para o Cursor**, e agora também o **padrão de jobs assíncronos e DLQ documentado** para fluxos futuros — **sem Redis/BullMQ ativos** e **sem módulos operacionais de logística**.
+O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI, CI, **98 testes API**, E2E), **Filiais 10/10 dev** (Fases 1.0–1.0.2), **Customers + CustomerBranch 10/10 dev** (Fases 1.1–1.1.1), e padrão async/DLQ documentado — **sem Redis/BullMQ ativos**.
 
 ---
 
@@ -27,22 +27,25 @@ O Nexum Tower tem **fundação SaaS completa e auditável** (Auth, RBAC, ABAC, R
 │  ✅ NEXUM CORE PLATFORM — FECHADO (10/10)                                │
 │  Auth · Sessões · RBAC · ABAC · Tenant isolation · Audit                 │
 │  Settings · Feature Flags · API padronizada · Admin UI · Security Console │
-│  61 testes · Playwright E2E · CI (PostgreSQL + migrate + seed + build)   │
+│  82 testes API · Playwright E2E · CI (PostgreSQL + migrate + seed + build) │
 │  RLS policies + scripts SQL · Cursor Rules · Compliance GO               │
+├─────────────────────────────────────────────────────────────────────────┤
+│  ✅ ORGANIZACIONAL — FILIAIS (10/10 dev) · Fases 1.0 → 1.0.2             │
+│  Branch · UserBranchAccess · ABAC · E2E branches 7/7                     │
+├─────────────────────────────────────────────────────────────────────────┤
+│  ✅ LOGÍSTICA — CLIENTES (10/10 dev) · Fases 1.1 → 1.1.1                  │
+│  Customer · CustomerBranch · ABAC hardened · /logistics/customers · E2E 7/7 │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  📋 ASYNC / DLQ — PREPARADO (só documentação)                            │
 │  ASYNC-JOBS · DLQ · Outbox · Idempotency · Observability · Job Security  │
-│  Checklist em SECURITY-CHECKLIST · Regras no Cursor                      │
-│  Pasta apps/api/src/modules/jobs/ (README only)                          │
 │  Redis · BullMQ · workers · OutboxEvent — NÃO implementados              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  ⚠️ PARCIAL / DEMO                                                       │
 │  Command Center (/app) — KPIs e viagens fake                             │
 │  RLS FORCE + nexum_app em runtime — scripts prontos, dev usa postgres     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  ❌ NEXUM LOGISTICS CORE — NÃO INICIADO                                  │
-│  Clientes · Motoristas · Veículos · Rotas · Viagens · Ocorrências        │
-│  Custos · Documentos · Mapa · IA operacional · Portais                   │
+│  ❌ LOGISTICS CORE — PRÓXIMO (Locations)                                   │
+│  Locais · Motoristas · Veículos · Rotas · Viagens · Ocorrências          │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -54,10 +57,10 @@ O Nexum Tower tem **fundação SaaS completa e auditável** (Auth, RBAC, ABAC, R
 |-------------|--------|
 | `pnpm typecheck` | ✅ |
 | `pnpm lint` | ✅ |
-| `pnpm test:api` | ✅ **61/61** (10 suites) |
+| `pnpm test:api` | ✅ **98/98** |
 | `pnpm build` | ✅ |
 | `pnpm dev` | ✅ |
-| Playwright E2E | ✅ 8 fluxos (`tests/e2e/`) |
+| Playwright E2E | ✅ **24** fluxos (`core-platform` 10 · `branches` 7 · `customers` 7) |
 | CI GitHub Actions | ✅ `validate` + `e2e` (main) |
 
 ---
@@ -166,9 +169,11 @@ Código preparatório: `apps/api/src/modules/jobs/` (somente README + `job-patte
 Nenhuma entidade operacional no banco ou API:
 
 ```txt
-Trip · Shipment · Vehicle · Driver · Customer · Route · Incident · Cost · Document
+Trip · Shipment · Vehicle · Driver · Location · Route · Incident · Cost · Document
 Mapa · tracking · geofence · Risk Score · webhooks · IA operacional
 ```
+
+**Customer** e **CustomerBranch** já existem (Fase 1.1).
 
 Itens de menu operacionais: `comingSoon: true` — não aparecem no sidebar.
 
@@ -187,11 +192,11 @@ Itens de menu operacionais: `comingSoon: true` — não aparecem no sidebar.
 
 ## Próximo passo
 
-### 1. Iniciar Nexum Logistics Core (cadastros mestres)
+### 1. Iniciar Locations (Fase 1.2)
 
-Pode começar **sem** Redis/BullMQ — cadastros síncronos (clientes, motoristas, veículos) seguem o Core Platform.
+Molde: Customers + CustomerBranch (entidade global + vínculo por filial + ABAC hardened).
 
-Checklist: [GO-NO-GO-LOGISTICS-CORE.md](./GO-NO-GO-LOGISTICS-CORE.md) + [CURSOR-CORE-PLATFORM-RULES.md](./CURSOR-CORE-PLATFORM-RULES.md).
+Checklist: [GO-NO-GO-LOGISTICS-CORE.md](./GO-NO-GO-LOGISTICS-CORE.md) + [modules/logistics/README.md](./modules/logistics/README.md).
 
 ### 2. Quando surgir fluxo assíncrono
 
@@ -222,7 +227,9 @@ pnpm security:rls:test   # RLS manual (nexum_app)
 | Admin UI + Security Console + CI | ✅ |
 | Finalização 10/10 Core Platform | ✅ |
 | Padrão Async/DLQ documentado | ✅ |
-| Nexum Logistics Core | ⏭️ **próximo** |
+| Customers + CustomerBranch (Fase 1.1) | ✅ |
+| Hardening Customers ABAC (Fase 1.1.1) | ✅ |
+| Locations | ⏭️ **próximo** |
 
 ---
 

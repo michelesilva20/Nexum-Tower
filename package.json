@@ -13,13 +13,17 @@
     "test": "pnpm --filter api test",
     "test:api": "pnpm --filter api test",
     "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium",
     "test:e2e:ui": "playwright test --ui",
     "db:generate": "pnpm --filter database prisma generate",
     "db:migrate": "pnpm --filter database prisma migrate dev",
     "db:migrate:deploy": "pnpm --filter database prisma migrate deploy",
     "db:studio": "pnpm --filter database prisma studio",
     "db:seed": "pnpm --filter database prisma db seed",
-    "security:rls:test": "psql \"%DATABASE_URL_APP_USER%\" -f packages/database/sql/security/05-test-rls-isolation.sql"
+    "db:check:branch-code-duplicates": "pnpm --filter database exec tsx scripts/check-branch-code-duplicates.ts",
+    "dev:e2e": "pnpm db:migrate:deploy && pnpm db:seed && pnpm dev",
+    "security:rls:test": "psql \"%DATABASE_URL_APP_USER%\" -f packages/database/sql/security/05-test-rls-isolation.sql",
+    "security:rls:test:docker": "docker exec -i nexum-postgres psql -U nexum_app -d nexum_tower -f - < packages/database/sql/security/05-test-rls-isolation.sql"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

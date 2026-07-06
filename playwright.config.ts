@@ -13,14 +13,15 @@ export default defineConfig({
   timeout: 60_000,
   use: {
     baseURL,
+    locale: "pt-BR",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "pnpm dev",
-    url: baseURL,
+    command: "pnpm dev:e2e",
+    url: `${baseURL}/login`,
     reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
+    timeout: 300_000,
   },
 });

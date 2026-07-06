@@ -1,15 +1,24 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
+import { hasAnyPermission } from "@nexum-tower/shared";
 
 type TenantScoped = { tenantId: string };
-type ActorLike = { tenantId: string; userId?: string };
+type ActorLike = { tenantId: string; userId?: string; permissions?: string[] };
 type RoleLike = { tenantId?: string | null; isSystem: boolean };
+
+const GLOBAL_BRANCH_PERMISSIONS = ["branches.manage", "organization.manage", "*"];
+const GLOBAL_CUSTOMER_PERMISSIONS = [
+  "customers.manage",
+  "logistics.manage",
+  "organization.manage",
+  "*",
+];
 
 /**
  * Camada ABAC / object-level authorization da Nexum Core Platform.
  *
  * O RBAC decide *o que* o usuário pode fazer; esta camada decide se ele
  * pode fazer *neste contexto* (mesmo tenant, objeto acessível, papel de
- * sistema protegido, etc.). Ver docs/SECURITY-GUARDRAILS.md.
+ * sistema protegido, escopo por filial, etc.). Ver docs/SECURITY-GUARDRAILS.md.
  */
 @Injectable()
 export class AuthorizationService {
@@ -18,6 +27,48 @@ export class AuthorizationService {
     if (objectTenantId == null || objectTenantId !== userTenantId) {
       throw new ForbiddenException("Recurso não pertence ao seu tenant.");
     }
+  }
+
+  /** Usuário com escopo global de filiais (admin master / owner). */
+  hasGlobalBranchScope(permissions: string[]): boolean {
+    return hasAnyPermission(permissions, GLOBAL_BRANCH_PERMISSIONS);
+  }
+
+  assertGlobalBranchScope(permissions: string[]): void {
+    if (!this.hasGlobalBranchScope(permissions)) {
+      throw new ForbiddenException("Escopo global de filiais necessário para esta operação.");
+    }
+  }
+
+  hasGlobalCustomerScope(permissions: string[]): boolean {
+    return hasAnyPermission(permissions, GLOBAL_CUSTOMER_PERMISSIONS);
+  }
+
+  assertGlobalCustomerScope(permissions: string[]): void {
+    if (!this.hasGlobalCustomerScope(permissions)) {
+      throw new ForbiddenException("Escopo global de clientes necessário para esta operação.");
+    }
+  }
+
+  /** Mutação de dados globais do Customer (cadastro fiscal, status, soft delete). */
+  assertCustomerGlobalMutationAllowed(permissions: string[]): void {
+    this.assertGlobalCustomerScope(permissions);
+  }
+
+  /**
+   * Gerenciamento de vínculos CustomerBranch — regra restritiva:
+   * apenas escopo global (decisão Fase 1.1.1).
+   */
+  assertCustomerBranchMutationAllowed(permissions: string[]): void {
+    this.assertGlobalCustomerScope(permissions);
+  }
+
+  canMutateCustomerGlobalData(permissions: string[]): boolean {
+    return this.hasGlobalCustomerScope(permissions);
+  }
+
+  canManageCustomerBranches(permissions: string[]): boolean {
+    return this.hasGlobalCustomerScope(permissions);
   }
 
   canAccessTenantObject(user: TenantScoped, object: TenantScoped): boolean {

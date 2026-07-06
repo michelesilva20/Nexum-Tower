@@ -4,6 +4,8 @@ import { AppOverviewPage } from "@/components/app/app-overview-page";
 import { AuditAdminPage } from "@/components/app/audit-admin-page";
 import { DesignSystemPage } from "@/components/app/design-system-page";
 import { GroupsAdminPage } from "@/components/app/groups-admin-page";
+import { BranchesAdminPage } from "@/components/app/branches-admin-page";
+import { CustomersLogisticsPage } from "@/components/app/customers-logistics-page";
 import { PermissionsAdminPage } from "@/components/app/permissions-admin-page";
 import { RolesAdminPage } from "@/components/app/roles-admin-page";
 import { SecurityConsolePage } from "@/components/app/security-console-page";
@@ -21,6 +23,8 @@ const routeMap: Record<string, PageComponent> = {
   "": AppOverviewPage,
   // admin (rotas novas)
   "admin/users": UsersAdminPage,
+  "admin/branches": BranchesAdminPage,
+  "logistics/customers": CustomersLogisticsPage,
   "admin/groups": GroupsAdminPage,
   "admin/roles": RolesAdminPage,
   "admin/permissions": PermissionsAdminPage,

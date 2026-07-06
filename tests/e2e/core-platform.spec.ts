@@ -14,8 +14,14 @@ test.describe("Nexum Core Platform — E2E", () => {
 
     test("admin vê menus administrativos", async ({ page }) => {
       await expect(page.getByRole("link", { name: "Usuários" })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Filiais" })).toBeVisible();
       await expect(page.getByRole("link", { name: "Grupos" })).toBeVisible();
       await expect(page.getByRole("link", { name: "Papéis" })).toBeVisible();
+    });
+
+    test("admin acessa /app/admin/branches", async ({ page }) => {
+      await page.goto("/app/admin/branches");
+      await expect(page.getByRole("heading", { name: /filiais/i })).toBeVisible();
     });
 
     test("admin acessa /app/admin/users", async ({ page }) => {
@@ -46,6 +52,7 @@ test.describe("Nexum Core Platform — E2E", () => {
 
     test("viewer não vê menus administrativos", async ({ page }) => {
       await expect(page.getByRole("link", { name: "Usuários" })).not.toBeVisible();
+      await expect(page.getByRole("link", { name: "Filiais" })).not.toBeVisible();
       await expect(page.getByRole("link", { name: "Grupos" })).not.toBeVisible();
     });
 
