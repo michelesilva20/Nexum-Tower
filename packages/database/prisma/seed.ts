@@ -10,6 +10,7 @@ import {
 import { FEATURE_DEFINITIONS, SETTING_DEFINITIONS } from "./seed-data/settings";
 import { BRANCH_DEFINITIONS, USER_BRANCH_ACCESS } from "./seed-data/branches";
 import { CUSTOMER_DEFINITIONS } from "./seed-data/customers";
+import { LOCATION_DEFINITIONS } from "./seed-data/locations";
 
 const prisma = new PrismaClient();
 
@@ -180,7 +181,95 @@ async function seedFeatures(tenantId: string) {
   }
 }
 
+async function seedLocations(
+  tenantId: string,
+  branchByCode: Map<string, string>,
+  customerByCode: Map<string, string>,
+) {
+  for (const def of LOCATION_DEFINITIONS) {
+    const branchIds = def.branchCodes
+      .map((code) => branchByCode.get(code))
+      .filter((id): id is string => !!id);
+
+    if (branchIds.length === 0) continue;
+
+    const primaryBranchId = branchByCode.get(def.primaryBranchCode) ?? branchIds[0];
+    const customerId = def.customerCode ? customerByCode.get(def.customerCode) : undefined;
+
+    const location = await prisma.location.upsert({
+      where: { tenantId_code: { tenantId, code: def.code } },
+      update: {
+        name: def.name,
+        locationType: def.locationType,
+        customerId: customerId ?? null,
+        addressLine1: def.addressLine1,
+        city: def.city,
+        state: def.state,
+        country: def.country ?? "BR",
+        zipCode: def.zipCode,
+        latitude: def.latitude ?? null,
+        longitude: def.longitude ?? null,
+        contactName: def.contactName,
+        email: def.email,
+        phone: def.phone,
+        status: "ACTIVE",
+      },
+      create: {
+        tenantId,
+        code: def.code,
+        name: def.name,
+        locationType: def.locationType,
+        customerId: customerId ?? null,
+        addressLine1: def.addressLine1,
+        city: def.city,
+        state: def.state,
+        country: def.country ?? "BR",
+        zipCode: def.zipCode,
+        latitude: def.latitude ?? null,
+        longitude: def.longitude ?? null,
+        contactName: def.contactName,
+        email: def.email,
+        phone: def.phone,
+        status: "ACTIVE",
+      },
+    });
+
+    for (const branchId of branchIds) {
+      await prisma.locationBranch.upsert({
+        where: {
+          tenantId_locationId_branchId: { tenantId, locationId: location.id, branchId },
+        },
+        update: {
+          deletedAt: null,
+          disabledAt: null,
+          status: "ACTIVE",
+          isPrimary: branchId === primaryBranchId,
+        },
+        create: {
+          tenantId,
+          locationId: location.id,
+          branchId,
+          isPrimary: branchId === primaryBranchId,
+          status: "ACTIVE",
+        },
+      });
+    }
+
+    await prisma.locationBranch.updateMany({
+      where: {
+        tenantId,
+        locationId: location.id,
+        deletedAt: null,
+        NOT: { branchId: { in: branchIds } },
+      },
+      data: { isPrimary: false },
+    });
+  }
+}
+
 async function seedCustomers(tenantId: string, branchByCode: Map<string, string>) {
+  const customerByCode = new Map<string, string>();
+
   for (const def of CUSTOMER_DEFINITIONS) {
     const branchIds = def.branchCodes
       .map((code) => branchByCode.get(code))
@@ -254,7 +343,11 @@ async function seedCustomers(tenantId: string, branchByCode: Map<string, string>
       },
       data: { isPrimary: false },
     });
+
+    customerByCode.set(def.code, customer.id);
   }
+
+  return customerByCode;
 }
 
 async function seedBranches(tenantId: string) {
@@ -325,7 +418,8 @@ async function seedBranches(tenantId: string) {
     }
   }
 
-  await seedCustomers(tenantId, branchByCode);
+  const customerByCode = await seedCustomers(tenantId, branchByCode);
+  await seedLocations(tenantId, branchByCode, customerByCode);
 }
 
 async function main() {

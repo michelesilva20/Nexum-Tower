@@ -57,6 +57,36 @@ enum CustomerBranchStatus {
   DISABLED
 }
 
+enum LocationStatus {
+  ACTIVE
+  INACTIVE
+  DISABLED
+}
+
+enum LocationType {
+  CUSTOMER_SITE
+  BRANCH_BASE
+  PORT
+  TERMINAL
+  WAREHOUSE
+  DISTRIBUTION_CENTER
+  DEPOT
+  YARD
+  CROSS_DOCKING
+  BORDER_CROSSING
+  FUEL_STATION
+  MAINTENANCE_SITE
+  SUPPLIER_SITE
+  PARKING_AREA
+  OTHER
+}
+
+enum LocationBranchStatus {
+  ACTIVE
+  INACTIVE
+  DISABLED
+}
+
 enum PermissionEffect {
   ALLOW
   DENY
@@ -82,6 +112,7 @@ model Tenant {
   roles          Role[]
   branches       Branch[]
   customers      Customer[]
+  locations      Location[]
   tenantSettings TenantSetting[]
   tenantFeatures TenantFeature[]
 }
@@ -353,6 +384,7 @@ model Branch {
 
   userAccess       UserBranchAccess[]
   customerBranches CustomerBranch[]
+  locationBranches LocationBranch[]
 
   // code: identidade operacional permanente — único por tenant (inclui soft-deleted)
   @@unique([tenantId, code])
@@ -417,6 +449,7 @@ model Customer {
   deletedAt             DateTime?
 
   branches CustomerBranch[]
+  locations Location[]
 
   @@unique([tenantId, code])
   @@index([tenantId, documentNumber])
@@ -447,6 +480,78 @@ model CustomerBranch {
   @@unique([tenantId, customerId, branchId])
   @@index([tenantId])
   @@index([tenantId, customerId])
+  @@index([tenantId, branchId])
+  @@index([tenantId, deletedAt])
+}
+
+model Location {
+  id                    String         @id @default(cuid())
+  tenantId              String
+  tenant                Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code                  String
+  name                  String
+  locationType          LocationType
+  customerId            String?
+  customer              Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  addressLine1          String
+  addressLine2          String?
+  district              String?
+  city                  String
+  state                 String
+  country               String         @default("BR")
+  zipCode               String?
+  latitude              Float?
+  longitude             Float?
+  timezone              String?
+  geofenceRadiusMeters  Int?
+  contactName           String?
+  contactRole           String?
+  email                 String?
+  phone                 String?
+  whatsapp              String?
+  operatingHours        String?
+  accessInstructions    String?
+  dockInfo              String?
+  referencePoint        String?
+  status                LocationStatus @default(ACTIVE)
+  notes                 String?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  disabledAt            DateTime?
+  deletedAt             DateTime?
+
+  branches LocationBranch[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@index([tenantId, customerId])
+  @@index([tenantId, locationType])
+  @@index([tenantId, status])
+  @@index([tenantId, city])
+  @@index([tenantId, state])
+  @@index([tenantId, deletedAt])
+  @@index([tenantId, name])
+}
+
+model LocationBranch {
+  id         String               @id @default(cuid())
+  tenantId   String
+  locationId String
+  branchId   String
+  isPrimary  Boolean              @default(false)
+  status     LocationBranchStatus @default(ACTIVE)
+  notes      String?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  disabledAt DateTime?
+  deletedAt  DateTime?
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  branch   Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, locationId, branchId])
+  @@index([tenantId])
+  @@index([tenantId, locationId])
   @@index([tenantId, branchId])
   @@index([tenantId, deletedAt])
 }

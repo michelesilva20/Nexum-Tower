@@ -16,7 +16,7 @@ Documentos anteriores (histórico):
 
 ## Em uma frase
 
-O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI, CI, **98 testes API**, E2E), **Filiais 10/10 dev** (Fases 1.0–1.0.2), **Customers + CustomerBranch 10/10 dev** (Fases 1.1–1.1.1), e padrão async/DLQ documentado — **sem Redis/BullMQ ativos**.
+O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI, CI, **112 testes API**, E2E), **Filiais 10/10 dev**, **Customers + Locations 10/10 dev** (Fases 1.1–1.2), e padrão async/DLQ documentado — **sem Redis/BullMQ ativos**.
 
 ---
 
@@ -33,8 +33,8 @@ O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI,
 │  ✅ ORGANIZACIONAL — FILIAIS (10/10 dev) · Fases 1.0 → 1.0.2             │
 │  Branch · UserBranchAccess · ABAC · E2E branches 7/7                     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  ✅ LOGÍSTICA — CLIENTES (10/10 dev) · Fases 1.1 → 1.1.1                  │
-│  Customer · CustomerBranch · ABAC hardened · /logistics/customers · E2E 7/7 │
+│  ✅ LOGÍSTICA — CLIENTES + LOCAIS (10/10 dev) · Fases 1.1 → 1.2           │
+│  Customer · Location · *Branch · ABAC hardened · E2E customers 7/7 · loc 7/7 │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  📋 ASYNC / DLQ — PREPARADO (só documentação)                            │
 │  ASYNC-JOBS · DLQ · Outbox · Idempotency · Observability · Job Security  │
@@ -57,10 +57,10 @@ O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI,
 |-------------|--------|
 | `pnpm typecheck` | ✅ |
 | `pnpm lint` | ✅ |
-| `pnpm test:api` | ✅ **98/98** |
+| `pnpm test:api` | ✅ **112/112** |
 | `pnpm build` | ✅ |
 | `pnpm dev` | ✅ |
-| Playwright E2E | ✅ **24** fluxos (`core-platform` 10 · `branches` 7 · `customers` 7) |
+| Playwright E2E | ✅ **31** fluxos (`core-platform` 10 · `branches` 7 · `customers` 7 · `locations` 7) |
 | CI GitHub Actions | ✅ `validate` + `e2e` (main) |
 
 ---

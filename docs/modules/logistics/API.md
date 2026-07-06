@@ -1,4 +1,6 @@
-# API — Customers
+# API — Logistics
+
+## Customers
 
 Base: `/logistics/customers`
 
@@ -16,16 +18,35 @@ Base: `/logistics/customers`
 | PATCH | `/logistics/customers/:id/branches/:branchId/primary` | customers.assign_branches |
 | DELETE | `/logistics/customers/:id/branches/:branchId` | customers.assign_branches |
 
-## Query listagem
+## Locations
 
-`search`, `status`, `customerType`, `documentType`, `branchId`, `city`, `state`, `page`, `perPage`, `sortBy`, `sortDirection`
+Base: `/logistics/locations`
 
-`sortBy` whitelist no DTO e service.
+| Método | Rota | Permissão |
+|--------|------|-----------|
+| GET | `/logistics/locations` | locations.read **ou** logistics.read |
+| GET | `/logistics/locations/:id` | locations.read **ou** logistics.read |
+| POST | `/logistics/locations` | locations.create |
+| PATCH | `/logistics/locations/:id` | locations.update |
+| PATCH | `/logistics/locations/:id/disable` | locations.disable |
+| PATCH | `/logistics/locations/:id/enable` | locations.disable |
+| DELETE | `/logistics/locations/:id` | locations.delete |
+| GET | `/logistics/locations/:id/branches` | locations.read **ou** logistics.read |
+| POST | `/logistics/locations/:id/branches` | locations.assign_branches |
+| PATCH | `/logistics/locations/:id/branches/:branchId/primary` | locations.assign_branches |
+| DELETE | `/logistics/locations/:id/branches/:branchId` | locations.assign_branches |
 
-## Segurança
+### Query listagem Locations
+
+`search`, `status`, `locationType`, `branchId`, `customerId`, `city`, `state`, `country`, `hasCoordinates`, `page`, `perPage`, `sortBy`, `sortDirection`
+
+`sortBy` whitelist: `code`, `name`, `locationType`, `status`, `city`, `state`, `country`, `createdAt`, `updatedAt`
+
+## Segurança (Customers + Locations)
 
 - `tenantId` sempre de `currentUser.tenantId`
-- **Leitura:** ABAC via `CustomerBranch` + `UserBranchAccess`; filiais filtradas no response para usuários limitados
-- **Mutação global** (PATCH, disable, enable, DELETE, POST create): escopo global obrigatório
-- **CustomerBranch** (assign, primary, remove): `customers.assign_branches` + escopo global
-- AuditLog em todas mutações sensíveis
+- **Leitura:** ABAC via `*Branch` + `UserBranchAccess`; filiais filtradas no response
+- **Mutação global:** escopo global obrigatório (`*.manage`, `logistics.manage`, `organization.manage`, `*`)
+- **Vínculos filiais:** `*.assign_branches` + escopo global
+- **Locations + Customer:** se `customerId`, `branchIds` devem ser compatíveis com `CustomerBranch`
+- AuditLog em mutações sensíveis

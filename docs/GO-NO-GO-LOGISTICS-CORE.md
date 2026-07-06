@@ -41,9 +41,13 @@ Verificar se o Nexum Core Platform está pronto para iniciar a camada operaciona
 
 ## Decisão
 
-### ✅ GO — desenvolvimento de Locations (Fase 1.2)
+### ✅ GO — desenvolvimento de Drivers (próxima fase)
 
-O módulo **Customers + CustomerBranch** (Fases 1.1 + 1.1.1) está **10/10 para desenvolvimento** após hardening ABAC e E2E.
+O módulo **Locations + LocationBranch** (Fase 1.2) está **10/10 para desenvolvimento** — E2E **7/7**, testes API **112/112**.
+
+Documento: [FASE-1.2-O-QUE-FOI-FEITO.md](./FASE-1.2-O-QUE-FOI-FEITO.md)
+
+### ✅ GO anterior — Customers (Fases 1.1 + 1.1.1)
 
 Documentos: [FASE-1.1-O-QUE-FOI-FEITO.md](./FASE-1.1-O-QUE-FOI-FEITO.md) · [FASE-1.1.1-O-QUE-FOI-FEITO.md](./FASE-1.1.1-O-QUE-FOI-FEITO.md)
 

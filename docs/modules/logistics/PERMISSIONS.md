@@ -1,6 +1,6 @@
-# Permissões — Logistics / Customers
+# Permissões — Logistics
 
-## Permissões
+## Customers
 
 | Key | Uso |
 |-----|-----|
@@ -11,28 +11,43 @@
 | `customers.delete` | Soft delete |
 | `customers.manage` | Escopo global ABAC |
 | `customers.assign_branches` | Vínculos CustomerBranch |
-| `logistics.read` | Menu logística (alternativa) |
+
+## Locations (Fase 1.2)
+
+| Key | Uso |
+|-----|-----|
+| `locations.read` | Listar/visualizar |
+| `locations.create` | Criar |
+| `locations.update` | Editar dados |
+| `locations.disable` | Desativar/reativar |
+| `locations.delete` | Soft delete |
+| `locations.manage` | Escopo global ABAC |
+| `locations.assign_branches` | Vínculos LocationBranch |
+
+## Compartilhadas
+
+| Key | Uso |
+|-----|-----|
+| `logistics.read` | Menu logística (alternativa a *.read) |
 | `logistics.manage` | Escopo global ABAC |
 
-## Semântica (Fase 1.1.1)
+## Semântica ABAC (Customers + Locations)
 
 | Permissão | RBAC | ABAC adicional |
 |-----------|------|----------------|
-| `customers.read` | Ver listagem/detalhe | Escopo por CustomerBranch |
-| `customers.create` | Criar | **Escopo global obrigatório** |
-| `customers.update` | Atualizar | **Escopo global obrigatório** |
-| `customers.disable` | Desativar/reativar | **Escopo global obrigatório** |
-| `customers.delete` | Soft delete | **Escopo global obrigatório** |
-| `customers.manage` | Admin ampla | Concede escopo global ABAC |
-| `customers.assign_branches` | Vínculos | **Escopo global obrigatório** |
-| `logistics.manage` | Módulo logística | Concede escopo global ABAC |
+| `*.read` | Ver listagem/detalhe | Escopo por *Branch |
+| `*.create` / `*.update` / disable / delete | Mutação | **Escopo global obrigatório** |
+| `*.manage` | Admin ampla | Concede escopo global |
+| `*.assign_branches` | Vínculos | **Escopo global obrigatório** |
 
-`customers.update` sozinho **não** autoriza mutação global — exige também escopo global via `customers.manage`, `logistics.manage`, `organization.manage` ou `*`.
+Escopo global = `*.manage` | `logistics.manage` | `organization.manage` | `*`
 
-| Role | Customers |
-|------|-----------|
-| owner | `*` |
-| tenant-admin | `customers.*`, `logistics.*` |
-| operations-manager | read/create/update/disable/assign + logistics.read |
-| logistics-operator | read + logistics.read |
-| viewer / finance-analyst | read |
+## Roles (resumo)
+
+| Role | Customers | Locations |
+|------|-----------|-----------|
+| owner | `*` | `*` |
+| tenant-admin | `customers.*`, `logistics.*` | `locations.*`, `logistics.*` |
+| operations-manager | read + create/update… | `locations.read` |
+| logistics-operator | read | read |
+| viewer | read | read |

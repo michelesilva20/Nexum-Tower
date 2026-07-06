@@ -198,3 +198,175 @@ export function removeCustomerBranch(id: string, branchId: string) {
     method: "DELETE",
   });
 }
+
+export type LocationStatus = "ACTIVE" | "INACTIVE" | "DISABLED";
+export type LocationType =
+  | "CUSTOMER_SITE"
+  | "BRANCH_BASE"
+  | "PORT"
+  | "TERMINAL"
+  | "WAREHOUSE"
+  | "DISTRIBUTION_CENTER"
+  | "DEPOT"
+  | "YARD"
+  | "CROSS_DOCKING"
+  | "BORDER_CROSSING"
+  | "FUEL_STATION"
+  | "MAINTENANCE_SITE"
+  | "SUPPLIER_SITE"
+  | "PARKING_AREA"
+  | "OTHER";
+
+export type LocationCustomerRef = {
+  id: string;
+  code: string;
+  legalName: string;
+  tradeName: string | null;
+};
+
+export type LocationBranchLink = {
+  id: string;
+  branchId: string;
+  isPrimary: boolean;
+  status: LocationStatus;
+  updatedAt: string;
+  branch: { id: string; code: string; name: string; status: string };
+};
+
+export type LocationRow = {
+  id: string;
+  tenantId: string;
+  code: string;
+  name: string;
+  locationType: LocationType;
+  customerId: string | null;
+  customer: LocationCustomerRef | null;
+  addressLine1: string;
+  addressLine2: string | null;
+  district: string | null;
+  city: string;
+  state: string;
+  country: string;
+  zipCode: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  timezone: string | null;
+  geofenceRadiusMeters: number | null;
+  contactName: string | null;
+  contactRole: string | null;
+  email: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  operatingHours: string | null;
+  accessInstructions: string | null;
+  dockInfo: string | null;
+  referencePoint: string | null;
+  status: LocationStatus;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  disabledAt: string | null;
+  deletedAt: string | null;
+  branches?: LocationBranchLink[];
+};
+
+export function listLocations(params?: {
+  search?: string;
+  status?: LocationStatus;
+  locationType?: LocationType;
+  branchId?: string;
+  customerId?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  hasCoordinates?: string;
+  page?: number;
+  perPage?: number;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+}) {
+  const qs = buildQuery({
+    search: params?.search,
+    status: params?.status,
+    locationType: params?.locationType,
+    branchId: params?.branchId,
+    customerId: params?.customerId,
+    city: params?.city,
+    state: params?.state,
+    country: params?.country,
+    hasCoordinates: params?.hasCoordinates,
+    page: params?.page,
+    perPage: params?.perPage,
+    sortBy: params?.sortBy,
+    sortDirection: params?.sortDirection,
+  });
+  return apiRequestPaginated<LocationRow>(`/logistics/locations${qs}`);
+}
+
+export function getLocation(id: string) {
+  return apiRequest<LocationRow>(`/logistics/locations/${id}`);
+}
+
+export function createLocation(
+  data: Partial<LocationRow> & {
+    code: string;
+    name: string;
+    locationType: LocationType;
+    addressLine1: string;
+    city: string;
+    state: string;
+    branchIds: string[];
+    primaryBranchId?: string;
+  },
+) {
+  return apiRequest<LocationRow>("/logistics/locations", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateLocation(id: string, data: Partial<LocationRow>) {
+  return apiRequest<LocationRow>(`/logistics/locations/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export function disableLocation(id: string) {
+  return apiRequest<LocationRow>(`/logistics/locations/${id}/disable`, { method: "PATCH" });
+}
+
+export function enableLocation(id: string) {
+  return apiRequest<LocationRow>(`/logistics/locations/${id}/enable`, { method: "PATCH" });
+}
+
+export function deleteLocation(id: string) {
+  return apiRequest<{ success: boolean }>(`/logistics/locations/${id}`, { method: "DELETE" });
+}
+
+export function listLocationBranches(id: string) {
+  return apiRequest<LocationBranchLink[]>(`/logistics/locations/${id}/branches`);
+}
+
+export function assignLocationBranches(
+  id: string,
+  data: { branchIds: string[]; primaryBranchId?: string },
+) {
+  return apiRequest<LocationBranchLink[]>(`/logistics/locations/${id}/branches`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function setLocationPrimaryBranch(id: string, branchId: string) {
+  return apiRequest<LocationBranchLink[]>(
+    `/logistics/locations/${id}/branches/${branchId}/primary`,
+    { method: "PATCH" },
+  );
+}
+
+export function removeLocationBranch(id: string, branchId: string) {
+  return apiRequest<LocationBranchLink[]>(`/logistics/locations/${id}/branches/${branchId}`, {
+    method: "DELETE",
+  });
+}

@@ -12,6 +12,12 @@ const GLOBAL_CUSTOMER_PERMISSIONS = [
   "organization.manage",
   "*",
 ];
+const GLOBAL_LOCATION_PERMISSIONS = [
+  "locations.manage",
+  "logistics.manage",
+  "organization.manage",
+  "*",
+];
 
 /**
  * Camada ABAC / object-level authorization da Nexum Core Platform.
@@ -69,6 +75,33 @@ export class AuthorizationService {
 
   canManageCustomerBranches(permissions: string[]): boolean {
     return this.hasGlobalCustomerScope(permissions);
+  }
+
+  hasGlobalLocationScope(permissions: string[]): boolean {
+    return hasAnyPermission(permissions, GLOBAL_LOCATION_PERMISSIONS);
+  }
+
+  assertGlobalLocationScope(permissions: string[]): void {
+    if (!this.hasGlobalLocationScope(permissions)) {
+      throw new ForbiddenException("Escopo global de locais necessário para esta operação.");
+    }
+  }
+
+  assertLocationGlobalMutationAllowed(permissions: string[]): void {
+    this.assertGlobalLocationScope(permissions);
+  }
+
+  /** Gerenciamento de vínculos LocationBranch — regra restritiva (Fase 1.2). */
+  assertLocationBranchMutationAllowed(permissions: string[]): void {
+    this.assertGlobalLocationScope(permissions);
+  }
+
+  canMutateLocationGlobalData(permissions: string[]): boolean {
+    return this.hasGlobalLocationScope(permissions);
+  }
+
+  canManageLocationBranches(permissions: string[]): boolean {
+    return this.hasGlobalLocationScope(permissions);
   }
 
   canAccessTenantObject(user: TenantScoped, object: TenantScoped): boolean {
