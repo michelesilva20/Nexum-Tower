@@ -18,6 +18,10 @@ export const SEED_USERS = {
     email: "operador@nexumtower.local",
     password: "test123",
   },
+  financeiro: {
+    email: "financeiro@nexumtower.local",
+    password: "test123",
+  },
 } as const;
 
 /** Aguarda API + Web prontos (Nest compila na primeira subida). */

@@ -50,3 +50,33 @@ Base: `/logistics/locations`
 - **Vínculos filiais:** `*.assign_branches` + escopo global
 - **Locations + Customer:** se `customerId`, `branchIds` devem ser compatíveis com `CustomerBranch`
 - AuditLog em mutações sensíveis
+
+## Drivers
+
+Base: `/logistics/drivers`
+
+| Método | Rota | Permissão RBAC |
+|--------|------|----------------|
+| GET | `/logistics/drivers` | drivers.read **ou** logistics.read |
+| GET | `/logistics/drivers/:id` | drivers.read **ou** logistics.read |
+| POST | `/logistics/drivers` | drivers.create |
+| PATCH | `/logistics/drivers/:id` | drivers.update |
+| PATCH | `/logistics/drivers/:id/disable` | drivers.disable |
+| PATCH | `/logistics/drivers/:id/enable` | drivers.disable |
+| DELETE | `/logistics/drivers/:id` | drivers.delete |
+| GET | `/logistics/drivers/:id/branches` | drivers.read **ou** logistics.read |
+| POST | `/logistics/drivers/:id/branches` | drivers.assign_branches |
+| PATCH | `/logistics/drivers/:id/branches/:branchId/primary` | drivers.assign_branches |
+| DELETE | `/logistics/drivers/:id/branches/:branchId` | drivers.assign_branches |
+
+### Query listagem Drivers
+
+`search`, `status`, `availabilityStatus`, `driverType`, `employmentType`, `branchId`, `licenseCategory`, `licenseExpiringUntil`, `moppExpiringUntil`, `city`, `state`, `page`, `perPage`, `sortBy`, `sortDirection`
+
+`sortBy` whitelist: `code`, `fullName`, `driverType`, `employmentType`, `status`, `availabilityStatus`, `licenseExpiresAt`, `moppExpiresAt`, `city`, `state`, `createdAt`, `updatedAt`
+
+## Segurança (Drivers)
+
+- Dados pessoais **não** entram em AuditLog.metadata
+- Motorista ACTIVE exige CNH completa (número, categoria, vencimento)
+- `moppExpiresAt` obrigatório se `moppCertified = true`

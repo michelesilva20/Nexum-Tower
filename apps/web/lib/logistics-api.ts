@@ -370,3 +370,186 @@ export function removeLocationBranch(id: string, branchId: string) {
     method: "DELETE",
   });
 }
+
+export type DriverStatus = "ACTIVE" | "INACTIVE" | "ON_LEAVE" | "SUSPENDED" | "DISABLED";
+export type DriverType =
+  | "INTERNAL"
+  | "THIRD_PARTY"
+  | "OWNER_OPERATOR"
+  | "AGGREGATED"
+  | "TEMPORARY"
+  | "OTHER";
+export type EmploymentType =
+  | "EMPLOYEE"
+  | "CONTRACTOR"
+  | "FREELANCER"
+  | "AGGREGATED"
+  | "OUTSOURCED"
+  | "OTHER";
+export type DriverAvailabilityStatus =
+  | "AVAILABLE"
+  | "UNAVAILABLE"
+  | "ON_TRIP"
+  | "OFF_DUTY"
+  | "ON_VACATION"
+  | "ON_LEAVE";
+export type DriverDocumentType = "CPF" | "RG" | "CNH" | "PASSPORT" | "RNE" | "OTHER";
+export type LicenseCategory = "A" | "B" | "C" | "D" | "E" | "AB" | "AC" | "AD" | "AE" | "OTHER";
+
+export type DriverBranchLink = {
+  id: string;
+  branchId: string;
+  isPrimary: boolean;
+  status: "ACTIVE" | "INACTIVE" | "DISABLED";
+  updatedAt: string;
+  branch: { id: string; code: string; name: string; status: string };
+};
+
+export type DriverRow = {
+  id: string;
+  tenantId: string;
+  code: string;
+  fullName: string;
+  preferredName: string | null;
+  driverType: DriverType;
+  employmentType: EmploymentType;
+  documentType: DriverDocumentType | null;
+  documentNumber: string | null;
+  licenseNumber: string | null;
+  licenseCategory: LicenseCategory | null;
+  licenseState: string | null;
+  licenseCountry: string | null;
+  licenseIssuedAt: string | null;
+  licenseExpiresAt: string | null;
+  hasEar: boolean;
+  moppCertified: boolean;
+  moppExpiresAt: string | null;
+  birthDate: string | null;
+  email: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  emergencyContactName: string | null;
+  emergencyContactPhone: string | null;
+  emergencyContactRelation: string | null;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  district: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  zipCode: string | null;
+  admissionDate: string | null;
+  terminationDate: string | null;
+  contractorCompanyName: string | null;
+  availabilityStatus: DriverAvailabilityStatus;
+  status: DriverStatus;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  disabledAt: string | null;
+  deletedAt: string | null;
+  branches?: DriverBranchLink[];
+};
+
+export function listDrivers(params?: {
+  search?: string;
+  status?: DriverStatus;
+  availabilityStatus?: DriverAvailabilityStatus;
+  driverType?: DriverType;
+  employmentType?: EmploymentType;
+  branchId?: string;
+  licenseCategory?: LicenseCategory;
+  licenseExpiringUntil?: string;
+  moppExpiringUntil?: string;
+  city?: string;
+  state?: string;
+  page?: number;
+  perPage?: number;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+}) {
+  const qs = buildQuery({
+    search: params?.search,
+    status: params?.status,
+    availabilityStatus: params?.availabilityStatus,
+    driverType: params?.driverType,
+    employmentType: params?.employmentType,
+    branchId: params?.branchId,
+    licenseCategory: params?.licenseCategory,
+    licenseExpiringUntil: params?.licenseExpiringUntil,
+    moppExpiringUntil: params?.moppExpiringUntil,
+    city: params?.city,
+    state: params?.state,
+    page: params?.page,
+    perPage: params?.perPage,
+    sortBy: params?.sortBy,
+    sortDirection: params?.sortDirection,
+  });
+  return apiRequestPaginated<DriverRow>(`/logistics/drivers${qs}`);
+}
+
+export function getDriver(id: string) {
+  return apiRequest<DriverRow>(`/logistics/drivers/${id}`);
+}
+
+export function createDriver(
+  data: Partial<DriverRow> & {
+    code: string;
+    fullName: string;
+    driverType: DriverType;
+    employmentType: EmploymentType;
+    branchIds: string[];
+    primaryBranchId?: string;
+  },
+) {
+  return apiRequest<DriverRow>("/logistics/drivers", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateDriver(id: string, data: Partial<DriverRow>) {
+  return apiRequest<DriverRow>(`/logistics/drivers/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export function disableDriver(id: string) {
+  return apiRequest<DriverRow>(`/logistics/drivers/${id}/disable`, { method: "PATCH" });
+}
+
+export function enableDriver(id: string) {
+  return apiRequest<DriverRow>(`/logistics/drivers/${id}/enable`, { method: "PATCH" });
+}
+
+export function deleteDriver(id: string) {
+  return apiRequest<{ success: boolean }>(`/logistics/drivers/${id}`, { method: "DELETE" });
+}
+
+export function listDriverBranches(id: string) {
+  return apiRequest<DriverBranchLink[]>(`/logistics/drivers/${id}/branches`);
+}
+
+export function assignDriverBranches(
+  id: string,
+  data: { branchIds: string[]; primaryBranchId?: string },
+) {
+  return apiRequest<DriverBranchLink[]>(`/logistics/drivers/${id}/branches`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function setDriverPrimaryBranch(id: string, branchId: string) {
+  return apiRequest<DriverBranchLink[]>(
+    `/logistics/drivers/${id}/branches/${branchId}/primary`,
+    { method: "PATCH" },
+  );
+}
+
+export function removeDriverBranch(id: string, branchId: string) {
+  return apiRequest<DriverBranchLink[]>(`/logistics/drivers/${id}/branches/${branchId}`, {
+    method: "DELETE",
+  });
+}

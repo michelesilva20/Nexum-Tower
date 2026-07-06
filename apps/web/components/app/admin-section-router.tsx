@@ -6,6 +6,7 @@ import { DesignSystemPage } from "@/components/app/design-system-page";
 import { GroupsAdminPage } from "@/components/app/groups-admin-page";
 import { BranchesAdminPage } from "@/components/app/branches-admin-page";
 import { CustomersLogisticsPage } from "@/components/app/customers-logistics-page";
+import { DriversLogisticsPage } from "@/components/app/drivers-logistics-page";
 import { LocationsLogisticsPage } from "@/components/app/locations-logistics-page";
 import { PermissionsAdminPage } from "@/components/app/permissions-admin-page";
 import { RolesAdminPage } from "@/components/app/roles-admin-page";
@@ -27,6 +28,7 @@ const routeMap: Record<string, PageComponent> = {
   "admin/branches": BranchesAdminPage,
   "logistics/customers": CustomersLogisticsPage,
   "logistics/locations": LocationsLogisticsPage,
+  "logistics/drivers": DriversLogisticsPage,
   "admin/groups": GroupsAdminPage,
   "admin/roles": RolesAdminPage,
   "admin/permissions": PermissionsAdminPage,

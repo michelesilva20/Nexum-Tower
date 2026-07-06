@@ -18,6 +18,12 @@ const GLOBAL_LOCATION_PERMISSIONS = [
   "organization.manage",
   "*",
 ];
+const GLOBAL_DRIVER_PERMISSIONS = [
+  "drivers.manage",
+  "logistics.manage",
+  "organization.manage",
+  "*",
+];
 
 /**
  * Camada ABAC / object-level authorization da Nexum Core Platform.
@@ -102,6 +108,32 @@ export class AuthorizationService {
 
   canManageLocationBranches(permissions: string[]): boolean {
     return this.hasGlobalLocationScope(permissions);
+  }
+
+  hasGlobalDriverScope(permissions: string[]): boolean {
+    return hasAnyPermission(permissions, GLOBAL_DRIVER_PERMISSIONS);
+  }
+
+  assertGlobalDriverScope(permissions: string[]): void {
+    if (!this.hasGlobalDriverScope(permissions)) {
+      throw new ForbiddenException("Escopo global de motoristas necessário para esta operação.");
+    }
+  }
+
+  assertDriverGlobalMutationAllowed(permissions: string[]): void {
+    this.assertGlobalDriverScope(permissions);
+  }
+
+  assertDriverBranchMutationAllowed(permissions: string[]): void {
+    this.assertGlobalDriverScope(permissions);
+  }
+
+  canMutateDriverGlobalData(permissions: string[]): boolean {
+    return this.hasGlobalDriverScope(permissions);
+  }
+
+  canManageDriverBranches(permissions: string[]): boolean {
+    return this.hasGlobalDriverScope(permissions);
   }
 
   canAccessTenantObject(user: TenantScoped, object: TenantScoped): boolean {

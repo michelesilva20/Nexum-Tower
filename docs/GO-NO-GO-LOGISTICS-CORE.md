@@ -41,9 +41,13 @@ Verificar se o Nexum Core Platform está pronto para iniciar a camada operaciona
 
 ## Decisão
 
-### ✅ GO — desenvolvimento de Drivers (próxima fase)
+### ✅ GO — desenvolvimento de Vehicles (próxima fase)
 
-O módulo **Locations + LocationBranch** (Fase 1.2) está **10/10 para desenvolvimento** — E2E **7/7**, testes API **112/112**.
+O módulo **Drivers + DriverBranch** (Fase 1.3) está **10/10 para desenvolvimento** — ver [FASE-1.3-O-QUE-FOI-FEITO.md](./FASE-1.3-O-QUE-FOI-FEITO.md).
+
+### ✅ GO anterior — Locations (Fase 1.2)
+
+O módulo **Locations + LocationBranch** (Fase 1.2) está **10/10 para desenvolvimento** — E2E **7/7**.
 
 Documento: [FASE-1.2-O-QUE-FOI-FEITO.md](./FASE-1.2-O-QUE-FOI-FEITO.md)
 
@@ -88,7 +92,7 @@ Ver [modules/organization/RLS.md](./modules/organization/RLS.md)
 
 ## Próximo passo
 
-Iniciar **Locations** (Fase 1.2) seguindo [CURSOR-CORE-PLATFORM-RULES.md](./CURSOR-CORE-PLATFORM-RULES.md) e o molde de Customers:
+Iniciar **Vehicles** (Fase 1.4) seguindo [CURSOR-CORE-PLATFORM-RULES.md](./CURSOR-CORE-PLATFORM-RULES.md) e o molde de Drivers/Locations:
 
 1. Modelar entidade global + vínculo por filial quando aplicável
 2. Criar policies RLS para novas tabelas

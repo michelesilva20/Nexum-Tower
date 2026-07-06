@@ -10,6 +10,7 @@ import {
 import { FEATURE_DEFINITIONS, SETTING_DEFINITIONS } from "./seed-data/settings";
 import { BRANCH_DEFINITIONS, USER_BRANCH_ACCESS } from "./seed-data/branches";
 import { CUSTOMER_DEFINITIONS } from "./seed-data/customers";
+import { DRIVER_DEFINITIONS } from "./seed-data/drivers";
 import { LOCATION_DEFINITIONS } from "./seed-data/locations";
 
 const prisma = new PrismaClient();
@@ -350,6 +351,95 @@ async function seedCustomers(tenantId: string, branchByCode: Map<string, string>
   return customerByCode;
 }
 
+async function seedDrivers(tenantId: string, branchByCode: Map<string, string>) {
+  for (const def of DRIVER_DEFINITIONS) {
+    const branchIds = def.branchCodes
+      .map((code) => branchByCode.get(code))
+      .filter((id): id is string => !!id);
+
+    if (branchIds.length === 0) continue;
+
+    const primaryBranchId = branchByCode.get(def.primaryBranchCode) ?? branchIds[0];
+
+    const driver = await prisma.driver.upsert({
+      where: { tenantId_code: { tenantId, code: def.code } },
+      update: {
+        fullName: def.fullName,
+        preferredName: def.preferredName,
+        driverType: def.driverType,
+        employmentType: def.employmentType,
+        documentType: def.documentType,
+        documentNumber: def.documentNumber,
+        licenseNumber: def.licenseNumber,
+        licenseCategory: def.licenseCategory,
+        licenseState: def.licenseState,
+        licenseCountry: "BR",
+        licenseExpiresAt: def.licenseExpiresAt ? new Date(def.licenseExpiresAt) : null,
+        moppCertified: def.moppCertified ?? false,
+        moppExpiresAt: def.moppExpiresAt ? new Date(def.moppExpiresAt) : null,
+        city: def.city,
+        state: def.state,
+        phone: def.phone,
+        status: "ACTIVE",
+        availabilityStatus: "AVAILABLE",
+      },
+      create: {
+        tenantId,
+        code: def.code,
+        fullName: def.fullName,
+        preferredName: def.preferredName,
+        driverType: def.driverType,
+        employmentType: def.employmentType,
+        documentType: def.documentType,
+        documentNumber: def.documentNumber,
+        licenseNumber: def.licenseNumber,
+        licenseCategory: def.licenseCategory,
+        licenseState: def.licenseState,
+        licenseCountry: "BR",
+        licenseExpiresAt: def.licenseExpiresAt ? new Date(def.licenseExpiresAt) : null,
+        moppCertified: def.moppCertified ?? false,
+        moppExpiresAt: def.moppExpiresAt ? new Date(def.moppExpiresAt) : null,
+        city: def.city,
+        state: def.state,
+        phone: def.phone,
+        status: "ACTIVE",
+        availabilityStatus: "AVAILABLE",
+      },
+    });
+
+    for (const branchId of branchIds) {
+      await prisma.driverBranch.upsert({
+        where: {
+          tenantId_driverId_branchId: { tenantId, driverId: driver.id, branchId },
+        },
+        update: {
+          deletedAt: null,
+          disabledAt: null,
+          status: "ACTIVE",
+          isPrimary: branchId === primaryBranchId,
+        },
+        create: {
+          tenantId,
+          driverId: driver.id,
+          branchId,
+          isPrimary: branchId === primaryBranchId,
+          status: "ACTIVE",
+        },
+      });
+    }
+
+    await prisma.driverBranch.updateMany({
+      where: {
+        tenantId,
+        driverId: driver.id,
+        deletedAt: null,
+        NOT: { branchId: { in: branchIds } },
+      },
+      data: { isPrimary: false },
+    });
+  }
+}
+
 async function seedBranches(tenantId: string) {
   const branchByCode = new Map<string, string>();
 
@@ -420,6 +510,7 @@ async function seedBranches(tenantId: string) {
 
   const customerByCode = await seedCustomers(tenantId, branchByCode);
   await seedLocations(tenantId, branchByCode, customerByCode);
+  await seedDrivers(tenantId, branchByCode);
 }
 
 async function main() {

@@ -16,7 +16,7 @@ Documentos anteriores (histórico):
 
 ## Em uma frase
 
-O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI, CI, **112 testes API**, E2E), **Filiais 10/10 dev**, **Customers + Locations 10/10 dev** (Fases 1.1–1.2), e padrão async/DLQ documentado — **sem Redis/BullMQ ativos**.
+O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI, CI, **131 testes API**, E2E), **Filiais 10/10 dev**, **Customers + Locations + Drivers 10/10 dev** (Fases 1.1–1.3), e padrão async/DLQ documentado — **sem Redis/BullMQ ativos**.
 
 ---
 
@@ -33,8 +33,8 @@ O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI,
 │  ✅ ORGANIZACIONAL — FILIAIS (10/10 dev) · Fases 1.0 → 1.0.2             │
 │  Branch · UserBranchAccess · ABAC · E2E branches 7/7                     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  ✅ LOGÍSTICA — CLIENTES + LOCAIS (10/10 dev) · Fases 1.1 → 1.2           │
-│  Customer · Location · *Branch · ABAC hardened · E2E customers 7/7 · loc 7/7 │
+│  ✅ LOGÍSTICA — CLIENTES + LOCAIS + MOTORISTAS (10/10 dev) · Fases 1.1 → 1.3     │
+│  Customer · Location · Driver · *Branch · ABAC hardened · E2E 7/7 cada cadastro │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  📋 ASYNC / DLQ — PREPARADO (só documentação)                            │
 │  ASYNC-JOBS · DLQ · Outbox · Idempotency · Observability · Job Security  │
@@ -44,8 +44,8 @@ O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI,
 │  Command Center (/app) — KPIs e viagens fake                             │
 │  RLS FORCE + nexum_app em runtime — scripts prontos, dev usa postgres     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  ❌ LOGISTICS CORE — PRÓXIMO (Locations)                                   │
-│  Locais · Motoristas · Veículos · Rotas · Viagens · Ocorrências          │
+│  ❌ LOGISTICS CORE — PRÓXIMO (Vehicles)                                    │
+│  Veículos · Rotas · Viagens · Ocorrências                                │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -229,7 +229,9 @@ pnpm security:rls:test   # RLS manual (nexum_app)
 | Padrão Async/DLQ documentado | ✅ |
 | Customers + CustomerBranch (Fase 1.1) | ✅ |
 | Hardening Customers ABAC (Fase 1.1.1) | ✅ |
-| Locations | ⏭️ **próximo** |
+| Locations (Fase 1.2) | ✅ |
+| Drivers (Fase 1.3) | ✅ |
+| Vehicles | ⏭️ **próximo** |
 
 ---
 
