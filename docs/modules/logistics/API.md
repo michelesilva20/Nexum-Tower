@@ -80,3 +80,33 @@ Base: `/logistics/drivers`
 - Dados pessoais **não** entram em AuditLog.metadata
 - Motorista ACTIVE exige CNH completa (número, categoria, vencimento)
 - `moppExpiresAt` obrigatório se `moppCertified = true`
+
+## Vehicles
+
+Base: `/logistics/vehicles`
+
+| Método | Rota | Permissão RBAC |
+|--------|------|----------------|
+| GET | `/logistics/vehicles` | vehicles.read **ou** logistics.read |
+| GET | `/logistics/vehicles/:id` | vehicles.read **ou** logistics.read |
+| POST | `/logistics/vehicles` | vehicles.create |
+| PATCH | `/logistics/vehicles/:id` | vehicles.update |
+| PATCH | `/logistics/vehicles/:id/disable` | vehicles.disable |
+| PATCH | `/logistics/vehicles/:id/enable` | vehicles.disable |
+| DELETE | `/logistics/vehicles/:id` | vehicles.delete |
+| GET | `/logistics/vehicles/:id/branches` | vehicles.read **ou** logistics.read |
+| POST | `/logistics/vehicles/:id/branches` | vehicles.assign_branches |
+| PATCH | `/logistics/vehicles/:id/branches/:branchId/primary` | vehicles.assign_branches |
+| DELETE | `/logistics/vehicles/:id/branches/:branchId` | vehicles.assign_branches |
+
+### Query listagem Vehicles
+
+`search`, `status`, `availabilityStatus`, `vehicleType`, `vehicleCategory`, `ownershipType`, `branchId`, `brand`, `model`, `plate`, `fleetNumber`, `licensingExpiringUntil`, `insuranceExpiringUntil`, `inspectionExpiringUntil`, `tachographExpiringUntil`, `anttExpiringUntil`, `page`, `perPage`, `sortBy`, `sortDirection`
+
+### Placa
+
+Normalização: uppercase, sem espaços/hífen (`ABC1D23`).
+
+## Segurança (Vehicles)
+
+- RENAVAM/chassi/rastreador **não** entram completos em AuditLog.metadata

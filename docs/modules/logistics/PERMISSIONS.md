@@ -36,6 +36,18 @@
 | `drivers.manage` | Escopo global ABAC |
 | `drivers.assign_branches` | Vínculos DriverBranch |
 
+## Vehicles (Fase 1.4)
+
+| Key | Uso |
+|-----|-----|
+| `vehicles.read` | Listar/visualizar |
+| `vehicles.create` | Criar |
+| `vehicles.update` | Editar dados |
+| `vehicles.disable` | Desativar/reativar |
+| `vehicles.delete` | Soft delete |
+| `vehicles.manage` | Escopo global ABAC |
+| `vehicles.assign_branches` | Vínculos VehicleBranch |
+
 ## Compartilhadas
 
 | Key | Uso |
@@ -43,7 +55,7 @@
 | `logistics.read` | Menu logística (alternativa a *.read) |
 | `logistics.manage` | Escopo global ABAC |
 
-## Semântica ABAC (Customers + Locations + Drivers)
+## Semântica ABAC (todos os cadastros *Branch)
 
 | Permissão | RBAC | ABAC adicional |
 |-----------|------|----------------|
@@ -56,10 +68,10 @@ Escopo global = `*.manage` | `logistics.manage` | `organization.manage` | `*`
 
 ## Roles (resumo)
 
-| Role | Customers | Locations | Drivers |
-|------|-----------|-----------|---------|
-| owner | `*` | `*` | `*` |
-| tenant-admin | `customers.*`, `logistics.*` | `locations.*`, `logistics.*` | `drivers.*`, `logistics.*` |
-| operations-manager | read + create/update… | `locations.read` | `drivers.read` |
-| logistics-operator | read | read | read |
-| viewer | read | read | read |
+| Role | Customers | Locations | Drivers | Vehicles |
+|------|-----------|-----------|---------|----------|
+| owner | `*` | `*` | `*` | `*` |
+| tenant-admin | `customers.*`, `logistics.*` | `locations.*`, `logistics.*` | `drivers.*`, `logistics.*` | `vehicles.*`, `logistics.*` |
+| operations-manager | read + create/update… | `locations.read` | `drivers.read` | `vehicles.read` |
+| logistics-operator | read | read | read | read |
+| viewer | read | read | read | read |

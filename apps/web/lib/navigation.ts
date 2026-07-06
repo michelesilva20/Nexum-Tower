@@ -84,6 +84,12 @@ export const appNavigation: AppNavGroup[] = [
         icon: UserCog,
         requiredAnyPermission: ["drivers.read", "logistics.read"],
       },
+      {
+        key: "vehicles",
+        href: "/app/logistics/vehicles",
+        icon: Truck,
+        requiredAnyPermission: ["vehicles.read", "logistics.read"],
+      },
     ],
   },
   {
@@ -91,7 +97,6 @@ export const appNavigation: AppNavGroup[] = [
     items: [
       { key: "clients", icon: Users, comingSoon: true },
       { key: "fleet", icon: Truck, comingSoon: true },
-      { key: "vehicles", icon: Truck, comingSoon: true },
       { key: "routes", icon: Route, comingSoon: true },
       { key: "proofs", icon: FileCheck, comingSoon: true },
     ],

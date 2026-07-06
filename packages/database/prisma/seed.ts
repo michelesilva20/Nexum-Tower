@@ -12,6 +12,7 @@ import { BRANCH_DEFINITIONS, USER_BRANCH_ACCESS } from "./seed-data/branches";
 import { CUSTOMER_DEFINITIONS } from "./seed-data/customers";
 import { DRIVER_DEFINITIONS } from "./seed-data/drivers";
 import { LOCATION_DEFINITIONS } from "./seed-data/locations";
+import { VEHICLE_DEFINITIONS } from "./seed-data/vehicles";
 
 const prisma = new PrismaClient();
 
@@ -440,6 +441,106 @@ async function seedDrivers(tenantId: string, branchByCode: Map<string, string>) 
   }
 }
 
+function normalizePlate(plate: string): string {
+  return plate.trim().toUpperCase().replace(/[\s-]/g, "");
+}
+
+async function seedVehicles(tenantId: string, branchByCode: Map<string, string>) {
+  for (const def of VEHICLE_DEFINITIONS) {
+    const branchIds = def.branchCodes
+      .map((code) => branchByCode.get(code))
+      .filter((id): id is string => !!id);
+
+    if (branchIds.length === 0) continue;
+
+    const primaryBranchId = branchByCode.get(def.primaryBranchCode) ?? branchIds[0];
+    const plate = normalizePlate(def.plate);
+
+    const vehicle = await prisma.vehicle.upsert({
+      where: { tenantId_code: { tenantId, code: def.code } },
+      update: {
+        plate,
+        fleetNumber: def.fleetNumber,
+        vehicleType: def.vehicleType,
+        vehicleCategory: def.vehicleCategory,
+        ownershipType: def.ownershipType,
+        brand: def.brand,
+        model: def.model,
+        version: def.version,
+        manufactureYear: def.manufactureYear,
+        modelYear: def.modelYear,
+        fuelType: def.fuelType,
+        bodyType: def.bodyType,
+        licensePlateState: def.licensePlateState,
+        licensePlateCountry: "BR",
+        licensingExpiresAt: def.licensingExpiresAt ? new Date(def.licensingExpiresAt) : null,
+        insuranceExpiresAt: def.insuranceExpiresAt ? new Date(def.insuranceExpiresAt) : null,
+        inspectionExpiresAt: def.inspectionExpiresAt ? new Date(def.inspectionExpiresAt) : null,
+        tachographExpiresAt: def.tachographExpiresAt ? new Date(def.tachographExpiresAt) : null,
+        anttExpiresAt: def.anttExpiresAt ? new Date(def.anttExpiresAt) : null,
+        status: "ACTIVE",
+        availabilityStatus: "AVAILABLE",
+      },
+      create: {
+        tenantId,
+        code: def.code,
+        plate,
+        fleetNumber: def.fleetNumber,
+        vehicleType: def.vehicleType,
+        vehicleCategory: def.vehicleCategory,
+        ownershipType: def.ownershipType,
+        brand: def.brand,
+        model: def.model,
+        version: def.version,
+        manufactureYear: def.manufactureYear,
+        modelYear: def.modelYear,
+        fuelType: def.fuelType,
+        bodyType: def.bodyType,
+        licensePlateState: def.licensePlateState,
+        licensePlateCountry: "BR",
+        licensingExpiresAt: def.licensingExpiresAt ? new Date(def.licensingExpiresAt) : null,
+        insuranceExpiresAt: def.insuranceExpiresAt ? new Date(def.insuranceExpiresAt) : null,
+        inspectionExpiresAt: def.inspectionExpiresAt ? new Date(def.inspectionExpiresAt) : null,
+        tachographExpiresAt: def.tachographExpiresAt ? new Date(def.tachographExpiresAt) : null,
+        anttExpiresAt: def.anttExpiresAt ? new Date(def.anttExpiresAt) : null,
+        status: "ACTIVE",
+        availabilityStatus: "AVAILABLE",
+      },
+    });
+
+    for (const branchId of branchIds) {
+      await prisma.vehicleBranch.upsert({
+        where: {
+          tenantId_vehicleId_branchId: { tenantId, vehicleId: vehicle.id, branchId },
+        },
+        update: {
+          deletedAt: null,
+          disabledAt: null,
+          status: "ACTIVE",
+          isPrimary: branchId === primaryBranchId,
+        },
+        create: {
+          tenantId,
+          vehicleId: vehicle.id,
+          branchId,
+          isPrimary: branchId === primaryBranchId,
+          status: "ACTIVE",
+        },
+      });
+    }
+
+    await prisma.vehicleBranch.updateMany({
+      where: {
+        tenantId,
+        vehicleId: vehicle.id,
+        deletedAt: null,
+        NOT: { branchId: { in: branchIds } },
+      },
+      data: { isPrimary: false },
+    });
+  }
+}
+
 async function seedBranches(tenantId: string) {
   const branchByCode = new Map<string, string>();
 
@@ -511,6 +612,7 @@ async function seedBranches(tenantId: string) {
   const customerByCode = await seedCustomers(tenantId, branchByCode);
   await seedLocations(tenantId, branchByCode, customerByCode);
   await seedDrivers(tenantId, branchByCode);
+  await seedVehicles(tenantId, branchByCode);
 }
 
 async function main() {

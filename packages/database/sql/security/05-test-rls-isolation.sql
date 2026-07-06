@@ -82,6 +82,18 @@ SELECT 'driver_sem_contexto' AS cenario, count(*)::int AS motoristas_visiveis FR
 SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
 SELECT 'driver_branch_tenant_demo' AS cenario, count(*)::int AS vinculos_visiveis FROM "DriverBranch";
 
+\echo '17. Vehicle — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'vehicle_tenant_demo' AS cenario, count(*)::int AS veiculos_visiveis FROM "Vehicle";
+
+\echo '18. Vehicle — sem contexto'
+SELECT set_config('app.current_tenant_id', '', true);
+SELECT 'vehicle_sem_contexto' AS cenario, count(*)::int AS veiculos_visiveis FROM "Vehicle";
+
+\echo '19. VehicleBranch — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'vehicle_branch_tenant_demo' AS cenario, count(*)::int AS vinculos_visiveis FROM "VehicleBranch";
+
 \echo '=== Fim do teste ==='
 \echo 'Esperado: sem_contexto=0, tenant_demo>0, demais=0 (com FORCE RLS ou nexum_app)'
 \echo 'Branch/UBA/Customer: tenant_demo>0 após seed, sem_contexto=0'

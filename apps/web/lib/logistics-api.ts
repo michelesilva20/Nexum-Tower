@@ -553,3 +553,235 @@ export function removeDriverBranch(id: string, branchId: string) {
     method: "DELETE",
   });
 }
+
+export type VehicleStatus = "ACTIVE" | "INACTIVE" | "MAINTENANCE" | "SUSPENDED" | "DISABLED";
+export type VehicleAvailabilityStatus =
+  | "AVAILABLE"
+  | "UNAVAILABLE"
+  | "ON_TRIP"
+  | "IN_MAINTENANCE"
+  | "RESERVED"
+  | "OUT_OF_SERVICE";
+export type VehicleType =
+  | "TRUCK"
+  | "TRACTOR_TRUCK"
+  | "TRAILER"
+  | "SEMI_TRAILER"
+  | "VAN"
+  | "PICKUP"
+  | "CAR"
+  | "MOTORCYCLE"
+  | "BUS"
+  | "EQUIPMENT"
+  | "OTHER";
+export type VehicleCategory =
+  | "CARGO"
+  | "PASSENGER"
+  | "SUPPORT"
+  | "MAINTENANCE"
+  | "ADMINISTRATIVE"
+  | "EQUIPMENT"
+  | "OTHER";
+export type OwnershipType =
+  | "OWNED"
+  | "LEASED"
+  | "RENTED"
+  | "THIRD_PARTY"
+  | "AGGREGATED"
+  | "CUSTOMER_OWNED"
+  | "OTHER";
+export type FuelType =
+  | "DIESEL"
+  | "GASOLINE"
+  | "ETHANOL"
+  | "FLEX"
+  | "CNG"
+  | "LNG"
+  | "ELECTRIC"
+  | "HYBRID"
+  | "OTHER";
+export type BodyType =
+  | "DRY_VAN"
+  | "REFRIGERATED"
+  | "FLATBED"
+  | "TANK"
+  | "BULK"
+  | "CONTAINER_CARRIER"
+  | "DUMP"
+  | "SIDER"
+  | "CURTAIN_SIDER"
+  | "CAR_CARRIER"
+  | "CHASSIS"
+  | "NONE"
+  | "OTHER";
+
+export type VehicleBranchLink = {
+  id: string;
+  branchId: string;
+  isPrimary: boolean;
+  status: "ACTIVE" | "INACTIVE" | "DISABLED";
+  updatedAt: string;
+  branch: { id: string; code: string; name: string; status: string };
+};
+
+export type VehicleRow = {
+  id: string;
+  tenantId: string;
+  code: string;
+  plate: string;
+  fleetNumber: string | null;
+  vehicleType: VehicleType;
+  vehicleCategory: VehicleCategory;
+  ownershipType: OwnershipType;
+  brand: string;
+  model: string;
+  version: string | null;
+  manufactureYear: number | null;
+  modelYear: number | null;
+  color: string | null;
+  renavam: string | null;
+  chassisNumber: string | null;
+  engineNumber: string | null;
+  licensePlateState: string | null;
+  licensePlateCountry: string | null;
+  fuelType: FuelType | null;
+  emissionStandard: string | null;
+  axleCount: number | null;
+  tireCount: number | null;
+  tareWeightKg: number | string | null;
+  grossWeightKg: number | string | null;
+  payloadCapacityKg: number | string | null;
+  volumeCapacityM3: number | string | null;
+  bodyType: BodyType | null;
+  bodyDescription: string | null;
+  trackerProvider: string | null;
+  trackerDeviceId: string | null;
+  trackerImei: string | null;
+  odometerKm: number | string | null;
+  hourMeter: number | string | null;
+  licensingExpiresAt: string | null;
+  insuranceExpiresAt: string | null;
+  inspectionExpiresAt: string | null;
+  tachographExpiresAt: string | null;
+  anttExpiresAt: string | null;
+  availabilityStatus: VehicleAvailabilityStatus;
+  status: VehicleStatus;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  disabledAt: string | null;
+  deletedAt: string | null;
+  branches?: VehicleBranchLink[];
+};
+
+export function listVehicles(params?: {
+  search?: string;
+  status?: VehicleStatus;
+  availabilityStatus?: VehicleAvailabilityStatus;
+  vehicleType?: VehicleType;
+  vehicleCategory?: VehicleCategory;
+  ownershipType?: OwnershipType;
+  branchId?: string;
+  brand?: string;
+  model?: string;
+  licensingExpiringUntil?: string;
+  insuranceExpiringUntil?: string;
+  inspectionExpiringUntil?: string;
+  tachographExpiringUntil?: string;
+  anttExpiringUntil?: string;
+  page?: number;
+  perPage?: number;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+}) {
+  const qs = buildQuery({
+    search: params?.search,
+    status: params?.status,
+    availabilityStatus: params?.availabilityStatus,
+    vehicleType: params?.vehicleType,
+    vehicleCategory: params?.vehicleCategory,
+    ownershipType: params?.ownershipType,
+    branchId: params?.branchId,
+    brand: params?.brand,
+    model: params?.model,
+    licensingExpiringUntil: params?.licensingExpiringUntil,
+    insuranceExpiringUntil: params?.insuranceExpiringUntil,
+    inspectionExpiringUntil: params?.inspectionExpiringUntil,
+    tachographExpiringUntil: params?.tachographExpiringUntil,
+    anttExpiringUntil: params?.anttExpiringUntil,
+    page: params?.page,
+    perPage: params?.perPage,
+    sortBy: params?.sortBy,
+    sortDirection: params?.sortDirection,
+  });
+  return apiRequestPaginated<VehicleRow>(`/logistics/vehicles${qs}`);
+}
+
+export function getVehicle(id: string) {
+  return apiRequest<VehicleRow>(`/logistics/vehicles/${id}`);
+}
+
+export function createVehicle(
+  data: Partial<VehicleRow> & {
+    code: string;
+    plate: string;
+    vehicleType: VehicleType;
+    vehicleCategory: VehicleCategory;
+    ownershipType: OwnershipType;
+    brand: string;
+    model: string;
+    branchIds: string[];
+    primaryBranchId?: string;
+  },
+) {
+  return apiRequest<VehicleRow>("/logistics/vehicles", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateVehicle(id: string, data: Partial<VehicleRow>) {
+  return apiRequest<VehicleRow>(`/logistics/vehicles/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export function disableVehicle(id: string) {
+  return apiRequest<VehicleRow>(`/logistics/vehicles/${id}/disable`, { method: "PATCH" });
+}
+
+export function enableVehicle(id: string) {
+  return apiRequest<VehicleRow>(`/logistics/vehicles/${id}/enable`, { method: "PATCH" });
+}
+
+export function deleteVehicle(id: string) {
+  return apiRequest<{ success: boolean }>(`/logistics/vehicles/${id}`, { method: "DELETE" });
+}
+
+export function listVehicleBranches(id: string) {
+  return apiRequest<VehicleBranchLink[]>(`/logistics/vehicles/${id}/branches`);
+}
+
+export function assignVehicleBranches(
+  id: string,
+  data: { branchIds: string[]; primaryBranchId?: string },
+) {
+  return apiRequest<VehicleBranchLink[]>(`/logistics/vehicles/${id}/branches`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function setVehiclePrimaryBranch(id: string, branchId: string) {
+  return apiRequest<VehicleBranchLink[]>(
+    `/logistics/vehicles/${id}/branches/${branchId}/primary`,
+    { method: "PATCH" },
+  );
+}
+
+export function removeVehicleBranch(id: string, branchId: string) {
+  return apiRequest<VehicleBranchLink[]>(`/logistics/vehicles/${id}/branches/${branchId}`, {
+    method: "DELETE",
+  });
+}
