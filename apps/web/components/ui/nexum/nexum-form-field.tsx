@@ -25,10 +25,10 @@ export function NexumFormField({
     <div className={cn("space-y-1.5", className)}>
       <label
         htmlFor={htmlFor}
-        className="block text-xs font-medium uppercase tracking-wide text-nexum-text-muted"
+        className="block text-[13px] font-medium leading-snug text-nexum-text"
       >
         {label}
-        {required && <span className="ml-0.5 text-nexum-danger">*</span>}
+        {required && <span className="ml-0.5 text-nexum-primary">*</span>}
       </label>
       {children}
       {error ? (
@@ -37,10 +37,68 @@ export function NexumFormField({
           {error}
         </p>
       ) : helperText ? (
-        <p className="text-xs text-nexum-text-soft">{helperText}</p>
+        <p className="text-xs leading-relaxed text-nexum-text-muted">{helperText}</p>
       ) : null}
     </div>
   );
+}
+
+/** Container vertical para seções de formulário em modais/drawers. */
+export function NexumFormSections({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={cn("space-y-4", className)}>{children}</div>;
+}
+
+/** Seção agrupada com título, descrição opcional e card visual. */
+export function NexumFormSection({
+  title,
+  description,
+  children,
+  className,
+}: {
+  title: string;
+  description?: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section
+      className={cn(
+        "rounded-xl border border-nexum-border bg-nexum-surface p-4 shadow-[0_1px_3px_rgba(7,17,31,0.06)] sm:p-5",
+        className,
+      )}
+    >
+      <div className="mb-4 flex items-start gap-3 border-b border-nexum-border/70 pb-3">
+        <span
+          className="mt-1 h-4 w-1 shrink-0 rounded-full bg-nexum-primary"
+          aria-hidden="true"
+        />
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-nexum-text">{title}</h3>
+          {description && (
+            <p className="mt-1 text-xs leading-relaxed text-nexum-text-muted">{description}</p>
+          )}
+        </div>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+/** Grid padrão de campos (2 colunas em telas médias+). */
+export function NexumFormGrid({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={cn("grid gap-4 sm:grid-cols-2", className)}>{children}</div>;
 }
 
 type NexumCheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {

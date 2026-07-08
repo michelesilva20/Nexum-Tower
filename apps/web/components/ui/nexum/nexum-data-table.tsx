@@ -2,12 +2,109 @@
 
 import { NexumBadge } from "@/components/ui/nexum/nexum-badge";
 import { NexumButton } from "@/components/ui/nexum/nexum-button";
+import { NexumTooltip } from "@/components/ui/nexum/nexum-breadcrumb";
+import type { NexumDropdownItem } from "@/components/ui/nexum/nexum-dropdown";
 import { NexumEmptyState } from "@/components/ui/nexum/nexum-empty-state";
 import { NexumTableSkeleton } from "@/components/ui/nexum/nexum-skeleton";
 import { cn } from "@nexum-tower/ui";
-import { Inbox, Search } from "lucide-react";
+import {
+  Ban,
+  Building2,
+  Eye,
+  Inbox,
+  MapPin,
+  Pencil,
+  RotateCcw,
+  Search,
+  Trash2,
+  UserPlus,
+  type LucideIcon,
+} from "lucide-react";
 import type { ReactNode } from "react";
 import { NexumPagination } from "./nexum-pagination";
+
+export type NexumTableActionItem = NexumDropdownItem;
+
+const DEFAULT_ACTION_ICONS: Record<string, LucideIcon> = {
+  view: Eye,
+  edit: Pencil,
+  branches: Building2,
+  points: MapPin,
+  disable: Ban,
+  enable: RotateCcw,
+  delete: Trash2,
+  users: UserPlus,
+};
+
+function resolveActionIcon(item: NexumTableActionItem) {
+  if (item.icon) return item.icon;
+  const Icon = DEFAULT_ACTION_ICONS[item.key];
+  if (!Icon) return <Pencil className="h-3.5 w-3.5" aria-hidden="true" />;
+  return <Icon className="h-3.5 w-3.5" aria-hidden="true" />;
+}
+
+/** Código operacional compacto (listagens). */
+export function NexumTableCode({ value, className }: { value: string; className?: string }) {
+  return (
+    <span
+      className={cn(
+        "block max-w-[96px] truncate font-mono text-[11px] leading-tight text-nexum-text-muted",
+        className,
+      )}
+      title={value}
+    >
+      {value}
+    </span>
+  );
+}
+
+/** Texto truncado para células densas. */
+export function NexumTableText({
+  children,
+  title,
+  className,
+  maxWidth = "140px",
+}: {
+  children: ReactNode;
+  title?: string;
+  className?: string;
+  maxWidth?: string;
+}) {
+  return (
+    <span
+      className={cn("block truncate text-xs leading-tight", className)}
+      style={{ maxWidth }}
+      title={title ?? (typeof children === "string" ? children : undefined)}
+    >
+      {children}
+    </span>
+  );
+}
+
+export function NexumTableRowActions({ items }: { items: NexumTableActionItem[] }) {
+  if (items.length === 0) return null;
+
+  return (
+    <div className="flex flex-nowrap items-center justify-end gap-0.5">
+      {items.map((item) => (
+        <NexumTooltip key={item.key} content={item.label}>
+          <NexumButton
+            size="sm"
+            variant="ghost"
+            className={cn(
+              "h-7 w-7 shrink-0 p-0",
+              item.danger && "text-nexum-danger hover:bg-nexum-danger/10 hover:text-nexum-danger",
+            )}
+            aria-label={item.label}
+            onClick={() => item.onSelect?.()}
+          >
+            {resolveActionIcon(item)}
+          </NexumButton>
+        </NexumTooltip>
+      ))}
+    </div>
+  );
+}
 
 export type NexumDataTableColumn<T> = {
   key: string;
@@ -117,7 +214,7 @@ export function NexumDataTable<T extends { id: string }>({
                       key={col.key}
                       scope="col"
                       className={cn(
-                        "px-5 py-3.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-nexum-text-muted",
+                        "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-nexum-text-muted",
                         alignClass[col.align ?? "left"],
                         col.className,
                       )}
@@ -134,7 +231,7 @@ export function NexumDataTable<T extends { id: string }>({
                     <tr
                       key={row.id}
                       className={cn(
-                        "group border-b border-nexum-border/35 transition-all duration-200 last:border-b-0",
+                        "group border-b border-nexum-border/35 transition-colors duration-150 last:border-b-0",
                         index % 2 === 1 && "bg-nexum-bg-soft/25",
                         "hover:bg-nexum-primary/[0.045]",
                         selected &&
@@ -145,8 +242,10 @@ export function NexumDataTable<T extends { id: string }>({
                         <td
                           key={col.key}
                           className={cn(
-                            "px-5 py-4 text-sm text-nexum-text transition-colors",
-                            "group-hover:text-nexum-text",
+                            "px-2 py-1.5 text-xs leading-tight text-nexum-text align-middle",
+                            col.key === "code" && "w-[1%] max-w-[96px] whitespace-nowrap",
+                            col.key === "actions" && "w-[1%] whitespace-nowrap",
+                            "[&_.rounded-full]:px-1.5 [&_.rounded-full]:py-0 [&_.rounded-full]:text-[10px]",
                             alignClass[col.align ?? "left"],
                             col.className,
                           )}
@@ -162,7 +261,7 @@ export function NexumDataTable<T extends { id: string }>({
           </div>
 
           {pagination && pagination.total > 0 && (
-            <div className="border-t border-nexum-border/60 bg-nexum-bg-soft/50 px-5 py-4">
+            <div className="border-t border-nexum-border/60 bg-nexum-bg-soft/50 px-3 py-2.5">
               <NexumPagination {...pagination} />
             </div>
           )}

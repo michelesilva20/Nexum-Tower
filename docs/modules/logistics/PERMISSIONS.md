@@ -48,6 +48,19 @@
 | `vehicles.manage` | Escopo global ABAC |
 | `vehicles.assign_branches` | Vínculos VehicleBranch |
 
+## Routes (Fase 1.5)
+
+| Key | Uso |
+|-----|-----|
+| `routes.read` | Listar/visualizar |
+| `routes.create` | Criar |
+| `routes.update` | Editar dados |
+| `routes.disable` | Desativar/reativar |
+| `routes.delete` | Soft delete |
+| `routes.manage` | Escopo global ABAC |
+| `routes.assign_branches` | Vínculos RouteBranch |
+| `routes.manage_points` | Sequência RoutePoint (PUT) |
+
 ## Compartilhadas
 
 | Key | Uso |
@@ -68,10 +81,10 @@ Escopo global = `*.manage` | `logistics.manage` | `organization.manage` | `*`
 
 ## Roles (resumo)
 
-| Role | Customers | Locations | Drivers | Vehicles |
-|------|-----------|-----------|---------|----------|
-| owner | `*` | `*` | `*` | `*` |
-| tenant-admin | `customers.*`, `logistics.*` | `locations.*`, `logistics.*` | `drivers.*`, `logistics.*` | `vehicles.*`, `logistics.*` |
-| operations-manager | read + create/update… | `locations.read` | `drivers.read` | `vehicles.read` |
-| logistics-operator | read | read | read | read |
-| viewer | read | read | read | read |
+| Role | Customers | Locations | Drivers | Vehicles | Routes |
+|------|-----------|-----------|---------|----------|--------|
+| owner | `*` | `*` | `*` | `*` | `*` |
+| tenant-admin | `customers.*`, `logistics.*` | `locations.*`, `logistics.*` | `drivers.*`, `logistics.*` | `vehicles.*`, `logistics.*` | `routes.*`, `logistics.*` |
+| operations-manager | read + create/update… | `locations.read` | `drivers.read` | `vehicles.read` | `routes.read` |
+| logistics-operator | read | read | read | read | read |
+| viewer | read | read | read | read | read |

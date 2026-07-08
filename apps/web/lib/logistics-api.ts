@@ -785,3 +785,262 @@ export function removeVehicleBranch(id: string, branchId: string) {
     method: "DELETE",
   });
 }
+
+export type RouteStatus = "ACTIVE" | "INACTIVE" | "DISABLED";
+export type RouteType =
+  | "STANDARD"
+  | "DEDICATED"
+  | "SPOT"
+  | "MILK_RUN"
+  | "ROUND_TRIP"
+  | "TRANSFER"
+  | "DISTRIBUTION"
+  | "COLLECTION"
+  | "LINE_HAUL"
+  | "PORT"
+  | "CUSTOMER"
+  | "OTHER";
+export type OperationType =
+  | "INBOUND"
+  | "OUTBOUND"
+  | "TRANSFER"
+  | "DISTRIBUTION"
+  | "COLLECTION"
+  | "RETURN"
+  | "EXPORT"
+  | "IMPORT"
+  | "OTHER";
+export type RouteRiskLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+export type RoutePointType =
+  | "ORIGIN"
+  | "DESTINATION"
+  | "STOP"
+  | "WAYPOINT"
+  | "PICKUP"
+  | "DELIVERY"
+  | "CHECKPOINT"
+  | "REST_POINT"
+  | "FUEL_STOP"
+  | "OTHER";
+export type RoutePointOperationRole =
+  | "LOAD"
+  | "UNLOAD"
+  | "LOAD_UNLOAD"
+  | "CHECK_IN"
+  | "CHECK_OUT"
+  | "CUSTOMS"
+  | "FUEL"
+  | "REST"
+  | "MAINTENANCE"
+  | "PASS_THROUGH"
+  | "OTHER";
+
+export type RouteLocationRef = {
+  id: string;
+  code: string;
+  name: string;
+  city: string;
+  state: string;
+};
+
+export type RouteCustomerRef = {
+  id: string;
+  code: string;
+  legalName: string;
+  tradeName: string | null;
+};
+
+export type RouteBranchLink = {
+  id: string;
+  branchId: string;
+  isPrimary: boolean;
+  status: RouteStatus;
+  updatedAt: string;
+  branch: { id: string; code: string; name: string; status: string };
+};
+
+export type RoutePoint = {
+  id: string;
+  routeId: string;
+  locationId: string;
+  sequence: number;
+  pointType: RoutePointType;
+  operationRole: RoutePointOperationRole;
+  plannedArrivalOffsetMinutes: number | null;
+  plannedDepartureOffsetMinutes: number | null;
+  plannedServiceTimeMinutes: number | null;
+  distanceFromPreviousKm: number | string | null;
+  durationFromPreviousMinutes: number | null;
+  instructions: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  location?: RouteLocationRef;
+};
+
+export type RoutePointInput = {
+  locationId: string;
+  sequence: number;
+  pointType: RoutePointType;
+  operationRole: RoutePointOperationRole;
+  plannedArrivalOffsetMinutes?: number;
+  plannedDepartureOffsetMinutes?: number;
+  plannedServiceTimeMinutes?: number;
+  distanceFromPreviousKm?: number;
+  durationFromPreviousMinutes?: number;
+  instructions?: string;
+  notes?: string;
+};
+
+export type RouteRow = {
+  id: string;
+  tenantId: string;
+  code: string;
+  name: string;
+  description: string | null;
+  routeType: RouteType;
+  operationType: OperationType;
+  customerId: string | null;
+  customer: RouteCustomerRef | null;
+  originLocationId: string | null;
+  originLocation: RouteLocationRef | null;
+  destinationLocationId: string | null;
+  destinationLocation: RouteLocationRef | null;
+  plannedDistanceKm: number | string | null;
+  plannedDurationMinutes: number | null;
+  estimatedTollCost: number | string | null;
+  estimatedFuelCost: number | string | null;
+  estimatedTotalCost: number | string | null;
+  requiresMopp: boolean;
+  requiresRefrigeration: boolean;
+  requiresTracking: boolean;
+  requiresEscort: boolean;
+  riskLevel: RouteRiskLevel;
+  status: RouteStatus;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  disabledAt: string | null;
+  deletedAt: string | null;
+  branches?: RouteBranchLink[];
+  points?: RoutePoint[];
+};
+
+export function listRoutes(params?: {
+  search?: string;
+  status?: RouteStatus;
+  routeType?: RouteType;
+  operationType?: OperationType;
+  riskLevel?: RouteRiskLevel;
+  branchId?: string;
+  customerId?: string;
+  originLocationId?: string;
+  destinationLocationId?: string;
+  requiresMopp?: string;
+  requiresRefrigeration?: string;
+  requiresTracking?: string;
+  requiresEscort?: string;
+  page?: number;
+  perPage?: number;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+}) {
+  const qs = buildQuery({
+    search: params?.search,
+    status: params?.status,
+    routeType: params?.routeType,
+    operationType: params?.operationType,
+    riskLevel: params?.riskLevel,
+    branchId: params?.branchId,
+    customerId: params?.customerId,
+    originLocationId: params?.originLocationId,
+    destinationLocationId: params?.destinationLocationId,
+    requiresMopp: params?.requiresMopp,
+    requiresRefrigeration: params?.requiresRefrigeration,
+    requiresTracking: params?.requiresTracking,
+    requiresEscort: params?.requiresEscort,
+    page: params?.page,
+    perPage: params?.perPage,
+    sortBy: params?.sortBy,
+    sortDirection: params?.sortDirection,
+  });
+  return apiRequestPaginated<RouteRow>(`/logistics/routes${qs}`);
+}
+
+export function getRoute(id: string) {
+  return apiRequest<RouteRow>(`/logistics/routes/${id}`);
+}
+
+export function createRoute(
+  data: Omit<Partial<RouteRow>, "points"> & {
+    code: string;
+    name: string;
+    routeType: RouteType;
+    operationType: OperationType;
+    branchIds: string[];
+    primaryBranchId?: string;
+    points: RoutePointInput[];
+  },
+) {
+  return apiRequest<RouteRow>("/logistics/routes", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateRoute(id: string, data: Partial<RouteRow>) {
+  return apiRequest<RouteRow>(`/logistics/routes/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export function disableRoute(id: string) {
+  return apiRequest<RouteRow>(`/logistics/routes/${id}/disable`, { method: "PATCH" });
+}
+
+export function enableRoute(id: string) {
+  return apiRequest<RouteRow>(`/logistics/routes/${id}/enable`, { method: "PATCH" });
+}
+
+export function deleteRoute(id: string) {
+  return apiRequest<{ success: boolean }>(`/logistics/routes/${id}`, { method: "DELETE" });
+}
+
+export function listRouteBranches(id: string) {
+  return apiRequest<RouteBranchLink[]>(`/logistics/routes/${id}/branches`);
+}
+
+export function assignRouteBranches(
+  id: string,
+  data: { branchIds: string[]; primaryBranchId?: string },
+) {
+  return apiRequest<RouteBranchLink[]>(`/logistics/routes/${id}/branches`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function setRoutePrimaryBranch(id: string, branchId: string) {
+  return apiRequest<RouteBranchLink[]>(
+    `/logistics/routes/${id}/branches/${branchId}/primary`,
+    { method: "PATCH" },
+  );
+}
+
+export function removeRouteBranch(id: string, branchId: string) {
+  return apiRequest<RouteBranchLink[]>(`/logistics/routes/${id}/branches/${branchId}`, {
+    method: "DELETE",
+  });
+}
+
+export function listRoutePoints(id: string) {
+  return apiRequest<RoutePoint[]>(`/logistics/routes/${id}/points`);
+}
+
+export function replaceRoutePoints(id: string, data: { points: RoutePointInput[] }) {
+  return apiRequest<RoutePoint[]>(`/logistics/routes/${id}/points`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}

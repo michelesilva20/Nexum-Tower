@@ -8,6 +8,7 @@ import { BranchesAdminPage } from "@/components/app/branches-admin-page";
 import { CustomersLogisticsPage } from "@/components/app/customers-logistics-page";
 import { DriversLogisticsPage } from "@/components/app/drivers-logistics-page";
 import { VehiclesLogisticsPage } from "@/components/app/vehicles-logistics-page";
+import { RoutesLogisticsPage } from "@/components/app/routes-logistics-page";
 import { LocationsLogisticsPage } from "@/components/app/locations-logistics-page";
 import { PermissionsAdminPage } from "@/components/app/permissions-admin-page";
 import { RolesAdminPage } from "@/components/app/roles-admin-page";
@@ -31,6 +32,7 @@ const routeMap: Record<string, PageComponent> = {
   "logistics/locations": LocationsLogisticsPage,
   "logistics/drivers": DriversLogisticsPage,
   "logistics/vehicles": VehiclesLogisticsPage,
+  "logistics/routes": RoutesLogisticsPage,
   "admin/groups": GroupsAdminPage,
   "admin/roles": RolesAdminPage,
   "admin/permissions": PermissionsAdminPage,

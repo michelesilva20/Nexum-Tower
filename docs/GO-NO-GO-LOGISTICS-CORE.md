@@ -41,13 +41,13 @@ Verificar se o Nexum Core Platform está pronto para iniciar a camada operaciona
 
 ## Decisão
 
-### ✅ GO — desenvolvimento de Routes/Shipments (próxima fase)
+### ✅ GO — desenvolvimento de Shipments/Trips (próxima fase)
 
-O módulo **Vehicles + VehicleBranch** (Fase 1.4) está **10/10 para desenvolvimento** — ver [FASE-1.4-O-QUE-FOI-FEITO.md](./FASE-1.4-O-QUE-FOI-FEITO.md).
+O módulo **Routes + RouteBranch + RoutePoints** (Fase 1.5) está **10/10 para desenvolvimento** — ver [FASE-1.5-O-QUE-FOI-FEITO.md](./FASE-1.5-O-QUE-FOI-FEITO.md).
 
-### ✅ GO anterior — Drivers (Fase 1.3)
+### ✅ GO anterior — Vehicles (Fase 1.4)
 
-Documento: [FASE-1.3-O-QUE-FOI-FEITO.md](./FASE-1.3-O-QUE-FOI-FEITO.md)
+Documento: [FASE-1.4-O-QUE-FOI-FEITO.md](./FASE-1.4-O-QUE-FOI-FEITO.md)
 
 ### ✅ GO anterior — Locations (Fase 1.2)
 
@@ -96,7 +96,7 @@ Ver [modules/organization/RLS.md](./modules/organization/RLS.md)
 
 ## Próximo passo
 
-Iniciar **Routes/RoutePoints** (Fase 1.5) seguindo [CURSOR-CORE-PLATFORM-RULES.md](./CURSOR-CORE-PLATFORM-RULES.md) e o molde de Vehicles:
+Iniciar **Shipments/Trips** (Fase 1.6) seguindo o molde de Routes:
 
 1. Modelar entidade global + vínculo por filial quando aplicável
 2. Criar policies RLS para novas tabelas

@@ -16,7 +16,7 @@ Documentos anteriores (histórico):
 
 ## Em uma frase
 
-O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI, CI, **150 testes API**, E2E), **Filiais 10/10 dev**, **Customers + Locations + Drivers + Vehicles 10/10 dev** (Fases 1.1–1.4), e padrão async/DLQ documentado — **sem Redis/BullMQ ativos**.
+O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI, CI, **181 testes API**, E2E), **Filiais 10/10 dev**, **5 cadastros mestres logísticos 10/10 dev** (Fases 1.1–1.5), e padrão async/DLQ documentado — **sem Redis/BullMQ ativos**.
 
 ---
 
@@ -33,8 +33,8 @@ O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI,
 │  ✅ ORGANIZACIONAL — FILIAIS (10/10 dev) · Fases 1.0 → 1.0.2             │
 │  Branch · UserBranchAccess · ABAC · E2E branches 7/7                     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  ✅ LOGÍSTICA — CADASTROS MESTRES (10/10 dev) · Fases 1.1 → 1.4              │
-│  Customer · Location · Driver · Vehicle · *Branch · E2E 7/7 cada cadastro   │
+│  ✅ LOGÍSTICA — 5 CADASTROS MESTRES (10/10 dev) · Fases 1.1 → 1.5           │
+│  Customer · Location · Driver · Vehicle · Route · *Branch · RoutePoint       │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  📋 ASYNC / DLQ — PREPARADO (só documentação)                            │
 │  ASYNC-JOBS · DLQ · Outbox · Idempotency · Observability · Job Security  │
@@ -44,8 +44,8 @@ O Nexum Tower tem **fundação SaaS completa** (Auth, RBAC, ABAC, RLS, Admin UI,
 │  Command Center (/app) — KPIs e viagens fake                             │
 │  RLS FORCE + nexum_app em runtime — scripts prontos, dev usa postgres     │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  ❌ LOGISTICS CORE — PRÓXIMO (Routes/Trips)                                │
-│  Rotas · Viagens · Ocorrências · Custos · Documentos                     │
+│  ❌ LOGISTICS CORE — PRÓXIMO (Shipments/Trips)                             │
+│  Cargas · Viagens · Ocorrências · Custos · Documentos                     │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -232,7 +232,8 @@ pnpm security:rls:test   # RLS manual (nexum_app)
 | Locations (Fase 1.2) | ✅ |
 | Drivers (Fase 1.3) | ✅ |
 | Vehicles (Fase 1.4) | ✅ |
-| Routes | ⏭️ **próximo** |
+| Routes (Fase 1.5) | ✅ |
+| Shipments/Trips | ⏭️ **próximo** |
 
 ---
 

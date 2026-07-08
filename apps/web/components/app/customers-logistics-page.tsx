@@ -10,13 +10,20 @@ import {
   NexumDataTable,
   NexumDrawer,
   NexumFormField,
+  NexumFormGrid,
+  NexumFormSection,
+  NexumFormSections,
   NexumInput,
   NexumSelect,
+  NexumTableCode,
+  NexumTableRowActions,
   NexumTableSearch,
+  NexumTableText,
   NexumTableToolbar,
   NexumTextarea,
   NexumToastProvider,
   useNexumToast,
+  type NexumDropdownItem,
 } from "@/components/ui/nexum";
 import { fetchBranches, type BranchRow } from "@/lib/admin-api";
 import { ApiError } from "@/lib/api";
@@ -129,11 +136,13 @@ const emptyForm: CustomerForm = {
 function formatBranches(row: CustomerRow) {
   const links = row.branches ?? [];
   if (links.length === 0) return "—";
+  const label = (l: (typeof links)[number]) =>
+    l.isPrimary ? `${l.branch.name}★` : l.branch.name;
   if (links.length <= 2) {
-    return links.map((l) => l.branch.name).join(", ");
+    return links.map(label).join(", ");
   }
   const [first, second, ...rest] = links;
-  return `${first.branch.name}, ${second.branch.name} +${rest.length}`;
+  return `${label(first)}, ${label(second)} +${rest.length}`;
 }
 
 function primaryBranchLabel(row: CustomerRow) {
@@ -416,11 +425,10 @@ function CustomersLogisticsPageInner() {
   }
 
   const formSections = (
-    <div className="space-y-8">
-      <section>
-        <h3 className="mb-3 text-sm font-semibold text-nexum-accent">Identificação</h3>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <NexumFormField label="Código interno *">
+    <NexumFormSections>
+      <NexumFormSection title="Identificação">
+        <NexumFormGrid>
+          <NexumFormField label="Código interno" required>
             <NexumInput
               value={form.code}
               disabled={!!editCustomer}
@@ -437,13 +445,13 @@ function CustomersLogisticsPageInner() {
               <option value="DISABLED">Desativado</option>
             </NexumSelect>
           </NexumFormField>
-          <NexumFormField label="Razão social / Nome legal *" className="sm:col-span-2">
+          <NexumFormField label="Razão social / Nome legal" required className="sm:col-span-2">
             <NexumInput value={form.legalName} onChange={(e) => setForm({ ...form, legalName: e.target.value })} />
           </NexumFormField>
           <NexumFormField label="Nome fantasia" className="sm:col-span-2">
             <NexumInput value={form.tradeName} onChange={(e) => setForm({ ...form, tradeName: e.target.value })} />
           </NexumFormField>
-          <NexumFormField label="Tipo de cliente *">
+          <NexumFormField label="Tipo de cliente" required>
             <NexumSelect
               value={form.customerType}
               onChange={(e) => setForm({ ...form, customerType: e.target.value as CustomerType })}
@@ -455,12 +463,11 @@ function CustomersLogisticsPageInner() {
               ))}
             </NexumSelect>
           </NexumFormField>
-        </div>
-      </section>
+        </NexumFormGrid>
+      </NexumFormSection>
 
-      <section>
-        <h3 className="mb-3 text-sm font-semibold text-nexum-accent">Documentos fiscais</h3>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <NexumFormSection title="Documentos fiscais">
+        <NexumFormGrid>
           <NexumFormField label="Tipo de documento">
             <NexumSelect
               value={form.documentType}
@@ -495,12 +502,11 @@ function CustomersLogisticsPageInner() {
               onChange={(e) => setForm({ ...form, municipalRegistration: e.target.value })}
             />
           </NexumFormField>
-        </div>
-      </section>
+        </NexumFormGrid>
+      </NexumFormSection>
 
-      <section>
-        <h3 className="mb-3 text-sm font-semibold text-nexum-accent">Contato principal</h3>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <NexumFormSection title="Contato principal">
+        <NexumFormGrid>
           <NexumFormField label="Nome do contato">
             <NexumInput
               value={form.mainContactName}
@@ -532,15 +538,14 @@ function CustomersLogisticsPageInner() {
           <NexumFormField label="Website" className="sm:col-span-2">
             <NexumInput value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
           </NexumFormField>
-        </div>
-      </section>
+        </NexumFormGrid>
+      </NexumFormSection>
 
-      <section>
-        <h3 className="mb-1 text-sm font-semibold text-nexum-accent">Endereço fiscal / cobrança</h3>
-        <p className="mb-3 text-xs text-nexum-text-muted">
-          Este endereço é fiscal/cobrança. Locais operacionais serão cadastrados no módulo Locais.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <NexumFormSection
+        title="Endereço fiscal / cobrança"
+        description="Este endereço é fiscal/cobrança. Locais operacionais serão cadastrados no módulo Locais."
+      >
+        <NexumFormGrid>
           <NexumFormField label="Endereço" className="sm:col-span-2">
             <NexumInput
               value={form.billingAddressLine1}
@@ -584,15 +589,14 @@ function CustomersLogisticsPageInner() {
               onChange={(e) => setForm({ ...form, billingZipCode: e.target.value })}
             />
           </NexumFormField>
-        </div>
-      </section>
+        </NexumFormGrid>
+      </NexumFormSection>
 
       {!editCustomer && (
-        <section>
-          <h3 className="mb-1 text-sm font-semibold text-nexum-accent">Filiais de atendimento</h3>
-          <p className="mb-3 text-xs text-nexum-text-muted">
-            As filiais definem quais unidades operacionais podem visualizar e operar este cliente.
-          </p>
+        <NexumFormSection
+          title="Filiais de atendimento"
+          description="As filiais definem quais unidades operacionais podem visualizar e operar este cliente."
+        >
           <div className="flex flex-wrap gap-2">
             {branchOptions.map((b) => {
               const selected = form.branchIds.includes(b.id);
@@ -601,10 +605,10 @@ function CustomersLogisticsPageInner() {
                   key={b.id}
                   type="button"
                   onClick={() => toggleBranch(b.id)}
-                  className={`rounded-full border px-3 py-1 text-xs transition ${
+                  className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
                     selected
-                      ? "border-nexum-accent bg-nexum-accent/10 text-nexum-accent"
-                      : "border-nexum-border text-nexum-text-muted hover:border-nexum-accent/50"
+                      ? "border-nexum-primary bg-nexum-primary/10 text-nexum-primary"
+                      : "border-nexum-border bg-nexum-bg text-nexum-text-muted hover:border-nexum-primary/40 hover:text-nexum-text"
                   }`}
                 >
                   {b.name} ({b.code})
@@ -629,19 +633,18 @@ function CustomersLogisticsPageInner() {
               </NexumSelect>
             </NexumFormField>
           )}
-        </section>
+        </NexumFormSection>
       )}
 
-      <section>
-        <h3 className="mb-3 text-sm font-semibold text-nexum-accent">Observações internas</h3>
+      <NexumFormSection title="Observações internas">
         <NexumTextarea
           value={form.notes}
           onChange={(e) => setForm({ ...form, notes: e.target.value })}
           rows={3}
           placeholder="Observações internas visíveis apenas para usuários autorizados."
         />
-      </section>
-    </div>
+      </NexumFormSection>
+    </NexumFormSections>
   );
 
   return (
@@ -760,23 +763,30 @@ function CustomersLogisticsPageInner() {
             {
               key: "code",
               header: "Código",
-              render: (r) => <span className="font-mono text-sm">{r.code}</span>,
+              render: (r) => <NexumTableCode value={r.code} />,
             },
             {
               key: "name",
               header: "Cliente",
               render: (r) => (
-                <div>
-                  <p className="font-medium text-nexum-text">{r.legalName}</p>
-                  {r.tradeName && <p className="text-xs text-nexum-text-muted">{r.tradeName}</p>}
+                <div className="max-w-[160px]">
+                  <p className="truncate font-medium leading-tight">{r.legalName}</p>
+                  {r.tradeName && (
+                    <p className="truncate text-[11px] leading-tight text-nexum-text-muted">
+                      {r.tradeName}
+                    </p>
+                  )}
                 </div>
               ),
             },
             {
               key: "document",
               header: "Documento",
-              render: (r) =>
-                r.documentNumber ? `${r.documentType ?? ""} ${r.documentNumber}`.trim() : "—",
+              render: (r) => (
+                <NexumTableText maxWidth="120px">
+                  {r.documentNumber ? `${r.documentType ?? ""} ${r.documentNumber}`.trim() : "—"}
+                </NexumTableText>
+              ),
             },
             {
               key: "type",
@@ -786,37 +796,11 @@ function CustomersLogisticsPageInner() {
             {
               key: "branches",
               header: "Filiais",
-              render: (r) => <span className="text-sm">{formatBranches(r)}</span>,
-            },
-            {
-              key: "primary",
-              header: "Filial principal",
-              render: (r) => {
-                const label = primaryBranchLabel(r);
-                return label === "Não definida" ? (
-                  <span className="text-nexum-text-muted">{label}</span>
-                ) : (
-                  <NexumBadge variant="success">{label}</NexumBadge>
-                );
-              },
-            },
-            {
-              key: "contact",
-              header: "Contato",
               render: (r) => (
-                <div className="text-xs">
-                  {r.mainContactName && <p>{r.mainContactName}</p>}
-                  {r.email && <p className="text-nexum-text-muted">{r.email}</p>}
-                  {r.phone && <p className="text-nexum-text-muted">{r.phone}</p>}
-                  {!r.mainContactName && !r.email && !r.phone && "—"}
-                </div>
+                <NexumTableText maxWidth="130px" title={formatBranches(r)}>
+                  {formatBranches(r)}
+                </NexumTableText>
               ),
-            },
-            {
-              key: "location",
-              header: "Cidade/UF",
-              render: (r) =>
-                r.billingCity ? `${r.billingCity}${r.billingState ? ` / ${r.billingState}` : ""}` : "—",
             },
             {
               key: "status",
@@ -826,60 +810,61 @@ function CustomersLogisticsPageInner() {
               ),
             },
             {
-              key: "updatedAt",
-              header: "Atualizado em",
-              render: (r) => new Date(r.updatedAt).toLocaleDateString("pt-BR"),
-            },
-            {
               key: "actions",
               header: "Ações",
               align: "right",
-              render: (r) => (
-                <div className="flex flex-wrap justify-end gap-1">
-                  <NexumButton size="sm" variant="ghost" onClick={() => setDetailCustomer(r)}>
-                    <Eye className="mr-1 h-3.5 w-3.5" />
-                    Visualizar
-                  </NexumButton>
-                  {canUpdate && (
-                    <NexumButton size="sm" variant="ghost" onClick={() => openEdit(r)}>
-                      Editar
-                    </NexumButton>
-                  )}
-                  {canAssignBranches && (
-                    <NexumButton size="sm" variant="ghost" onClick={() => void openBranchesDrawer(r)}>
-                      <Building2 className="mr-1 h-3.5 w-3.5" />
-                      Filiais
-                    </NexumButton>
-                  )}
-                  {canDisable && r.status !== "DISABLED" && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "disable", customer: r })}
-                    >
-                      Desativar
-                    </NexumButton>
-                  )}
-                  {canDisable && r.status === "DISABLED" && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "enable", customer: r })}
-                    >
-                      Reativar
-                    </NexumButton>
-                  )}
-                  {canDelete && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "delete", customer: r })}
-                    >
-                      Excluir
-                    </NexumButton>
-                  )}
-                </div>
-              ),
+              render: (r) => {
+                const items: NexumDropdownItem[] = [
+                  {
+                    key: "view",
+                    label: "Visualizar",
+                    icon: <Eye className="h-3.5 w-3.5" />,
+                    onSelect: () => setDetailCustomer(r),
+                  },
+                  ...(canUpdate
+                    ? [{ key: "edit", label: "Editar", onSelect: () => openEdit(r) }]
+                    : []),
+                  ...(canAssignBranches
+                    ? [
+                        {
+                          key: "branches",
+                          label: "Filiais",
+                          icon: <Building2 className="h-3.5 w-3.5" />,
+                          onSelect: () => void openBranchesDrawer(r),
+                        },
+                      ]
+                    : []),
+                  ...(canDisable && r.status !== "DISABLED"
+                    ? [
+                        {
+                          key: "disable",
+                          label: "Desativar",
+                          onSelect: () => setConfirmAction({ type: "disable", customer: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canDisable && r.status === "DISABLED"
+                    ? [
+                        {
+                          key: "enable",
+                          label: "Reativar",
+                          onSelect: () => setConfirmAction({ type: "enable", customer: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canDelete
+                    ? [
+                        {
+                          key: "delete",
+                          label: "Excluir",
+                          danger: true,
+                          onSelect: () => setConfirmAction({ type: "delete", customer: r }),
+                        },
+                      ]
+                    : []),
+                ];
+                return <NexumTableRowActions items={items} />;
+              },
             },
           ]}
         />
@@ -888,16 +873,19 @@ function CustomersLogisticsPageInner() {
           open={formOpen}
           onClose={() => setFormOpen(false)}
           title={editCustomer ? "Editar cliente" : "Novo cliente"}
+          width="lg"
+          footer={
+            <>
+              <NexumButton variant="secondary" onClick={() => setFormOpen(false)}>
+                Cancelar
+              </NexumButton>
+              <NexumButton loading={saving} onClick={() => void handleSave()}>
+                Salvar
+              </NexumButton>
+            </>
+          }
         >
           {formSections}
-          <div className="mt-6 flex justify-end gap-2 border-t border-nexum-border/40 pt-4">
-            <NexumButton variant="secondary" onClick={() => setFormOpen(false)}>
-              Cancelar
-            </NexumButton>
-            <NexumButton loading={saving} onClick={() => void handleSave()}>
-              Salvar
-            </NexumButton>
-          </div>
         </NexumDrawer>
 
         <NexumDrawer

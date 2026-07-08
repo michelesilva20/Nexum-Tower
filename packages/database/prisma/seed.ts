@@ -13,6 +13,7 @@ import { CUSTOMER_DEFINITIONS } from "./seed-data/customers";
 import { DRIVER_DEFINITIONS } from "./seed-data/drivers";
 import { LOCATION_DEFINITIONS } from "./seed-data/locations";
 import { VEHICLE_DEFINITIONS } from "./seed-data/vehicles";
+import { ROUTE_DEFINITIONS } from "./seed-data/routes";
 
 const prisma = new PrismaClient();
 
@@ -188,6 +189,8 @@ async function seedLocations(
   branchByCode: Map<string, string>,
   customerByCode: Map<string, string>,
 ) {
+  const locationByCode = new Map<string, string>();
+
   for (const def of LOCATION_DEFINITIONS) {
     const branchIds = def.branchCodes
       .map((code) => branchByCode.get(code))
@@ -266,7 +269,11 @@ async function seedLocations(
       },
       data: { isPrimary: false },
     });
+
+    locationByCode.set(def.code, location.id);
   }
+
+  return locationByCode;
 }
 
 async function seedCustomers(tenantId: string, branchByCode: Map<string, string>) {
@@ -541,6 +548,121 @@ async function seedVehicles(tenantId: string, branchByCode: Map<string, string>)
   }
 }
 
+async function seedRoutes(
+  tenantId: string,
+  branchByCode: Map<string, string>,
+  locationByCode: Map<string, string>,
+  customerByCode: Map<string, string>,
+) {
+  for (const def of ROUTE_DEFINITIONS) {
+    const branchIds = def.branchCodes
+      .map((code) => branchByCode.get(code))
+      .filter((id): id is string => !!id);
+
+    if (branchIds.length === 0) continue;
+
+    const primaryBranchId = branchByCode.get(def.primaryBranchCode) ?? branchIds[0];
+    const customerId = def.customerCode ? customerByCode.get(def.customerCode) : undefined;
+
+    const sortedPoints = [...def.points].sort((a, b) => a.sequence - b.sequence);
+    const originLocationId = locationByCode.get(sortedPoints[0]?.locationCode ?? "");
+    const destinationLocationId = locationByCode.get(sortedPoints[sortedPoints.length - 1]?.locationCode ?? "");
+
+    if (!originLocationId || !destinationLocationId) continue;
+
+    const route = await prisma.route.upsert({
+      where: { tenantId_code: { tenantId, code: def.code } },
+      update: {
+        name: def.name,
+        description: def.description,
+        routeType: def.routeType,
+        operationType: def.operationType,
+        customerId: customerId ?? null,
+        originLocationId,
+        destinationLocationId,
+        plannedDistanceKm: def.plannedDistanceKm ?? null,
+        plannedDurationMinutes: def.plannedDurationMinutes ?? null,
+        requiresMopp: def.requiresMopp ?? false,
+        requiresRefrigeration: def.requiresRefrigeration ?? false,
+        requiresTracking: def.requiresTracking ?? false,
+        requiresEscort: def.requiresEscort ?? false,
+        riskLevel: def.riskLevel ?? "LOW",
+        status: "ACTIVE",
+      },
+      create: {
+        tenantId,
+        code: def.code,
+        name: def.name,
+        description: def.description,
+        routeType: def.routeType,
+        operationType: def.operationType,
+        customerId: customerId ?? null,
+        originLocationId,
+        destinationLocationId,
+        plannedDistanceKm: def.plannedDistanceKm ?? null,
+        plannedDurationMinutes: def.plannedDurationMinutes ?? null,
+        requiresMopp: def.requiresMopp ?? false,
+        requiresRefrigeration: def.requiresRefrigeration ?? false,
+        requiresTracking: def.requiresTracking ?? false,
+        requiresEscort: def.requiresEscort ?? false,
+        riskLevel: def.riskLevel ?? "LOW",
+        status: "ACTIVE",
+      },
+    });
+
+    for (const branchId of branchIds) {
+      await prisma.routeBranch.upsert({
+        where: {
+          tenantId_routeId_branchId: { tenantId, routeId: route.id, branchId },
+        },
+        update: {
+          deletedAt: null,
+          disabledAt: null,
+          status: "ACTIVE",
+          isPrimary: branchId === primaryBranchId,
+        },
+        create: {
+          tenantId,
+          routeId: route.id,
+          branchId,
+          isPrimary: branchId === primaryBranchId,
+          status: "ACTIVE",
+        },
+      });
+    }
+
+    await prisma.routeBranch.updateMany({
+      where: {
+        tenantId,
+        routeId: route.id,
+        deletedAt: null,
+        NOT: { branchId: { in: branchIds } },
+      },
+      data: { isPrimary: false },
+    });
+
+    await prisma.routePoint.deleteMany({ where: { tenantId, routeId: route.id } });
+
+    for (const point of sortedPoints) {
+      const locationId = locationByCode.get(point.locationCode);
+      if (!locationId) continue;
+
+      await prisma.routePoint.create({
+        data: {
+          tenantId,
+          routeId: route.id,
+          locationId,
+          sequence: point.sequence,
+          pointType: point.pointType,
+          operationRole: point.operationRole,
+          distanceFromPreviousKm: point.distanceFromPreviousKm ?? null,
+          durationFromPreviousMinutes: point.durationFromPreviousMinutes ?? null,
+        },
+      });
+    }
+  }
+}
+
 async function seedBranches(tenantId: string) {
   const branchByCode = new Map<string, string>();
 
@@ -610,9 +732,10 @@ async function seedBranches(tenantId: string) {
   }
 
   const customerByCode = await seedCustomers(tenantId, branchByCode);
-  await seedLocations(tenantId, branchByCode, customerByCode);
+  const locationByCode = await seedLocations(tenantId, branchByCode, customerByCode);
   await seedDrivers(tenantId, branchByCode);
   await seedVehicles(tenantId, branchByCode);
+  await seedRoutes(tenantId, branchByCode, locationByCode, customerByCode);
 }
 
 async function main() {

@@ -110,3 +110,28 @@ Normalização: uppercase, sem espaços/hífen (`ABC1D23`).
 ## Segurança (Vehicles)
 
 - RENAVAM/chassi/rastreador **não** entram completos em AuditLog.metadata
+
+## Routes
+
+Base: `/logistics/routes`
+
+| Método | Rota | Permissão RBAC |
+|--------|------|----------------|
+| GET | `/logistics/routes` | routes.read **ou** logistics.read |
+| GET | `/logistics/routes/:id` | routes.read **ou** logistics.read |
+| POST | `/logistics/routes` | routes.create |
+| PATCH | `/logistics/routes/:id` | routes.update |
+| PATCH | `/logistics/routes/:id/disable` | routes.disable |
+| PATCH | `/logistics/routes/:id/enable` | routes.disable |
+| DELETE | `/logistics/routes/:id` | routes.delete |
+| GET | `/logistics/routes/:id/branches` | routes.read **ou** logistics.read |
+| POST | `/logistics/routes/:id/branches` | routes.assign_branches |
+| PATCH | `/logistics/routes/:id/branches/:branchId/primary` | routes.assign_branches |
+| DELETE | `/logistics/routes/:id/branches/:branchId` | routes.assign_branches |
+| GET | `/logistics/routes/:id/points` | routes.read **ou** logistics.read |
+| PUT | `/logistics/routes/:id/points` | routes.manage_points |
+
+## Segurança (Routes)
+
+- RoutePoint via PUT transacional; audit de pontos sem payload completo
+- LocationBranch: interseção de filiais; CustomerBranch quando `customerId` informado

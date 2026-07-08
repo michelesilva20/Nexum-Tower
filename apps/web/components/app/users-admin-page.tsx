@@ -6,10 +6,14 @@ import {
   NexumBadge,
   NexumButton,
   NexumCard,
+  NexumCheckbox,
   NexumConfirmModal,
   NexumDataTable,
   NexumDrawer,
   NexumFormField,
+  NexumFormGrid,
+  NexumFormSection,
+  NexumFormSections,
   NexumInput,
   NexumMetricCard,
   NexumModal,
@@ -551,24 +555,24 @@ function UserDetailDrawer({
                   <AddRoleToUserModal userId={user.id} onAdded={onRefresh} />
                 )}
               </div>
-              {user.roles.length === 0 ? (
+              {(user.roles ?? []).length === 0 ? (
                 <p className="text-sm text-nexum-text-muted">Nenhuma role atribuída diretamente.</p>
               ) : (
                 <ul className="space-y-2">
-                  {user.roles.map((ur) => (
+                  {user.roles.map((role) => (
                     <li
-                      key={ur.role.id}
+                      key={role.id}
                       className="flex items-center justify-between rounded-xl border border-nexum-border bg-nexum-surface px-3 py-2"
                     >
                       <div>
-                        <p className="text-sm font-medium text-nexum-text">{ur.role.name}</p>
-                        <code className="text-xs text-nexum-primary">{ur.role.slug}</code>
+                        <p className="text-sm font-medium text-nexum-text">{role.name}</p>
+                        <code className="text-xs text-nexum-primary">{role.slug}</code>
                       </div>
                       {canManageRoles && (
                         <NexumButton
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleRemoveRole(ur.role.id)}
+                          onClick={() => handleRemoveRole(role.id)}
                         >
                           Remover
                         </NexumButton>
@@ -588,24 +592,24 @@ function UserDetailDrawer({
                   <AddGroupToUserModal userId={user.id} onAdded={onRefresh} />
                 )}
               </div>
-              {user.groups.length === 0 ? (
+              {(user.groups ?? []).length === 0 ? (
                 <p className="text-sm text-nexum-text-muted">Nenhum grupo atribuído.</p>
               ) : (
                 <ul className="space-y-2">
-                  {user.groups.map((ug) => (
+                  {user.groups.map((group) => (
                     <li
-                      key={ug.group.id}
+                      key={group.id}
                       className="flex items-center justify-between rounded-xl border border-nexum-border bg-nexum-surface px-3 py-2"
                     >
                       <div>
-                        <p className="text-sm font-medium text-nexum-text">{ug.group.name}</p>
-                        <code className="text-xs text-nexum-primary">{ug.group.slug}</code>
+                        <p className="text-sm font-medium text-nexum-text">{group.name}</p>
+                        <code className="text-xs text-nexum-primary">{group.slug}</code>
                       </div>
                       {canManageGroups && (
                         <NexumButton
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleRemoveGroup(ug.group.id)}
+                          onClick={() => handleRemoveGroup(group.id)}
                         >
                           Remover
                         </NexumButton>
@@ -728,13 +732,44 @@ function CreateUserModal({
   const { toast } = useNexumToast();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [roleIds, setRoleIds] = useState<string[]>([]);
+  const [groupIds, setGroupIds] = useState<string[]>([]);
+  const [roles, setRoles] = useState<RoleRow[]>([]);
+  const [groups, setGroups] = useState<GroupRow[]>([]);
+  const [optionsLoading, setOptionsLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({});
+
+  useEffect(() => {
+    if (!open) return;
+    setName("");
+    setEmail("");
+    setPassword("");
+    setRoleIds([]);
+    setGroupIds([]);
+    setErrors({});
+    setOptionsLoading(true);
+    void Promise.all([fetchRoles(), fetchGroups()])
+      .then(([rolesData, groupsData]) => {
+        setRoles(rolesData);
+        setGroups(groupsData);
+      })
+      .catch(() => toast({ type: "error", title: "Erro ao carregar papéis e grupos." }))
+      .finally(() => setOptionsLoading(false));
+  }, [open, toast]);
+
+  function toggleId(list: string[], id: string) {
+    return list.includes(id) ? list.filter((x) => x !== id) : [...list, id];
+  }
 
   function validate() {
     const errs: typeof errors = {};
     if (!name.trim()) errs.name = "Nome é obrigatório.";
     if (!email.trim() || !email.includes("@")) errs.email = "E-mail inválido.";
+    if (password.trim() && password.trim().length < 8) {
+      errs.password = "Senha deve ter no mínimo 8 caracteres.";
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
@@ -743,10 +778,21 @@ function CreateUserModal({
     if (!validate()) return;
     setSaving(true);
     try {
-      await createUser({ name: name.trim(), email: email.trim() });
-      toast({ type: "success", title: "Usuário criado.", description: "Status: Convidado." });
-      setName("");
-      setEmail("");
+      const payload = {
+        name: name.trim(),
+        email: email.trim(),
+        ...(password.trim() ? { password: password.trim() } : {}),
+        ...(roleIds.length ? { roleIds } : {}),
+        ...(groupIds.length ? { groupIds } : {}),
+      };
+      await createUser(payload);
+      toast({
+        type: "success",
+        title: "Usuário criado.",
+        description: password.trim()
+          ? "Status: Ativo (senha definida)."
+          : "Status: Convidado (definir senha no primeiro acesso).",
+      });
       onCreated();
     } catch (e) {
       toast({ type: "error", title: e instanceof ApiError ? e.message : "Erro ao criar." });
@@ -760,37 +806,108 @@ function CreateUserModal({
       open={open}
       onClose={onClose}
       title="Novo usuário"
-      description="O usuário receberá status 'Convidado' até definir senha."
+      description="Preencha os dados de acesso. Sem senha, o usuário entra como convidado."
+      variant="form"
+      size="lg"
       footer={
         <>
           <NexumButton variant="ghost" onClick={onClose}>Cancelar</NexumButton>
-          <NexumButton onClick={() => void handleSubmit()} disabled={saving}>
+          <NexumButton onClick={() => void handleSubmit()} disabled={saving || optionsLoading}>
             {saving ? "Criando..." : "Criar usuário"}
           </NexumButton>
         </>
       }
     >
-      <div className="space-y-4">
-        <NexumFormField label="Nome" htmlFor="new-name" required error={errors.name}>
-          <NexumInput
-            id="new-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Nome completo"
-            error={!!errors.name}
-          />
-        </NexumFormField>
-        <NexumFormField label="E-mail" htmlFor="new-email" required error={errors.email}>
-          <NexumInput
-            id="new-email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="usuario@empresa.com"
-            error={!!errors.email}
-          />
-        </NexumFormField>
-      </div>
+      <NexumFormSections>
+        <NexumFormSection title="Dados de acesso">
+          <NexumFormGrid>
+            <NexumFormField label="Nome" htmlFor="new-name" required error={errors.name}>
+              <NexumInput
+                id="new-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nome completo"
+                error={!!errors.name}
+              />
+            </NexumFormField>
+            <NexumFormField label="E-mail" htmlFor="new-email" required error={errors.email}>
+              <NexumInput
+                id="new-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="usuario@empresa.com"
+                error={!!errors.email}
+              />
+            </NexumFormField>
+          </NexumFormGrid>
+          <NexumFormField
+            label="Senha inicial (opcional)"
+            htmlFor="new-password"
+            className="mt-4"
+            helperText="Se informada, o usuário já entra como ativo. Mínimo 8 caracteres."
+            error={errors.password}
+          >
+            <NexumInput
+              id="new-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Deixe em branco para convite"
+              error={!!errors.password}
+              autoComplete="new-password"
+            />
+          </NexumFormField>
+        </NexumFormSection>
+
+        <NexumFormSection
+          title="Papéis e grupos"
+          description="Opcional — defina permissões já na criação do usuário."
+        >
+          <div className="space-y-4">
+            <div>
+              <p className="mb-2 text-xs font-medium text-nexum-text">Papéis</p>
+              {optionsLoading ? (
+                <p className="text-xs text-nexum-text-muted">Carregando papéis...</p>
+              ) : roles.length === 0 ? (
+                <p className="text-xs text-nexum-text-muted">Nenhum papel disponível.</p>
+              ) : (
+                <div className="max-h-32 space-y-2 overflow-y-auto rounded-lg border border-nexum-border/70 bg-nexum-bg p-3">
+                  {roles.map((role) => (
+                    <NexumCheckbox
+                      key={role.id}
+                      id={`new-role-${role.id}`}
+                      label={`${role.name} (${role.slug})`}
+                      checked={roleIds.includes(role.id)}
+                      onChange={() => setRoleIds((prev) => toggleId(prev, role.id))}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="mb-2 text-xs font-medium text-nexum-text">Grupos</p>
+              {optionsLoading ? (
+                <p className="text-xs text-nexum-text-muted">Carregando grupos...</p>
+              ) : groups.length === 0 ? (
+                <p className="text-xs text-nexum-text-muted">Nenhum grupo disponível.</p>
+              ) : (
+                <div className="max-h-32 space-y-2 overflow-y-auto rounded-lg border border-nexum-border/70 bg-nexum-bg p-3">
+                  {groups.map((group) => (
+                    <NexumCheckbox
+                      key={group.id}
+                      id={`new-group-${group.id}`}
+                      label={`${group.name} (${group.slug})`}
+                      checked={groupIds.includes(group.id)}
+                      onChange={() => setGroupIds((prev) => toggleId(prev, group.id))}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </NexumFormSection>
+      </NexumFormSections>
     </NexumModal>
   );
 }

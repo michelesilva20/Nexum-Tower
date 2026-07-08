@@ -235,6 +235,79 @@ enum VehicleBranchStatus {
   DISABLED
 }
 
+enum RouteStatus {
+  ACTIVE
+  INACTIVE
+  DISABLED
+}
+
+enum RouteType {
+  STANDARD
+  DEDICATED
+  SPOT
+  MILK_RUN
+  ROUND_TRIP
+  TRANSFER
+  DISTRIBUTION
+  COLLECTION
+  LINE_HAUL
+  PORT
+  CUSTOMER
+  OTHER
+}
+
+enum OperationType {
+  INBOUND
+  OUTBOUND
+  TRANSFER
+  DISTRIBUTION
+  COLLECTION
+  RETURN
+  EXPORT
+  IMPORT
+  OTHER
+}
+
+enum RoutePointType {
+  ORIGIN
+  DESTINATION
+  STOP
+  WAYPOINT
+  PICKUP
+  DELIVERY
+  CHECKPOINT
+  REST_POINT
+  FUEL_STOP
+  OTHER
+}
+
+enum RoutePointOperationRole {
+  LOAD
+  UNLOAD
+  LOAD_UNLOAD
+  CHECK_IN
+  CHECK_OUT
+  CUSTOMS
+  FUEL
+  REST
+  MAINTENANCE
+  PASS_THROUGH
+  OTHER
+}
+
+enum RouteRiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RouteBranchStatus {
+  ACTIVE
+  INACTIVE
+  DISABLED
+}
+
 enum PermissionEffect {
   ALLOW
   DENY
@@ -263,6 +336,7 @@ model Tenant {
   locations      Location[]
   drivers        Driver[]
   vehicles       Vehicle[]
+  routes         Route[]
   tenantSettings TenantSetting[]
   tenantFeatures TenantFeature[]
 }
@@ -537,6 +611,7 @@ model Branch {
   locationBranches LocationBranch[]
   driverBranches DriverBranch[]
   vehicleBranches VehicleBranch[]
+  routeBranches   RouteBranch[]
 
   // code: identidade operacional permanente — único por tenant (inclui soft-deleted)
   @@unique([tenantId, code])
@@ -602,6 +677,7 @@ model Customer {
 
   branches CustomerBranch[]
   locations Location[]
+  routes   Route[]
 
   @@unique([tenantId, code])
   @@index([tenantId, documentNumber])
@@ -673,6 +749,9 @@ model Location {
   deletedAt             DateTime?
 
   branches LocationBranch[]
+  routePointsAsLocation RoutePoint[]
+  routesAsOrigin        Route[]        @relation("RouteOrigin")
+  routesAsDestination   Route[]        @relation("RouteDestination")
 
   @@unique([tenantId, code])
   @@index([tenantId])
@@ -885,4 +964,106 @@ model VehicleBranch {
   @@index([tenantId, vehicleId])
   @@index([tenantId, branchId])
   @@index([tenantId, deletedAt])
+}
+
+model Route {
+  id                     String         @id @default(cuid())
+  tenantId               String
+  tenant                 Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code                   String
+  name                   String
+  description            String?
+  routeType              RouteType
+  operationType          OperationType
+  customerId             String?
+  customer               Customer?      @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  originLocationId       String?
+  originLocation         Location?      @relation("RouteOrigin", fields: [originLocationId], references: [id], onDelete: SetNull)
+  destinationLocationId  String?
+  destinationLocation    Location?      @relation("RouteDestination", fields: [destinationLocationId], references: [id], onDelete: SetNull)
+  plannedDistanceKm      Decimal?       @db.Decimal(12, 2)
+  plannedDurationMinutes Int?
+  estimatedTollCost      Decimal?       @db.Decimal(12, 2)
+  estimatedFuelCost      Decimal?       @db.Decimal(12, 2)
+  estimatedTotalCost     Decimal?       @db.Decimal(12, 2)
+  requiresMopp           Boolean        @default(false)
+  requiresRefrigeration  Boolean        @default(false)
+  requiresTracking       Boolean        @default(false)
+  requiresEscort         Boolean        @default(false)
+  riskLevel              RouteRiskLevel @default(LOW)
+  status                 RouteStatus    @default(ACTIVE)
+  notes                  String?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  disabledAt             DateTime?
+  deletedAt              DateTime?
+
+  branches RouteBranch[]
+  points   RoutePoint[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@index([tenantId, customerId])
+  @@index([tenantId, originLocationId])
+  @@index([tenantId, destinationLocationId])
+  @@index([tenantId, routeType])
+  @@index([tenantId, operationType])
+  @@index([tenantId, riskLevel])
+  @@index([tenantId, status])
+  @@index([tenantId, deletedAt])
+  @@index([tenantId, createdAt])
+  @@index([tenantId, updatedAt])
+}
+
+model RouteBranch {
+  id        String            @id @default(cuid())
+  tenantId  String
+  routeId   String
+  branchId  String
+  isPrimary Boolean           @default(false)
+  status    RouteBranchStatus @default(ACTIVE)
+  notes     String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  disabledAt DateTime?
+  deletedAt DateTime?
+
+  route  Route  @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, routeId, branchId])
+  @@index([tenantId])
+  @@index([tenantId, routeId])
+  @@index([tenantId, branchId])
+  @@index([tenantId, routeId, isPrimary])
+  @@index([tenantId, deletedAt])
+}
+
+model RoutePoint {
+  id                           String                  @id @default(cuid())
+  tenantId                     String
+  routeId                      String
+  locationId                   String
+  sequence                     Int
+  pointType                    RoutePointType
+  operationRole                RoutePointOperationRole
+  plannedArrivalOffsetMinutes  Int?
+  plannedDepartureOffsetMinutes Int?
+  plannedServiceTimeMinutes    Int?
+  distanceFromPreviousKm       Decimal?                @db.Decimal(12, 2)
+  durationFromPreviousMinutes  Int?
+  instructions                 String?
+  notes                        String?
+  createdAt                    DateTime                @default(now())
+  updatedAt                    DateTime                @updatedAt
+  deletedAt                    DateTime?
+
+  route    Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  location Location @relation(fields: [locationId], references: [id], onDelete: Restrict)
+
+  @@unique([tenantId, routeId, sequence])
+  @@index([tenantId])
+  @@index([tenantId, routeId])
+  @@index([tenantId, locationId])
+  @@index([tenantId, routeId, pointType])
 }

@@ -30,6 +30,12 @@ const GLOBAL_VEHICLE_PERMISSIONS = [
   "organization.manage",
   "*",
 ];
+const GLOBAL_ROUTE_PERMISSIONS = [
+  "routes.manage",
+  "logistics.manage",
+  "organization.manage",
+  "*",
+];
 
 /**
  * Camada ABAC / object-level authorization da Nexum Core Platform.
@@ -166,6 +172,40 @@ export class AuthorizationService {
 
   canManageVehicleBranches(permissions: string[]): boolean {
     return this.hasGlobalVehicleScope(permissions);
+  }
+
+  hasGlobalRouteScope(permissions: string[]): boolean {
+    return hasAnyPermission(permissions, GLOBAL_ROUTE_PERMISSIONS);
+  }
+
+  assertGlobalRouteScope(permissions: string[]): void {
+    if (!this.hasGlobalRouteScope(permissions)) {
+      throw new ForbiddenException("Escopo global de rotas necessário para esta operação.");
+    }
+  }
+
+  assertRouteGlobalMutationAllowed(permissions: string[]): void {
+    this.assertGlobalRouteScope(permissions);
+  }
+
+  assertRouteBranchMutationAllowed(permissions: string[]): void {
+    this.assertGlobalRouteScope(permissions);
+  }
+
+  assertRoutePointsMutationAllowed(permissions: string[]): void {
+    this.assertGlobalRouteScope(permissions);
+  }
+
+  canMutateRouteGlobalData(permissions: string[]): boolean {
+    return this.hasGlobalRouteScope(permissions);
+  }
+
+  canManageRouteBranches(permissions: string[]): boolean {
+    return this.hasGlobalRouteScope(permissions);
+  }
+
+  canManageRoutePoints(permissions: string[]): boolean {
+    return this.hasGlobalRouteScope(permissions);
   }
 
   canAccessTenantObject(user: TenantScoped, object: TenantScoped): boolean {

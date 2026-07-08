@@ -4,10 +4,14 @@ export { NexumButton } from "./nexum-button";
 export { NexumCard, NexumMetricCard } from "./nexum-card";
 export {
   NexumDataTable,
+  NexumTableCode,
   NexumTableExportButton,
+  NexumTableRowActions,
   NexumTableSearch,
+  NexumTableText,
   NexumTableToolbar,
   type NexumDataTableColumn,
+  type NexumTableActionItem,
 } from "./nexum-data-table";
 export { NexumDrawer } from "./nexum-drawer";
 export { NexumDropdown, type NexumDropdownItem } from "./nexum-dropdown";
@@ -15,6 +19,9 @@ export { NexumEmptyState } from "./nexum-empty-state";
 export {
   NexumCheckbox,
   NexumFormField,
+  NexumFormGrid,
+  NexumFormSection,
+  NexumFormSections,
   NexumSwitch,
 } from "./nexum-form-field";
 export { NexumInput, NexumSelect, NexumTextarea } from "./nexum-input";

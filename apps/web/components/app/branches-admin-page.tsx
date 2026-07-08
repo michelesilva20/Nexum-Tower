@@ -13,10 +13,14 @@ import {
   NexumInput,
   NexumModal,
   NexumSelect,
+  NexumTableCode,
+  NexumTableRowActions,
   NexumTableSearch,
+  NexumTableText,
   NexumTableToolbar,
   NexumToastProvider,
   useNexumToast,
+  type NexumTableActionItem,
 } from "@/components/ui/nexum";
 import {
   assignBranchUser,
@@ -35,7 +39,7 @@ import {
   type UserRow,
 } from "@/lib/admin-api";
 import { ApiError } from "@/lib/api";
-import { Plus, Users } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 const STATUS_LABELS: Record<BranchStatus, string> = {
@@ -338,7 +342,7 @@ function BranchesAdminPageInner() {
             {
               key: "code",
               header: "Código",
-              render: (r) => <span className="font-mono text-sm">{r.code}</span>,
+              render: (r) => <NexumTableCode value={r.code} />,
             },
             { key: "name", header: "Nome", render: (r) => r.name },
             { key: "legalName", header: "Razão social", render: (r) => r.legalName ?? "—" },
@@ -379,48 +383,51 @@ function BranchesAdminPageInner() {
               key: "actions",
               header: "Ações",
               align: "right",
-              render: (r) => (
-                <div className="flex flex-wrap justify-end gap-1">
-                  {canUpdate && (
-                    <NexumButton size="sm" variant="ghost" onClick={() => openEdit(r)}>
-                      Editar
-                    </NexumButton>
-                  )}
-                  {canDisable && r.status !== "DISABLED" && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "disable", branch: r })}
-                    >
-                      Desativar
-                    </NexumButton>
-                  )}
-                  {canDisable && r.status === "DISABLED" && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "enable", branch: r })}
-                    >
-                      Reativar
-                    </NexumButton>
-                  )}
-                  {canDelete && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "delete", branch: r })}
-                    >
-                      Excluir
-                    </NexumButton>
-                  )}
-                  {canAssignUsers && (
-                    <NexumButton size="sm" variant="ghost" onClick={() => void openUsersDrawer(r)}>
-                      <Users className="mr-1 h-3.5 w-3.5" />
-                      Usuários
-                    </NexumButton>
-                  )}
-                </div>
-              ),
+              render: (r) => {
+                const items: NexumTableActionItem[] = [
+                  ...(canUpdate
+                    ? [{ key: "edit", label: "Editar", onSelect: () => openEdit(r) }]
+                    : []),
+                  ...(canDisable && r.status !== "DISABLED"
+                    ? [
+                        {
+                          key: "disable",
+                          label: "Desativar",
+                          onSelect: () => setConfirmAction({ type: "disable", branch: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canDisable && r.status === "DISABLED"
+                    ? [
+                        {
+                          key: "enable",
+                          label: "Reativar",
+                          onSelect: () => setConfirmAction({ type: "enable", branch: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canDelete
+                    ? [
+                        {
+                          key: "delete",
+                          label: "Excluir",
+                          danger: true,
+                          onSelect: () => setConfirmAction({ type: "delete", branch: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canAssignUsers
+                    ? [
+                        {
+                          key: "users",
+                          label: "Usuários",
+                          onSelect: () => void openUsersDrawer(r),
+                        },
+                      ]
+                    : []),
+                ];
+                return <NexumTableRowActions items={items} />;
+              },
             },
           ]}
         />

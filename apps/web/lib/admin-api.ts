@@ -12,13 +12,14 @@ export type UserRow = {
   lastLoginAt: string | null;
   createdAt: string;
   tenant?: { id: string; name: string };
-  roles?: { role: { id: string; name: string; slug: string } }[];
-  groups?: { group: { id: string; name: string; slug: string } }[];
 };
 
+export type RoleRef = { id: string; name: string; slug: string };
+export type GroupRef = { id: string; name: string; slug: string };
+
 export type UserDetail = UserRow & {
-  roles: { role: { id: string; name: string; slug: string } }[];
-  groups: { group: { id: string; name: string; slug: string } }[];
+  roles: RoleRef[];
+  groups: GroupRef[];
   overrides: PermissionOverride[];
 };
 
@@ -161,7 +162,13 @@ export function fetchUserById(id: string) {
   return apiRequest<UserDetail>(`/users/${id}`);
 }
 
-export function createUser(data: { name: string; email: string; password?: string }) {
+export function createUser(data: {
+  name: string;
+  email: string;
+  password?: string;
+  roleIds?: string[];
+  groupIds?: string[];
+}) {
   return apiRequest<UserRow>("/users", { method: "POST", body: JSON.stringify(data) });
 }
 

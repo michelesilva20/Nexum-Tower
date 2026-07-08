@@ -12,11 +12,15 @@ import {
   NexumFormField,
   NexumInput,
   NexumSelect,
+  NexumTableCode,
+  NexumTableRowActions,
   NexumTableSearch,
+  NexumTableText,
   NexumTableToolbar,
   NexumTextarea,
   NexumToastProvider,
   useNexumToast,
+  type NexumDropdownItem,
 } from "@/components/ui/nexum";
 import { fetchBranches, type BranchRow } from "@/lib/admin-api";
 import { ApiError } from "@/lib/api";
@@ -142,11 +146,13 @@ const emptyForm: LocationForm = {
 function formatBranches(row: LocationRow) {
   const links = row.branches ?? [];
   if (links.length === 0) return "—";
+  const label = (l: (typeof links)[number]) =>
+    l.isPrimary ? `${l.branch.name}★` : l.branch.name;
   if (links.length <= 2) {
-    return links.map((l) => l.branch.name).join(", ");
+    return links.map(label).join(", ");
   }
   const [first, second, ...rest] = links;
-  return `${first.branch.name}, ${second.branch.name} +${rest.length}`;
+  return `${label(first)}, ${label(second)} +${rest.length}`;
 }
 
 function primaryBranchLabel(row: LocationRow) {
@@ -892,15 +898,17 @@ function LocationsLogisticsPageInner() {
             {
               key: "code",
               header: "Código",
-              render: (r) => <span className="font-mono text-sm">{r.code}</span>,
+              render: (r) => <NexumTableCode value={r.code} />,
             },
             {
               key: "name",
               header: "Local",
               render: (r) => (
-                <div>
-                  <p className="font-medium text-nexum-text">{r.name}</p>
-                  {r.addressLine1 && <p className="text-xs text-nexum-text-muted">{r.addressLine1}</p>}
+                <div className="max-w-[160px]">
+                  <p className="truncate font-medium leading-tight">{r.name}</p>
+                  <p className="truncate text-[11px] leading-tight text-nexum-text-muted">
+                    {r.city ? `${r.city}${r.state ? `/${r.state}` : ""}` : "—"}
+                  </p>
                 </div>
               ),
             },
@@ -910,43 +918,13 @@ function LocationsLogisticsPageInner() {
               render: (r) => <NexumBadge variant="info">{TYPE_LABELS[r.locationType]}</NexumBadge>,
             },
             {
-              key: "customer",
-              header: "Cliente",
-              render: (r) => <span className="text-sm">{customerLabel(r)}</span>,
-            },
-            {
               key: "branches",
               header: "Filiais",
-              render: (r) => <span className="text-sm">{formatBranches(r)}</span>,
-            },
-            {
-              key: "primary",
-              header: "Filial principal",
-              render: (r) => {
-                const label = primaryBranchLabel(r);
-                return label === "Não definida" ? (
-                  <span className="text-nexum-text-muted">{label}</span>
-                ) : (
-                  <NexumBadge variant="success">{label}</NexumBadge>
-                );
-              },
-            },
-            {
-              key: "location",
-              header: "Cidade/UF",
-              render: (r) => (r.city ? `${r.city}${r.state ? ` / ${r.state}` : ""}` : "—"),
-            },
-            {
-              key: "coordinates",
-              header: "Coordenadas",
-              render: (r) => {
-                const label = coordinatesLabel(r);
-                return label === "Sem coordenadas" ? (
-                  <span className="text-nexum-text-muted">{label}</span>
-                ) : (
-                  <NexumBadge variant="success">{label}</NexumBadge>
-                );
-              },
+              render: (r) => (
+                <NexumTableText maxWidth="130px" title={formatBranches(r)}>
+                  {formatBranches(r)}
+                </NexumTableText>
+              ),
             },
             {
               key: "status",
@@ -959,52 +937,58 @@ function LocationsLogisticsPageInner() {
               key: "actions",
               header: "Ações",
               align: "right",
-              render: (r) => (
-                <div className="flex flex-wrap justify-end gap-1">
-                  <NexumButton size="sm" variant="ghost" onClick={() => setDetailLocation(r)}>
-                    <Eye className="mr-1 h-3.5 w-3.5" />
-                    Visualizar
-                  </NexumButton>
-                  {canUpdate && (
-                    <NexumButton size="sm" variant="ghost" onClick={() => openEdit(r)}>
-                      Editar
-                    </NexumButton>
-                  )}
-                  {canAssignBranches && (
-                    <NexumButton size="sm" variant="ghost" onClick={() => void openBranchesDrawer(r)}>
-                      <Building2 className="mr-1 h-3.5 w-3.5" />
-                      Filiais
-                    </NexumButton>
-                  )}
-                  {canDisable && r.status !== "DISABLED" && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "disable", location: r })}
-                    >
-                      Desativar
-                    </NexumButton>
-                  )}
-                  {canDisable && r.status === "DISABLED" && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "enable", location: r })}
-                    >
-                      Reativar
-                    </NexumButton>
-                  )}
-                  {canDelete && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "delete", location: r })}
-                    >
-                      Excluir
-                    </NexumButton>
-                  )}
-                </div>
-              ),
+              render: (r) => {
+                const items: NexumDropdownItem[] = [
+                  {
+                    key: "view",
+                    label: "Visualizar",
+                    icon: <Eye className="h-3.5 w-3.5" />,
+                    onSelect: () => setDetailLocation(r),
+                  },
+                  ...(canUpdate
+                    ? [{ key: "edit", label: "Editar", onSelect: () => openEdit(r) }]
+                    : []),
+                  ...(canAssignBranches
+                    ? [
+                        {
+                          key: "branches",
+                          label: "Filiais",
+                          icon: <Building2 className="h-3.5 w-3.5" />,
+                          onSelect: () => void openBranchesDrawer(r),
+                        },
+                      ]
+                    : []),
+                  ...(canDisable && r.status !== "DISABLED"
+                    ? [
+                        {
+                          key: "disable",
+                          label: "Desativar",
+                          onSelect: () => setConfirmAction({ type: "disable", location: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canDisable && r.status === "DISABLED"
+                    ? [
+                        {
+                          key: "enable",
+                          label: "Reativar",
+                          onSelect: () => setConfirmAction({ type: "enable", location: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canDelete
+                    ? [
+                        {
+                          key: "delete",
+                          label: "Excluir",
+                          danger: true,
+                          onSelect: () => setConfirmAction({ type: "delete", location: r }),
+                        },
+                      ]
+                    : []),
+                ];
+                return <NexumTableRowActions items={items} />;
+              },
             },
           ]}
         />
@@ -1013,6 +997,7 @@ function LocationsLogisticsPageInner() {
           open={formOpen}
           onClose={() => setFormOpen(false)}
           title={editLocation ? "Editar local" : "Novo local"}
+          width="lg"
         >
           {formSections}
           <div className="mt-6 flex justify-end gap-2 border-t border-nexum-border/40 pt-4">

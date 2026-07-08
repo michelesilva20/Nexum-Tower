@@ -13,11 +13,15 @@ import {
   NexumFormField,
   NexumInput,
   NexumSelect,
+  NexumTableCode,
+  NexumTableRowActions,
   NexumTableSearch,
+  NexumTableText,
   NexumTableToolbar,
   NexumTextarea,
   NexumToastProvider,
   useNexumToast,
+  type NexumDropdownItem,
 } from "@/components/ui/nexum";
 import { fetchBranches, type BranchRow } from "@/lib/admin-api";
 import { ApiError } from "@/lib/api";
@@ -199,11 +203,13 @@ const emptyForm: DriverForm = {
 function formatBranches(row: DriverRow) {
   const links = row.branches ?? [];
   if (links.length === 0) return "—";
+  const label = (l: (typeof links)[number]) =>
+    l.isPrimary ? `${l.branch.name}★` : l.branch.name;
   if (links.length <= 2) {
-    return links.map((l) => l.branch.name).join(", ");
+    return links.map(label).join(", ");
   }
   const [first, second, ...rest] = links;
-  return `${first.branch.name}, ${second.branch.name} +${rest.length}`;
+  return `${label(first)}, ${label(second)} +${rest.length}`;
 }
 
 function primaryBranchLabel(row: DriverRow) {
@@ -1151,21 +1157,17 @@ function DriversLogisticsPageInner() {
             {
               key: "code",
               header: "Código",
-              render: (r) => <span className="font-mono text-sm">{r.code}</span>,
+              render: (r) => <NexumTableCode value={r.code} />,
             },
             {
               key: "fullName",
               header: "Motorista",
               render: (r) => (
-                <div>
-                  <p className="font-medium text-nexum-text">{r.fullName}</p>
+                <div className="max-w-[160px]">
+                  <p className="truncate font-medium leading-tight">{r.fullName}</p>
                   {r.preferredName && (
-                    <p className="text-xs text-nexum-text-muted">{r.preferredName}</p>
-                  )}
-                  {r.city && (
-                    <p className="text-xs text-nexum-text-muted">
-                      {r.city}
-                      {r.state ? ` / ${r.state}` : ""}
+                    <p className="truncate text-[11px] leading-tight text-nexum-text-muted">
+                      {r.preferredName}
                     </p>
                   )}
                 </div>
@@ -1182,52 +1184,29 @@ function DriversLogisticsPageInner() {
               key: "license",
               header: "CNH",
               render: (r) => (
-                <div className="text-sm">
-                  {r.licenseCategory ? (
-                    <span className="font-medium">{r.licenseCategory}</span>
-                  ) : (
-                    <span className="text-nexum-text-muted">—</span>
-                  )}
-                  {r.licenseExpiresAt && (
-                    <p className="text-xs text-nexum-text-muted">{formatDate(r.licenseExpiresAt)}</p>
-                  )}
-                </div>
+                <NexumTableText maxWidth="80px">
+                  {r.licenseCategory
+                    ? `${r.licenseCategory}${r.licenseExpiresAt ? ` · ${formatDate(r.licenseExpiresAt)}` : ""}`
+                    : "—"}
+                </NexumTableText>
               ),
             },
             {
               key: "branches",
               header: "Filiais",
-              render: (r) => <span className="text-sm">{formatBranches(r)}</span>,
-            },
-            {
-              key: "primary",
-              header: "Filial principal",
-              render: (r) => {
-                const label = primaryBranchLabel(r);
-                return label === "Não definida" ? (
-                  <span className="text-nexum-text-muted">{label}</span>
-                ) : (
-                  <NexumBadge variant="success">{label}</NexumBadge>
-                );
-              },
+              render: (r) => (
+                <NexumTableText maxWidth="130px" title={formatBranches(r)}>
+                  {formatBranches(r)}
+                </NexumTableText>
+              ),
             },
             {
               key: "availability",
-              header: "Disponibilidade",
+              header: "Disp.",
               render: (r) => (
                 <NexumBadge variant={AVAILABILITY_VARIANT[r.availabilityStatus]}>
                   {AVAILABILITY_LABELS[r.availabilityStatus]}
                 </NexumBadge>
-              ),
-            },
-            {
-              key: "expiry",
-              header: "Vencimentos",
-              render: (r) => (
-                <div className="space-y-1">
-                  <ExpiryIndicator label="CNH" date={r.licenseExpiresAt} />
-                  {r.moppCertified && <ExpiryIndicator label="MOPP" date={r.moppExpiresAt} />}
-                </div>
               ),
             },
             {
@@ -1238,64 +1217,61 @@ function DriversLogisticsPageInner() {
               ),
             },
             {
-              key: "updatedAt",
-              header: "Atualizado em",
-              render: (r) => (
-                <span className="text-sm text-nexum-text-muted">
-                  {new Date(r.updatedAt).toLocaleString("pt-BR")}
-                </span>
-              ),
-            },
-            {
               key: "actions",
               header: "Ações",
               align: "right",
-              render: (r) => (
-                <div className="flex flex-wrap justify-end gap-1">
-                  <NexumButton size="sm" variant="ghost" onClick={() => setDetailDriver(r)}>
-                    <Eye className="mr-1 h-3.5 w-3.5" />
-                    Visualizar
-                  </NexumButton>
-                  {canUpdate && (
-                    <NexumButton size="sm" variant="ghost" onClick={() => openEdit(r)}>
-                      Editar
-                    </NexumButton>
-                  )}
-                  {canAssignBranches && (
-                    <NexumButton size="sm" variant="ghost" onClick={() => void openBranchesDrawer(r)}>
-                      <Building2 className="mr-1 h-3.5 w-3.5" />
-                      Filiais
-                    </NexumButton>
-                  )}
-                  {canDisable && r.status !== "DISABLED" && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "disable", driver: r })}
-                    >
-                      Desativar
-                    </NexumButton>
-                  )}
-                  {canDisable && r.status === "DISABLED" && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "enable", driver: r })}
-                    >
-                      Reativar
-                    </NexumButton>
-                  )}
-                  {canDelete && (
-                    <NexumButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setConfirmAction({ type: "delete", driver: r })}
-                    >
-                      Excluir
-                    </NexumButton>
-                  )}
-                </div>
-              ),
+              render: (r) => {
+                const items: NexumDropdownItem[] = [
+                  {
+                    key: "view",
+                    label: "Visualizar",
+                    icon: <Eye className="h-3.5 w-3.5" />,
+                    onSelect: () => setDetailDriver(r),
+                  },
+                  ...(canUpdate
+                    ? [{ key: "edit", label: "Editar", onSelect: () => openEdit(r) }]
+                    : []),
+                  ...(canAssignBranches
+                    ? [
+                        {
+                          key: "branches",
+                          label: "Filiais",
+                          icon: <Building2 className="h-3.5 w-3.5" />,
+                          onSelect: () => void openBranchesDrawer(r),
+                        },
+                      ]
+                    : []),
+                  ...(canDisable && r.status !== "DISABLED"
+                    ? [
+                        {
+                          key: "disable",
+                          label: "Desativar",
+                          onSelect: () => setConfirmAction({ type: "disable", driver: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canDisable && r.status === "DISABLED"
+                    ? [
+                        {
+                          key: "enable",
+                          label: "Reativar",
+                          onSelect: () => setConfirmAction({ type: "enable", driver: r }),
+                        },
+                      ]
+                    : []),
+                  ...(canDelete
+                    ? [
+                        {
+                          key: "delete",
+                          label: "Excluir",
+                          danger: true,
+                          onSelect: () => setConfirmAction({ type: "delete", driver: r }),
+                        },
+                      ]
+                    : []),
+                ];
+                return <NexumTableRowActions items={items} />;
+              },
             },
           ]}
         />
@@ -1304,6 +1280,7 @@ function DriversLogisticsPageInner() {
           open={formOpen}
           onClose={() => setFormOpen(false)}
           title={editDriver ? "Editar motorista" : "Novo motorista"}
+          width="lg"
         >
           {formSections}
           <div className="mt-6 flex justify-end gap-2 border-t border-nexum-border/40 pt-4">
@@ -1643,7 +1620,7 @@ function DriversLogisticsPageInner() {
                 ? "Reativar motorista"
                 : "Desativar motorista"
           }
-          description={`Confirma a operação para ${confirmAction?.driver.fullName ?? ""}?`}
+          description={`Confirma a operação para ${confirmAction?.driver.fullName || confirmAction?.driver.code || "este motorista"}?`}
           confirmLabel="Confirmar"
           danger={confirmAction?.type === "delete"}
         />

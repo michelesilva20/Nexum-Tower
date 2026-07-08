@@ -94,6 +94,22 @@ SELECT 'vehicle_sem_contexto' AS cenario, count(*)::int AS veiculos_visiveis FRO
 SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
 SELECT 'vehicle_branch_tenant_demo' AS cenario, count(*)::int AS vinculos_visiveis FROM "VehicleBranch";
 
+\echo '20. Route — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'route_tenant_demo' AS cenario, count(*)::int AS rotas_visiveis FROM "Route";
+
+\echo '21. Route — sem contexto'
+SELECT set_config('app.current_tenant_id', '', true);
+SELECT 'route_sem_contexto' AS cenario, count(*)::int AS rotas_visiveis FROM "Route";
+
+\echo '22. RouteBranch — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'route_branch_tenant_demo' AS cenario, count(*)::int AS vinculos_visiveis FROM "RouteBranch";
+
+\echo '23. RoutePoint — isolamento por tenant'
+SELECT set_config('app.current_tenant_id', :'tenant_demo_id', true);
+SELECT 'route_point_tenant_demo' AS cenario, count(*)::int AS pontos_visiveis FROM "RoutePoint";
+
 \echo '=== Fim do teste ==='
 \echo 'Esperado: sem_contexto=0, tenant_demo>0, demais=0 (com FORCE RLS ou nexum_app)'
 \echo 'Branch/UBA/Customer: tenant_demo>0 após seed, sem_contexto=0'
