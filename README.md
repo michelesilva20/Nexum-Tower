@@ -1,79 +1,195 @@
 # Nexum Tower
 
-SaaS de torre de controle logística com IA para monitorar viagens, custos, riscos, ocorrências e SLA em tempo real.
+> **SaaS Full Stack de torre de controle logística com IA para monitoramento de viagens, custos, riscos, ocorrências e SLA em tempo real.**
 
-## Stack
+O **Nexum Tower** é uma plataforma web voltada à centralização e acompanhamento de operações logísticas.
 
-| Camada | Tecnologia |
-|--------|------------|
-| Monorepo | pnpm + Turborepo |
-| Frontend | Next.js 15 + TypeScript + Tailwind CSS |
-| Backend | NestJS + TypeScript |
-| Banco | PostgreSQL |
-| ORM | Prisma |
-| Validação | Zod |
-| Lint/Format | ESLint + Prettier |
+A proposta é reunir informações relevantes da operação em uma única aplicação, permitindo acompanhar viagens, custos, riscos, ocorrências e indicadores de SLA dentro de uma arquitetura preparada para evolução de produto SaaS.
 
-## Estrutura de pastas
+<!--
+Adicione aqui uma screenshot real da aplicação.
 
-```txt
-nexum-tower/
-├── apps/
-│   ├── web/          # Frontend Next.js
-│   └── api/          # Backend NestJS
-├── packages/
-│   ├── database/     # Prisma schema, migrations e client
-│   ├── config/       # ESLint, Prettier e TSConfig compartilhados
-│   ├── ui/           # Componentes compartilhados (futuro)
-│   └── shared/       # Tipos, schemas Zod e helpers
-├── docs/             # Documentação do projeto
-├── .env.example      # Variáveis de ambiente (template)
-└── turbo.json        # Configuração Turborepo
+Exemplo:
+![Nexum Tower Dashboard](./docs/assets/nexum-tower-preview.png)
+-->
+
+---
+
+## Overview
+
+O projeto foi desenvolvido como uma aplicação **Full Stack em monorepo**, com separação entre frontend, backend, banco de dados e pacotes compartilhados.
+
+### Core Stack
+
+`Next.js 15` · `TypeScript` · `NestJS` · `PostgreSQL` · `Prisma`
+
+### Engineering Highlights
+
+- Arquitetura monorepo com **pnpm + Turborepo**
+- Frontend desenvolvido com **Next.js + TypeScript**
+- Backend estruturado com **NestJS**
+- Persistência com **PostgreSQL + Prisma**
+- Validação de dados com **Zod**
+- Autenticação utilizando cookies `httpOnly`
+- Comunicação frontend/API através de proxy same-origin
+- Estrutura de internacionalização para **PT / EN / ES**
+- Documentação dedicada a **RBAC, RLS, auditoria, segurança e feature flags**
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Browser[Browser] --> Web[Next.js]
+    Web -->|/api/*| API[NestJS API]
+    API --> ORM[Prisma]
+    ORM --> DB[(PostgreSQL)]
 ```
 
-## Pré-requisitos
+O frontend utiliza um proxy same-origin:
+
+```text
+/api/* → NestJS API
+```
+
+Essa estratégia permite trabalhar com autenticação baseada em cookies `httpOnly` sem expor tokens diretamente ao JavaScript do frontend.
+
+---
+
+## Monorepo
+
+```text
+nexum-tower/
+│
+├── apps/
+│   ├── web/              # Frontend Next.js
+│   └── api/              # Backend NestJS
+│
+├── packages/
+│   ├── database/         # Prisma schema, migrations e client
+│   ├── config/           # Configurações compartilhadas
+│   ├── ui/               # Componentes compartilhados
+│   └── shared/           # Tipos, schemas Zod e helpers
+│
+├── docs/                 # Documentação técnica
+├── .env.example
+└── turbo.json
+```
+
+O monorepo permite manter frontend e backend separados por responsabilidade enquanto compartilha configurações, tipos e recursos comuns entre as aplicações.
+
+---
+
+## Tech Stack
+
+| Área | Tecnologia |
+|---|---|
+| **Frontend** | Next.js 15, TypeScript, Tailwind CSS |
+| **Backend** | NestJS, TypeScript |
+| **Database** | PostgreSQL |
+| **ORM** | Prisma |
+| **Validation** | Zod |
+| **Monorepo** | pnpm, Turborepo |
+| **Quality** | ESLint, Prettier |
+
+---
+
+## Internationalization
+
+A aplicação possui estrutura para três idiomas:
+
+- 🇧🇷 Português
+- 🇺🇸 English
+- 🇪🇸 Español
+
+Rotas:
+
+```text
+/pt
+/en
+/es
+```
+
+Mais detalhes:
+
+[Internationalization Documentation](./docs/I18N.md)
+
+---
+
+## Security & Platform
+
+O projeto possui documentação específica para aspectos importantes da arquitetura e segurança:
+
+- [Security Guardrails](./docs/SECURITY-GUARDRAILS.md)
+- [Security Checklist](./docs/SECURITY-CHECKLIST.md)
+- [Authentication](./docs/AUTHENTICATION.md)
+- [RBAC](./docs/RBAC.md)
+- [Row Level Security — RLS](./docs/RLS.md)
+- [Audit](./docs/AUDIT.md)
+- [Feature Flags](./docs/FEATURE-FLAGS.md)
+- [Tenant Settings](./docs/SETTINGS.md)
+
+> Consulte o status atual do projeto para verificar o estágio de implementação de cada recurso.
+
+---
+
+## Technical Documentation
+
+Para aprofundar na arquitetura e implementação:
+
+- [Architecture](./docs/ARCHITECTURE.md)
+- [API Standards](./docs/API-STANDARDS.md)
+- [Authentication](./docs/AUTHENTICATION.md)
+- [Security Guardrails](./docs/SECURITY-GUARDRAILS.md)
+- [RBAC](./docs/RBAC.md)
+- [RLS](./docs/RLS.md)
+- [Audit](./docs/AUDIT.md)
+- [Feature Flags](./docs/FEATURE-FLAGS.md)
+- [Design System](./docs/DESIGN-SYSTEM.md)
+- [Internationalization](./docs/I18N.md)
+- [Current Status](./docs/STATUS-ATUAL.md)
+- [Roadmap](./docs/ROADMAP.md)
+
+---
+
+## Running Locally
+
+### Requirements
 
 - Node.js 20+
 - pnpm 9+
-- PostgreSQL 18 (local)
+- PostgreSQL 18
 
-## Instalação
+### Install dependencies
 
 ```bash
 pnpm install
 ```
 
-## Configurar variáveis de ambiente
+### Environment
 
-1. Copie o arquivo de exemplo na raiz:
+Na raiz do projeto:
 
-```bash
+```powershell
 copy .env.example .env
 ```
 
-2. Ajuste `DATABASE_URL` com sua senha local do PostgreSQL.
+Configure a conexão PostgreSQL em:
 
-3. Copie também em `packages/database` (usado pelo Prisma):
+```env
+DATABASE_URL=
+```
 
-```bash
+Para o package de banco:
+
+```powershell
 copy packages\database\.env.example packages\database\.env
 ```
 
-## Criar banco local
+### Database
 
-No Windows, com PostgreSQL instalado em `C:\Program Files\PostgreSQL\18`:
-
-```powershell
-& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -c "SELECT 1 FROM pg_database WHERE datname = 'nexum_tower'" | findstr 1
-```
-
-Se o banco não existir:
-
-```powershell
-& "C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres nexum_tower
-```
-
-## Migrations e seed
+Depois de configurar o PostgreSQL:
 
 ```bash
 pnpm db:generate
@@ -81,7 +197,9 @@ pnpm db:migrate
 pnpm db:seed
 ```
 
-## Rodar em desenvolvimento
+### Start development
+
+Ambiente completo:
 
 ```bash
 pnpm dev
@@ -90,89 +208,115 @@ pnpm dev
 Ou separadamente:
 
 ```bash
-pnpm dev:web   # Frontend em http://localhost:3000
-pnpm dev:api   # Backend em http://localhost:3333
+pnpm dev:web
+pnpm dev:api
 ```
 
-## URLs locais
+### Local URLs
 
 | Serviço | URL |
-|---------|-----|
-| Frontend | http://localhost:3000 |
-| Frontend (EN) | http://localhost:3000/en |
-| Frontend (ES) | http://localhost:3000/es |
-| API Health | http://localhost:3333/health |
-| Prisma Studio | `pnpm db:studio` → http://localhost:5555 |
+|---|---|
+| Frontend | `http://localhost:3000` |
+| Português | `http://localhost:3000/pt` |
+| English | `http://localhost:3000/en` |
+| Español | `http://localhost:3000/es` |
+| API Health | `http://localhost:3333/health` |
+| Prisma Studio | `http://localhost:5555` |
 
-## Scripts úteis
+---
+
+## Development Authentication
+
+Após executar migrations e seed:
+
+```text
+Admin
+admin@nexumtower.local
+admin123
+```
+
+Outros perfis de desenvolvimento:
+
+```text
+*@nexumtower.local
+test123
+```
+
+> As credenciais acima são destinadas exclusivamente ao ambiente local de desenvolvimento.
+
+Mais detalhes:
+
+[Authentication Documentation](./docs/AUTHENTICATION.md)
+
+---
+
+## Useful Commands
 
 ```bash
-pnpm build      # Build de todos os apps
-pnpm lint       # Lint em todo o monorepo
-pnpm format     # Formatar com Prettier
-pnpm db:studio  # Abrir Prisma Studio
+pnpm dev          # Inicia ambiente de desenvolvimento
+pnpm dev:web      # Inicia frontend
+pnpm dev:api      # Inicia backend
+
+pnpm build        # Build do monorepo
+pnpm lint         # Executa lint
+pnpm format       # Formata o código
+
+pnpm db:generate  # Gera Prisma Client
+pnpm db:migrate   # Executa migrations
+pnpm db:seed      # Popula banco local
+pnpm db:studio    # Abre Prisma Studio
 ```
 
-## Autenticação (dev)
+---
 
-Após migrations e seed:
+## Project Status
 
-```txt
-Admin:  admin@nexumtower.local / admin123
-Demais perfis de teste: *@nexumtower.local / test123
-```
+O Nexum Tower está em evolução contínua.
 
-Ver tabela completa em [Autenticação](./docs/AUTHENTICATION.md).
+Para acompanhar o estado atual:
 
-Configure JWT no `.env` (ver `.env.example`).
+[Current Status →](./docs/STATUS-ATUAL.md)
 
-```bash
-pnpm db:migrate
-pnpm db:seed
-pnpm dev
-```
+Próximas etapas:
 
-Login: http://localhost:3000/pt/login → redireciona para `/app`
+[Roadmap →](./docs/ROADMAP.md)
 
-O frontend chama a API via proxy same-origin (`/api/*` → `localhost:3333`) para cookies httpOnly funcionarem no navegador.
+---
 
-## Problemas comuns (dev)
+## Case Study
 
-**401 no login ou sessão não persiste**
-- Reinicie o dev server após mudar `.env` ou `next.config.ts`
-- Limpe cookies antigos de `localhost:3333` no navegador (DevTools → Application → Cookies)
+O Nexum Tower faz parte do meu portfólio de projetos Full Stack.
 
-**Erro React “development server / production client”**
-- Cache `.next` misturado após `pnpm build`. Rode:
+No case study apresento de forma mais visual:
 
-```bash
-pnpm dev:web:clean
-```
+- contexto do produto;
+- arquitetura;
+- stack;
+- decisões de engenharia;
+- estrutura Full Stack;
+- principais aspectos técnicos.
 
-- Faça hard refresh no navegador (Ctrl+Shift+R)
+<!--
+Quando o portfólio estiver publicado, substituir pelo link real:
 
-Documentação:
+[Explore Nexum Tower Case Study →](https://SEU-DOMINIO.com/pt/projects/nexum-tower)
+-->
 
-- **[Security Guardrails](./docs/SECURITY-GUARDRAILS.md) — leitura obrigatória antes de mexer na API/dados**
-- [Security Checklist](./docs/SECURITY-CHECKLIST.md)
-- [Autenticação](./docs/AUTHENTICATION.md)
-- [Design System (plataforma interna)](./docs/DESIGN-SYSTEM.md)
-- [RBAC](./docs/RBAC.md)
-- [Notas de segurança](./docs/SECURITY-NOTES.md)
+---
 
-## Documentação adicional
+## Author
 
-- [Padrões de API](./docs/API-STANDARDS.md)
-- [Auditoria](./docs/AUDIT.md)
-- [Parâmetros por tenant (Settings)](./docs/SETTINGS.md)
-- [Feature Flags](./docs/FEATURE-FLAGS.md)
-- [Row Level Security (RLS)](./docs/RLS.md)
-- [Arquitetura](./docs/ARCHITECTURE.md)
-- [Setup Windows](./docs/SETUP-WINDOWS.md)
-- [Internacionalização (i18n)](./docs/I18N.md)
-- [Status atual](./docs/STATUS-ATUAL.md)
-- [Roadmap](./docs/ROADMAP.md)
+### Michele Andrade
 
-## Licença
+**Full Stack Developer**
 
-Projeto privado — Nexum Tower.
+`React` · `TypeScript` · `Next.js` · `Node.js` · `NestJS` · `SQL`
+
+- [GitHub](https://github.com/michelesilva20)
+- [LinkedIn](https://www.linkedin.com/in/michele-andrade-dev)
+
+---
+
+## License
+
+Projeto privado — **Nexum Tower**.
