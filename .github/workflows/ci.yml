@@ -8,7 +8,7 @@ on:
 
 env:
   NODE_VERSION: "20"
-  PNPM_VERSION: "9"
+  PNPM_VERSION: "9.15.4"
   DATABASE_URL: postgresql://postgres:admin@localhost:5432/nexum_tower_test?schema=public
   JWT_ACCESS_SECRET: test-access-secret-min-32-chars-long
   JWT_REFRESH_SECRET: test-refresh-secret-min-32-chars-long
