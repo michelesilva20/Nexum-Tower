@@ -1,322 +1,91 @@
 # Nexum Tower
 
-> **SaaS Full Stack de torre de controle logística com IA para monitoramento de viagens, custos, riscos, ocorrências e SLA em tempo real.**
+**A multi-tenant logistics platform in development.** This full-stack monorepo combines a Next.js interface, NestJS API and PostgreSQL persistence, with a focus on authorization, branch-level access and logistics master data.
 
-O **Nexum Tower** é uma plataforma web voltada à centralização e acompanhamento de operações logísticas.
+**Current scope:** platform security, administration, branches, customers, locations, drivers, vehicles and routes. The Command Center uses demonstration data. Shipment/trip execution, incidents, real-time operations and product AI are future work.
 
-A proposta é reunir informações relevantes da operação em uma única aplicação, permitindo acompanhar viagens, custos, riscos, ocorrências e indicadores de SLA dentro de uma arquitetura preparada para evolução de produto SaaS.
+## Engineering highlights
 
-<!--
-Adicione aqui uma screenshot real da aplicação.
+| Area | Technologies and evidence |
+| --- | --- |
+| Web | Next.js 15, React, TypeScript, Tailwind; PT/EN/ES locale structure |
+| API | NestJS modules, permission guards, authorization services, request IDs and error handling |
+| Data | PostgreSQL, Prisma migrations, tenant-owned data and branch associations |
+| Security | JWT, HttpOnly cookies, refresh sessions, RBAC/ABAC, audit records |
+| Quality | Jest service tests, Playwright E2E files, GitHub Actions workflow |
+| Tooling | pnpm 9.15.4 workspaces, Turborepo, shared types and validation |
 
-Exemplo:
-![Nexum Tower Dashboard](./docs/assets/nexum-tower-preview.png)
--->
-
----
-
-## Overview
-
-O projeto foi desenvolvido como uma aplicação **Full Stack em monorepo**, com separação entre frontend, backend, banco de dados e pacotes compartilhados.
-
-### Core Stack
-
-`Next.js 15` · `TypeScript` · `NestJS` · `PostgreSQL` · `Prisma`
-
-### Engineering Highlights
-
-- Arquitetura monorepo com **pnpm + Turborepo**
-- Frontend desenvolvido com **Next.js + TypeScript**
-- Backend estruturado com **NestJS**
-- Persistência com **PostgreSQL + Prisma**
-- Validação de dados com **Zod**
-- Autenticação utilizando cookies `httpOnly`
-- Comunicação frontend/API através de proxy same-origin
-- Estrutura de internacionalização para **PT / EN / ES**
-- Documentação dedicada a **RBAC, RLS, auditoria, segurança e feature flags**
-
----
+Workflow presence does not establish that the latest run passed. No passing badge or production certification is implied.
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    Browser[Browser] --> Web[Next.js]
-    Web -->|/api/*| API[NestJS API]
-    API --> ORM[Prisma]
-    ORM --> DB[(PostgreSQL)]
+```text
+Browser → Next.js /api proxy → NestJS modules → Prisma → PostgreSQL
+                                  ↓
+                         authorization + audit
 ```
 
-O frontend utiliza um proxy same-origin:
+The same-origin proxy supports cookie-based authentication. The backend separates platform modules from logistics master data. A tenant-level entity can have operational links to multiple branches; access checks must consider both tenant and branch scope.
+
+### Isolation is a deployment requirement
+
+RLS SQL and a transaction-scoped tenant helper are present. The repository documents a **production readiness gate** around FORCE RLS, the runtime database role and isolation validation. The existence of policies alone does not prove that every runtime query is protected. See [RLS](docs/RLS.md), [logistics status](docs/modules/logistics/README.md) and the [case study](docs/case-study-tenant-boundaries.md).
+
+## Repository map
 
 ```text
-/api/* → NestJS API
+apps/web/             Next.js interface and API proxy
+apps/api/             NestJS platform and logistics modules
+packages/database/    Prisma schema, migrations, tenant helpers and RLS SQL
+packages/shared/      Shared validation and permission helpers
+packages/config/      Shared configuration
+packages/ui/          Shared UI package
+tests/e2e/            Playwright scenarios
+.github/workflows/    CI definition
+docs/                 Architecture and module guides
 ```
 
-Essa estratégia permite trabalhar com autenticação baseada em cookies `httpOnly` sem expor tokens diretamente ao JavaScript do frontend.
+## Run locally
 
----
+Requirements: Node.js 20+, pnpm 9.15.4, and PostgreSQL. Existing local setup documentation specifies PostgreSQL 18; the committed CI workflow uses PostgreSQL 16. Verify both environments before claiming version parity.
 
-## Monorepo
+1. Run `pnpm install --frozen-lockfile`.
+2. Copy the root `.env.example` to `.env` and `packages/database/.env.example` to `packages/database/.env`.
+3. Configure a **local development database**, JWT secrets and application URLs as described in the templates. Do not commit environment files or use sample secrets in production.
+4. Prepare that local database:
 
-```text
-nexum-tower/
-│
-├── apps/
-│   ├── web/              # Frontend Next.js
-│   └── api/              # Backend NestJS
-│
-├── packages/
-│   ├── database/         # Prisma schema, migrations e client
-│   ├── config/           # Configurações compartilhadas
-│   ├── ui/               # Componentes compartilhados
-│   └── shared/           # Tipos, schemas Zod e helpers
-│
-├── docs/                 # Documentação técnica
-├── .env.example
-└── turbo.json
-```
-
-O monorepo permite manter frontend e backend separados por responsabilidade enquanto compartilha configurações, tipos e recursos comuns entre as aplicações.
-
----
-
-## Tech Stack
-
-| Área | Tecnologia |
-|---|---|
-| **Frontend** | Next.js 15, TypeScript, Tailwind CSS |
-| **Backend** | NestJS, TypeScript |
-| **Database** | PostgreSQL |
-| **ORM** | Prisma |
-| **Validation** | Zod |
-| **Monorepo** | pnpm, Turborepo |
-| **Quality** | ESLint, Prettier |
-
----
-
-## Internationalization
-
-A aplicação possui estrutura para três idiomas:
-
-- 🇧🇷 Português
-- 🇺🇸 English
-- 🇪🇸 Español
-
-Rotas:
-
-```text
-/pt
-/en
-/es
-```
-
-Mais detalhes:
-
-[Internationalization Documentation](./docs/I18N.md)
-
----
-
-## Security & Platform
-
-O projeto possui documentação específica para aspectos importantes da arquitetura e segurança:
-
-- [Security Guardrails](./docs/SECURITY-GUARDRAILS.md)
-- [Security Checklist](./docs/SECURITY-CHECKLIST.md)
-- [Authentication](./docs/AUTHENTICATION.md)
-- [RBAC](./docs/RBAC.md)
-- [Row Level Security — RLS](./docs/RLS.md)
-- [Audit](./docs/AUDIT.md)
-- [Feature Flags](./docs/FEATURE-FLAGS.md)
-- [Tenant Settings](./docs/SETTINGS.md)
-
-> Consulte o status atual do projeto para verificar o estágio de implementação de cada recurso.
-
----
-
-## Technical Documentation
-
-Para aprofundar na arquitetura e implementação:
-
-- [Architecture](./docs/ARCHITECTURE.md)
-- [API Standards](./docs/API-STANDARDS.md)
-- [Authentication](./docs/AUTHENTICATION.md)
-- [Security Guardrails](./docs/SECURITY-GUARDRAILS.md)
-- [RBAC](./docs/RBAC.md)
-- [RLS](./docs/RLS.md)
-- [Audit](./docs/AUDIT.md)
-- [Feature Flags](./docs/FEATURE-FLAGS.md)
-- [Design System](./docs/DESIGN-SYSTEM.md)
-- [Internationalization](./docs/I18N.md)
-- [Current Status](./docs/STATUS-ATUAL.md)
-- [Roadmap](./docs/ROADMAP.md)
-
----
-
-## Running Locally
-
-### Requirements
-
-- Node.js 20+
-- pnpm 9+
-- PostgreSQL 18
-
-### Install dependencies
-
-```bash
-pnpm install
-```
-
-### Environment
-
-Na raiz do projeto:
-
-```powershell
-copy .env.example .env
-```
-
-Configure a conexão PostgreSQL em:
-
-```env
-DATABASE_URL=
-```
-
-Para o package de banco:
-
-```powershell
-copy packages\database\.env.example packages\database\.env
-```
-
-### Database
-
-Depois de configurar o PostgreSQL:
-
-```bash
+```sh
 pnpm db:generate
 pnpm db:migrate
 pnpm db:seed
-```
-
-### Start development
-
-Ambiente completo:
-
-```bash
 pnpm dev
 ```
 
-Ou separadamente:
+Migrations and seed change the configured database. Check the connection before running them; use a disposable local database. Seeded demo accounts are for local development only.
 
-```bash
-pnpm dev:web
-pnpm dev:api
+Web: `http://localhost:3000/pt` (also `/en`, `/es`). API health: `http://localhost:3333/health`. See [Windows setup](docs/SETUP-WINDOWS.md) and [authentication](docs/AUTHENTICATION.md).
+
+## Quality checks
+
+```sh
+pnpm lint
+pnpm typecheck
+pnpm test:api
+pnpm build
+pnpm test:e2e
 ```
 
-### Local URLs
+E2E requires the configured development services and seeded database. See [Playwright configuration](playwright.config.ts) and [CI](.github/workflows/ci.yml). The portfolio audit inspected configuration and selected test/code paths; it did not execute the complete Nexum suite or validate a live deployment.
 
-| Serviço | URL |
-|---|---|
-| Frontend | `http://localhost:3000` |
-| Português | `http://localhost:3000/pt` |
-| English | `http://localhost:3000/en` |
-| Español | `http://localhost:3000/es` |
-| API Health | `http://localhost:3333/health` |
-| Prisma Studio | `http://localhost:5555` |
+## Documentation and limitations
 
----
+- [Architecture](docs/ARCHITECTURE.md), [API standards](docs/API-STANDARDS.md), [security guardrails](docs/SECURITY-GUARDRAILS.md).
+- [Organization](docs/modules/organization/README.md) and [logistics modules](docs/modules/logistics/README.md).
+- [RBAC](docs/RBAC.md), [audit](docs/AUDIT.md), [internationalization](docs/I18N.md).
+- The older [status snapshot](docs/STATUS-ATUAL.md) contains stale statements: a CI definition and logistics master-data modules now exist in the code. Treat the current source, module guides and workflow as evidence of implementation, not the old snapshot alone.
+- No claim of deployed commercial use, completed logistics execution or integrated AI is made.
+- This documentation update does not add or change a software license.
 
-## Development Authentication
+## Em português
 
-Após executar migrations e seed:
-
-```text
-Admin
-admin@nexumtower.local
-admin123
-```
-
-Outros perfis de desenvolvimento:
-
-```text
-*@nexumtower.local
-test123
-```
-
-> As credenciais acima são destinadas exclusivamente ao ambiente local de desenvolvimento.
-
-Mais detalhes:
-
-[Authentication Documentation](./docs/AUTHENTICATION.md)
-
----
-
-## Useful Commands
-
-```bash
-pnpm dev          # Inicia ambiente de desenvolvimento
-pnpm dev:web      # Inicia frontend
-pnpm dev:api      # Inicia backend
-
-pnpm build        # Build do monorepo
-pnpm lint         # Executa lint
-pnpm format       # Formata o código
-
-pnpm db:generate  # Gera Prisma Client
-pnpm db:migrate   # Executa migrations
-pnpm db:seed      # Popula banco local
-pnpm db:studio    # Abre Prisma Studio
-```
-
----
-
-## Project Status
-
-O Nexum Tower está em evolução contínua.
-
-Para acompanhar o estado atual:
-
-[Current Status →](./docs/STATUS-ATUAL.md)
-
-Próximas etapas:
-
-[Roadmap →](./docs/ROADMAP.md)
-
----
-
-## Case Study
-
-O Nexum Tower faz parte do meu portfólio de projetos Full Stack.
-
-No case study apresento de forma mais visual:
-
-- contexto do produto;
-- arquitetura;
-- stack;
-- decisões de engenharia;
-- estrutura Full Stack;
-- principais aspectos técnicos.
-
-<!--
-Quando o portfólio estiver publicado, substituir pelo link real:
-
-[Explore Nexum Tower Case Study →](https://SEU-DOMINIO.com/pt/projects/nexum-tower)
--->
-
----
-
-## Author
-
-### Michele Andrade
-
-**Full Stack Developer**
-
-`React` · `TypeScript` · `Next.js` · `Node.js` · `NestJS` · `SQL`
-
-- [GitHub](https://github.com/michelesilva20)
-- [LinkedIn](https://www.linkedin.com/in/michele-andrade-dev)
-
----
-
-## License
-
-Projeto privado — **Nexum Tower**.
+O Nexum Tower demonstra engenharia full stack com Next.js, NestJS, PostgreSQL, autorização e cadastros logísticos multi-tenant. O painel operacional usa demonstração; viagens, ocorrências e IA permanecem futuros. O isolamento em produção depende de validar RLS e o papel de banco da aplicação.
